@@ -1,0 +1,125 @@
+File: .env
+==
+# Parameter particular-license
+PARTICULAR_LICENSE=
+
+# Parameter sqs-access-key-id
+SQS_ACCESS_KEY_ID=
+
+# Parameter sqs-do-not-wrap-outgoing-messages
+SQS_DO_NOT_WRAP_OUTGOING_MESSAGES=
+
+# Parameter sqs-queue-name-prefix
+SQS_QUEUE_NAME_PREFIX=
+
+# Parameter sqs-region
+SQS_REGION=
+
+# Parameter sqs-reserved-bytes-in-message-size
+SQS_RESERVED_BYTES_IN_MESSAGE_SIZE=
+
+# Parameter sqs-s3-bucket-for-large-messages
+SQS_S3_BUCKET_FOR_LARGE_MESSAGES=
+
+# Parameter sqs-s3-key-prefix
+SQS_S3_KEY_PREFIX=
+
+# Parameter sqs-secret-access-key
+SQS_SECRET_ACCESS_KEY=
+
+# Parameter sqs-topic-name-prefix
+SQS_TOPIC_NAME_PREFIX=
+
+
+==
+File: docker-compose.yaml
+==
+services:
+  compose-dashboard:
+    image: "mcr.microsoft.com/dotnet/nightly/aspire-dashboard:latest"
+    ports:
+      - "18888"
+    expose:
+      - "18889"
+      - "18890"
+    networks:
+      - "aspire"
+    restart: "always"
+  particular-persistence:
+    image: "particular/servicecontrol-ravendb:latest"
+    expose:
+      - "8080"
+    networks:
+      - "aspire"
+  particular-error:
+    image: "particular/servicecontrol:latest"
+    command:
+      - "--setup-and-run"
+    environment:
+      RAVENDB_CONNECTIONSTRING: "http://particular-persistence:8080"
+      REMOTEINSTANCES: "[{\"api_uri\": \"http://particular-audit:44444\"}]"
+      PARTICULARSOFTWARE_LICENSE: "${PARTICULAR_LICENSE}"
+      TRANSPORTTYPE: "AmazonSQS"
+      CONNECTIONSTRING: "Name=transport-connection"
+      SERVICEBUS_ERRORQUEUE: "error"
+      LICENSINGCOMPONENT_SERVICECONTROLTHROUGHPUTDATAQUEUE: "particular.throughput"
+      LICENSINGCOMPONENT_AMAZONSQS_ACCESSKEYID: "${SQS_ACCESS_KEY_ID}"
+      LICENSINGCOMPONENT_AMAZONSQS_SECRETACCESSKEY: "${SQS_SECRET_ACCESS_KEY}"
+      LICENSINGCOMPONENT_AMAZONSQS_REGION: "${SQS_REGION}"
+      LICENSINGCOMPONENT_AMAZONSQS_QUEUENAMEPREFIX: "${SQS_QUEUE_NAME_PREFIX}"
+      LICENSINGCOMPONENT_AMAZONSQS_TOPICNAMEPREFIX: "${SQS_TOPIC_NAME_PREFIX}"
+      LICENSINGCOMPONENT_AMAZONSQS_S3BUCKETFORLARGEMESSAGES: "${SQS_S3_BUCKET_FOR_LARGE_MESSAGES}"
+      LICENSINGCOMPONENT_AMAZONSQS_S3KEYPREFIX: "${SQS_S3_KEY_PREFIX}"
+      LICENSINGCOMPONENT_AMAZONSQS_DONOTWRAPOUTGOINGMESSAGES: "${SQS_DO_NOT_WRAP_OUTGOING_MESSAGES}"
+      LICENSINGCOMPONENT_AMAZONSQS_RESERVEDBYTESINMESSAGESIZE: "${SQS_RESERVED_BYTES_IN_MESSAGE_SIZE}"
+    expose:
+      - "33333"
+    depends_on:
+      particular-persistence:
+        condition: "service_started"
+    networks:
+      - "aspire"
+  particular-monitoring:
+    image: "particular/servicecontrol-monitoring:latest"
+    command:
+      - "--setup-and-run"
+    environment:
+      PARTICULARSOFTWARE_LICENSE: "${PARTICULAR_LICENSE}"
+      TRANSPORTTYPE: "AmazonSQS"
+      CONNECTIONSTRING: "Name=transport-connection"
+    expose:
+      - "33633"
+    networks:
+      - "aspire"
+  particular-audit:
+    image: "particular/servicecontrol-audit:latest"
+    command:
+      - "--setup-and-run"
+    environment:
+      RAVENDB_CONNECTIONSTRING: "http://particular-persistence:8080"
+      PARTICULARSOFTWARE_LICENSE: "${PARTICULAR_LICENSE}"
+      TRANSPORTTYPE: "AmazonSQS"
+      CONNECTIONSTRING: "Name=transport-connection"
+      SERVICEBUS_AUDITQUEUE: "audit"
+    expose:
+      - "44444"
+    depends_on:
+      particular-persistence:
+        condition: "service_started"
+    networks:
+      - "aspire"
+  particular-servicepulse:
+    image: "particular/servicepulse:latest"
+    environment:
+      SERVICECONTROL_URL: "http://particular-error:33333"
+      MONITORING_URL: "http://particular-monitoring:33633"
+      PARTICULARSOFTWARE_LICENSE: "${PARTICULAR_LICENSE}"
+    expose:
+      - "9090"
+    networks:
+      - "aspire"
+networks:
+  aspire:
+    driver: "bridge"
+
+==

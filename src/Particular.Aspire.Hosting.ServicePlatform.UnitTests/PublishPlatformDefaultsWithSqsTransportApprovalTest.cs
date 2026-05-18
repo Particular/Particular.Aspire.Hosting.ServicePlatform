@@ -1,8 +1,7 @@
-namespace Particular.Aspire.Hosting.ServicePlatform.Tests;
+namespace Particular.Aspire.Hosting.ServicePlatform.UnitTests;
 
 using global::Aspire.Hosting;
-using TestResources;
-using Transport;
+using Particular.Aspire.Hosting.ServicePlatform.Transport;
 
 public class PublishPlatformDefaultsWithSqsTransportApprovalTest : AspireApplicationPublishingTestBase
 {

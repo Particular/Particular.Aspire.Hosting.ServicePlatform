@@ -1,11 +1,10 @@
-namespace Particular.Aspire.Hosting.ServicePlatform.Tests;
+namespace Particular.Aspire.Hosting.ServicePlatform.UnitTests;
 
 using global::Aspire.Hosting;
 using global::Aspire.Hosting.ApplicationModel;
-using Persistence;
-using TestResources;
-using ThroughputReporting;
-using Transport;
+using Particular.Aspire.Hosting.ServicePlatform.Persistence;
+using Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting;
+using Particular.Aspire.Hosting.ServicePlatform.Transport;
 
 public class PublishPlatformDefaultsWithSqsThroughputReportingApprovalTest : AspireApplicationPublishingTestBase
 {
