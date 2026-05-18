@@ -40,7 +40,7 @@ public abstract class AspireApplicationPublishingTestBase
             });
 
             // Publish does not use DCP - but it does validate this config object, so give it some sane values.
-            builder.Configuration.AddInMemoryCollection(new Dictionary<string, string>
+            builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?>
             {
                 [LearningTransportAnnotation.SettingsEnablePublish] = "true",
                 ["ASPIRE_DCP_PATH"] = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".aspire/bin/dcp"),
