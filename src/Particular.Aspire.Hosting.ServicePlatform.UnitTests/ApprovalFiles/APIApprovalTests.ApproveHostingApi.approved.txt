@@ -129,6 +129,11 @@ namespace Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting
     {
         void ApplyTo(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> errorInstance);
     }
+    public sealed class ThroughputReportingAmazonSqs : Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting.IThroughputReportingProvider
+    {
+        public ThroughputReportingAmazonSqs(Aspire.Hosting.ApplicationModel.ReferenceExpression? accessKeyId = null, Aspire.Hosting.ApplicationModel.ReferenceExpression? secretKey = null, Aspire.Hosting.ApplicationModel.ReferenceExpression? region = null, Aspire.Hosting.ApplicationModel.ReferenceExpression? profile = null, Aspire.Hosting.ApplicationModel.ReferenceExpression? prefix = null) { }
+        public void ApplyTo(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> errorInstance) { }
+    }
     public sealed class ThroughputReportingAzureServiceBus : Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting.IThroughputReportingProvider
     {
         public ThroughputReportingAzureServiceBus(Aspire.Hosting.ApplicationModel.ReferenceExpression tenantId, Aspire.Hosting.ApplicationModel.ReferenceExpression subscriptionId, Aspire.Hosting.ApplicationModel.ReferenceExpression clientId, Aspire.Hosting.ApplicationModel.ReferenceExpression clientSecret, Aspire.Hosting.ApplicationModel.ReferenceExpression? serviceBusName = null, Aspire.Hosting.ApplicationModel.ReferenceExpression? managementUrl = null) { }
@@ -150,6 +155,7 @@ namespace Particular.Aspire.Hosting.ServicePlatform.Transport
         {
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportLearning(string? storagePath = null) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportAzureServiceBus(Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResourceWithConnectionString> azureServiceBus) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportAmazonSqs(Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResourceWithConnectionString> amazonSqs) { }
         }
     }
 }
