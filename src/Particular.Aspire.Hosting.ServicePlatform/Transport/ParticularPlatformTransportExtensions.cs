@@ -5,7 +5,6 @@ using global::Aspire.Hosting.ApplicationModel;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 using System;
-using Aspire.ServicePlatform.Platform;
 
 public static class ParticularPlatformTransportExtensions
 {

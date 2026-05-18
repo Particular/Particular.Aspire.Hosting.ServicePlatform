@@ -7,12 +7,15 @@ using Particular.Aspire.Hosting.ServicePlatform.Platform;
 // Consumer-supplied transport resources (Azure Service Bus, RabbitMQ, etc.) aren't owned by the platform,
 // so the topology subscriber can't find them via IResourceWithParent. An annotation on the platform holds
 // the connection-string resource directly from configuration-time to BeforeStartEvent.
-// For file-based transports (Learning), ConnectionSource is null and StoragePath holds the host directory.
+// For file-based transports (Learning), ConnectionSource is null, and StoragePath holds the host directory.
 
 abstract class PlatformTransportAnnotation : IPlatformTransportAnnotation
 {
     public abstract string TransportType { get; }
+
     public abstract IResourceWithConnectionString ConnectionSource { get; }
+
+    public virtual ReferenceExpression ConnectionStringExpression => ConnectionSource.ConnectionStringExpression;
 
     public virtual void ApplyTo<T>(IResourceBuilder<T> resource) where T : IResourceWithEnvironment
     {
@@ -26,7 +29,7 @@ abstract class PlatformTransportAnnotation : IPlatformTransportAnnotation
             resource.WithEnvironment(context =>
             {
                 context.EnvironmentVariables["TRANSPORTTYPE"] = TransportType;
-                context.EnvironmentVariables["CONNECTIONSTRING"] = ConnectionSource;
+                context.EnvironmentVariables["CONNECTIONSTRING"] = ConnectionStringExpression;
             });
             return;
         }

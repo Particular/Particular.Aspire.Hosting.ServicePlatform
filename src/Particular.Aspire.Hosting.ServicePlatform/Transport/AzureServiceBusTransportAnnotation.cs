@@ -1,7 +1,6 @@
-namespace Particular.Aspire.Hosting.ServicePlatform.Platform;
+namespace Particular.Aspire.Hosting.ServicePlatform.Transport;
 
 using global::Aspire.Hosting.ApplicationModel;
-using Particular.Aspire.Hosting.ServicePlatform.Transport;
 
 sealed class AzureServiceBusTransportAnnotation(IResourceWithConnectionString connectionSource)
     : PlatformTransportAnnotation

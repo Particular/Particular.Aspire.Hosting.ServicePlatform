@@ -1,57 +1,45 @@
 namespace Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting;
 
 using System;
-using Aspire.ServicePlatform.Platform;
 using global::Aspire.Hosting;
 using global::Aspire.Hosting.ApplicationModel;
 using Platform;
+using Transport;
 
+/// <summary>
+/// This is used to configure the usage reporting component in Service Control as described
+/// at https://docs.particular.net/servicecontrol/servicecontrol-instances/configuration?version=servicecontrol_4#usage-reporting-when-using-the-amazon-sqs-transport
+/// </summary>
 public sealed class ThroughputReportingAmazonSqs : IThroughputReportingProvider
 {
-    internal const string AccessKeyIdEnvVar = "LICENSINGCOMPONENT_AMAZONSQS_ACCESSKEYID";
-    internal const string SecretAccessKeyEnvVar = "LICENSINGCOMPONENT_AMAZONSQS_SECRETACCESSKEY";
+    internal const string AccessKeyEnvVar = "LICENSINGCOMPONENT_AMAZONSQS_ACCESSKEY";
+    internal const string SecretAccessKeyEnvVar = "LICENSINGCOMPONENT_AMAZONSQS_SECRETKEY";
+    internal const string ProfileEnvVar = "LICENSINGCOMPONENT_AMAZONSQS_PROFILE";
     internal const string RegionEnvVar = "LICENSINGCOMPONENT_AMAZONSQS_REGION";
-    internal const string QueueNamePrefixEnvVar = "LICENSINGCOMPONENT_AMAZONSQS_QUEUENAMEPREFIX";
-    internal const string TopicNamePrefixEnvVar = "LICENSINGCOMPONENT_AMAZONSQS_TOPICNAMEPREFIX";
-    internal const string S3BucketForLargeMessagesEnvVar = "LICENSINGCOMPONENT_AMAZONSQS_S3BUCKETFORLARGEMESSAGES";
-    internal const string S3KeyPrefixEnvVar = "LICENSINGCOMPONENT_AMAZONSQS_S3KEYPREFIX";
-    internal const string DoNotWrapOutgoingMessagesEnvVar = "LICENSINGCOMPONENT_AMAZONSQS_DONOTWRAPOUTGOINGMESSAGES";
-    internal const string ReservedBytesInMessageSizeEnvVar = "LICENSINGCOMPONENT_AMAZONSQS_RESERVEDBYTESINMESSAGESIZE";
+    internal const string QueueNamePrefixEnvVar = "LICENSINGCOMPONENT_AMAZONSQS_PREFIX";
 
     readonly ReferenceExpression? accessKeyId;
-    readonly ReferenceExpression? secretAccessKey;
+    readonly ReferenceExpression? secretKey;
+    readonly ReferenceExpression? profile;
     readonly ReferenceExpression? region;
-    readonly ReferenceExpression? queueNamePrefix;
-    readonly ReferenceExpression? topicNamePrefix;
-    readonly ReferenceExpression? s3BucketForLargeMessages;
-    readonly ReferenceExpression? s3KeyPrefix;
-    readonly ReferenceExpression? doNotWrapOutgoingMessages;
-    readonly ReferenceExpression? reservedBytesInMessageSize;
+    readonly ReferenceExpression? prefix;
 
     public ThroughputReportingAmazonSqs(
         ReferenceExpression? accessKeyId = null,
-        ReferenceExpression? secretAccessKey = null,
+        ReferenceExpression? secretKey = null,
         ReferenceExpression? region = null,
-        ReferenceExpression? queueNamePrefix = null,
-        ReferenceExpression? topicNamePrefix = null,
-        ReferenceExpression? s3BucketForLargeMessages = null,
-        ReferenceExpression? s3KeyPrefix = null,
-        ReferenceExpression? doNotWrapOutgoingMessages = null,
-        ReferenceExpression? reservedBytesInMessageSize = null)
+        ReferenceExpression? profile = null,
+        ReferenceExpression? prefix = null)
     {
         ArgumentNullException.ThrowIfNull(accessKeyId);
-        ArgumentNullException.ThrowIfNull(secretAccessKey);
+        ArgumentNullException.ThrowIfNull(secretKey);
         ArgumentNullException.ThrowIfNull(region);
 
         this.accessKeyId = accessKeyId;
-        this.secretAccessKey = secretAccessKey;
+        this.secretKey = secretKey;
         this.region = region;
-        this.queueNamePrefix = queueNamePrefix;
-        this.topicNamePrefix = topicNamePrefix;
-        this.s3BucketForLargeMessages = s3BucketForLargeMessages;
-        this.s3KeyPrefix = s3KeyPrefix;
-        this.doNotWrapOutgoingMessages = doNotWrapOutgoingMessages;
-        this.reservedBytesInMessageSize = reservedBytesInMessageSize;
+        this.profile = profile;
+        this.prefix = prefix;
     }
 
     public void ApplyTo(IResourceBuilder<ServiceControlErrorInstanceResource> errorInstance)
@@ -66,12 +54,12 @@ public sealed class ThroughputReportingAmazonSqs : IThroughputReportingProvider
 
         if (accessKeyId != null)
         {
-            errorInstance.WithEnvironment(AccessKeyIdEnvVar, accessKeyId);
+            errorInstance.WithEnvironment(AccessKeyEnvVar, accessKeyId);
         }
 
-        if (secretAccessKey != null)
+        if (secretKey != null)
         {
-            errorInstance.WithEnvironment(SecretAccessKeyEnvVar, secretAccessKey);
+            errorInstance.WithEnvironment(SecretAccessKeyEnvVar, secretKey);
         }
 
         if (region != null)
@@ -79,34 +67,14 @@ public sealed class ThroughputReportingAmazonSqs : IThroughputReportingProvider
             errorInstance.WithEnvironment(RegionEnvVar, region);
         }
 
-        if (queueNamePrefix is not null)
+        if (prefix is not null)
         {
-            errorInstance.WithEnvironment(QueueNamePrefixEnvVar, queueNamePrefix);
+            errorInstance.WithEnvironment(QueueNamePrefixEnvVar, prefix);
         }
 
-        if (topicNamePrefix is not null)
+        if (profile is not null)
         {
-            errorInstance.WithEnvironment(TopicNamePrefixEnvVar, topicNamePrefix);
-        }
-
-        if (s3BucketForLargeMessages is not null)
-        {
-            errorInstance.WithEnvironment(S3BucketForLargeMessagesEnvVar, s3BucketForLargeMessages);
-        }
-
-        if (s3KeyPrefix is not null)
-        {
-            errorInstance.WithEnvironment(S3KeyPrefixEnvVar, s3KeyPrefix);
-        }
-
-        if (doNotWrapOutgoingMessages is not null)
-        {
-            errorInstance.WithEnvironment(DoNotWrapOutgoingMessagesEnvVar, doNotWrapOutgoingMessages);
-        }
-
-        if (reservedBytesInMessageSize is not null)
-        {
-            errorInstance.WithEnvironment(ReservedBytesInMessageSizeEnvVar, reservedBytesInMessageSize);
+            errorInstance.WithEnvironment(ProfileEnvVar, profile);
         }
     }
 }

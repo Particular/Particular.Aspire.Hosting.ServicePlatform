@@ -4,6 +4,7 @@ using System;
 using global::Aspire.Hosting;
 using global::Aspire.Hosting.ApplicationModel;
 using Particular.Aspire.Hosting.ServicePlatform.Platform;
+using Transport;
 
 public sealed class ThroughputReportingAzureServiceBus : IThroughputReportingProvider
 {
