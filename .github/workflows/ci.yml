@@ -2,11 +2,15 @@ name: CI
 on:
   push:
     branches:
-      - master
+      - main
+      - release-*
   pull_request:
   workflow_dispatch:
 env:
   DOTNET_NOLOGO: true
+defaults:
+  run:
+    shell: pwsh
 jobs:
   build:
     name: ${{ matrix.name }}
@@ -21,27 +25,24 @@ jobs:
       fail-fast: false
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.1
+        uses: actions/checkout@v6.0.2
+        with:
+          fetch-depth: 0
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v4.0.1
+        uses: actions/setup-dotnet@v5.2.0
         with:
-          dotnet-version: 10.0.x
-      - name: Install aspire CLI
-        run: |
-          curl -sSL https://aspire.dev/install.sh | bash
-      - name: Build
-        run: |
-          for solution in src/*.slnx; do
-            echo "Building $solution"
-            dotnet build "$solution" --configuration Release
-          done
+          global-json-file: global.json
+      - name: Install Aspire CLI
+        run: curl -sSL https://aspire.dev/install.sh | bash
         shell: bash
-      - name: Publish artifacts
-        if: matrix.name == 'Windows'
-        uses: actions/upload-artifact@v4.4.1
+      - name: Build
+        run: dotnet build src --configuration Release
+      - name: Upload packages
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v7.0.1
         with:
-          name: binaries
-          path: src/binaries/*
+          name: NuGet packages
+          path: nugets/
           retention-days: 7
       - name: Run tests
         uses: Particular/run-tests-action@v1.7.0
