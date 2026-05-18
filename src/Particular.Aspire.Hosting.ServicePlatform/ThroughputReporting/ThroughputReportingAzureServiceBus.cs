@@ -5,6 +5,10 @@ using global::Aspire.Hosting;
 using global::Aspire.Hosting.ApplicationModel;
 using Particular.Aspire.Hosting.ServicePlatform.Platform;
 
+/// <summary>
+/// Configures throughput reporting for Azure Service Bus by supplying the Azure AD credentials
+/// and subscription details needed for ServiceControl to query Service Bus management APIs.
+/// </summary>
 public sealed class ThroughputReportingAzureServiceBus : IThroughputReportingProvider
 {
     internal const string ServiceBusNameEnvVar = "LICENSINGCOMPONENT_ASB_SERVICEBUSNAME";
@@ -21,6 +25,15 @@ public sealed class ThroughputReportingAzureServiceBus : IThroughputReportingPro
     readonly ReferenceExpression clientSecret;
     readonly ReferenceExpression? managementUrl;
 
+    /// <summary>
+    /// Creates a new Azure Service Bus throughput reporting provider.
+    /// </summary>
+    /// <param name="tenantId">The Azure AD tenant ID.</param>
+    /// <param name="subscriptionId">The Azure subscription ID containing the Service Bus namespace.</param>
+    /// <param name="clientId">The Azure AD application (client) ID.</param>
+    /// <param name="clientSecret">The Azure AD application client secret.</param>
+    /// <param name="serviceBusName">The Service Bus namespace name. If not provided, it is inferred from the transport configuration.</param>
+    /// <param name="managementUrl">An optional custom Azure management URL, for use with sovereign clouds.</param>
     public ThroughputReportingAzureServiceBus(
         ReferenceExpression tenantId,
         ReferenceExpression subscriptionId,
@@ -42,6 +55,7 @@ public sealed class ThroughputReportingAzureServiceBus : IThroughputReportingPro
         this.managementUrl = managementUrl;
     }
 
+    /// <inheritdoc />
     public void ApplyTo(IResourceBuilder<ServiceControlErrorInstanceResource> errorInstance)
     {
         ArgumentNullException.ThrowIfNull(errorInstance);

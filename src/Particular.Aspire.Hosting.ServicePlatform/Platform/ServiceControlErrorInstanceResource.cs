@@ -5,6 +5,10 @@ using System.Linq;
 using global::Aspire.Hosting.ApplicationModel;
 using Particular.Aspire.Hosting.ServicePlatform.Persistence;
 
+/// <summary>
+/// Represents a ServiceControl Error instance running as a container resource within the Particular Service Platform.
+/// The error instance ingests failed messages, manages retries, and serves as the primary ServiceControl API endpoint.
+/// </summary>
 public sealed class ServiceControlErrorInstanceResource : ContainerResource, IPlatformComponent,
     IResourceWithParent<ParticularPlatformResource>
 {
@@ -28,6 +32,9 @@ public sealed class ServiceControlErrorInstanceResource : ContainerResource, IPl
     internal const string ThroughputQueueEnvVar = "LICENSINGCOMPONENT_SERVICECONTROLTHROUGHPUTDATAQUEUE";
     internal const string ErrorQueueEnvVar = "SERVICEBUS_ERRORQUEUE";
     internal const string DefaultErrorQueueName = "error";
+    /// <summary>
+    /// The parent platform resource that this error instance belongs to.
+    /// </summary>
     public ParticularPlatformResource Parent { get; }
 
     ReferenceExpression RemoteInstancesExpression

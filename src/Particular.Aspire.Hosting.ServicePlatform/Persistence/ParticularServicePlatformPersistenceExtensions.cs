@@ -16,8 +16,8 @@ public static class ParticularServicePlatformPersistenceExtensions
         /// <summary>
         /// Adds an internally managed RavenDB persistence instance to the platform resource.
         /// </summary>
-        /// <param name="name">The aspire name for the resoruce</param>
-        /// <returns>The configured RavenDB resoruce</returns>
+        /// <param name="name">The aspire name for the resource</param>
+        /// <returns>The configured RavenDB resource</returns>
         /// <exception cref="ArgumentException">Thrown if name is null or empty</exception>
         public IResourceBuilder<RavenDbPlatformPersistenceResource> AddPersistenceRavenDb(string name)
         {

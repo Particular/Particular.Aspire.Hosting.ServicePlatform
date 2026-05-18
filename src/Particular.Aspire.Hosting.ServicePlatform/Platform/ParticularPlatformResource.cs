@@ -13,7 +13,7 @@ using Particular.Aspire.Hosting.ServicePlatform.Transport;
 /// </summary>
 /// <remarks>
 /// Synthetic grouping resource — no process of its own. All topology config is attached via
-/// annotations, and children are discovered by walking IResourceWithParent<ParticularPlatformResource>.
+/// annotations, and children are discovered by walking <see cref="IResourceWithParent{T}"/> where T is <see cref="ParticularPlatformResource"/>.
 /// AddParticularPlatform sets its initial state to Starting and calls ExcludeFromManifest().
 /// </remarks>
 public sealed class ParticularPlatformResource : Resource

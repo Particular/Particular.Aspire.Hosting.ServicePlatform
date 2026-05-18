@@ -7,6 +7,10 @@ using Particular.Aspire.Hosting.ServicePlatform.Persistence;
 using Particular.Aspire.Hosting.ServicePlatform.Platform;
 using Particular.Aspire.Hosting.ServicePlatform.Transport;
 
+/// <summary>
+/// Extension methods for composing the Particular Service Platform topology, including ServiceControl,
+/// ServicePulse, and related components.
+/// </summary>
 public static class ParticularPlatformExtensions
 {
     // Platform-scoped Add*/With* methods are the public API for composing the platform topology.
@@ -14,6 +18,13 @@ public static class ParticularPlatformExtensions
     // while cross-wiring (env vars, wait deps) remains order-independent.
     extension(IResourceBuilder<ParticularPlatformResource> platform)
     {
+        /// <summary>
+        /// Adds all default platform components (error, audit, monitoring instances and ServicePulse) with
+        /// sensible defaults. If transport or persistence have not been configured, Learning transport and
+        /// RavenDB persistence are used. Components that have already been added individually are reused
+        /// rather than duplicated.
+        /// </summary>
+        /// <returns>The platform resource builder for chaining.</returns>
         public IResourceBuilder<ParticularPlatformResource> AddDefaultComponents()
         {
             // set up transport
@@ -64,6 +75,13 @@ public static class ParticularPlatformExtensions
             };
         }
 
+        /// <summary>
+        /// Adds a ServicePulse instance to the platform, configured to connect to the specified ServiceControl error instance.
+        /// </summary>
+        /// <param name="name">The name of the ServicePulse resource in the Aspire application model.</param>
+        /// <param name="serviceControl">The ServiceControl error instance that ServicePulse will connect to.</param>
+        /// <param name="monitoring">An optional ServiceControl Monitoring instance for real-time monitoring data.</param>
+        /// <returns>A resource builder for the ServicePulse resource.</returns>
         public IResourceBuilder<ServicePulseResource> AddServicePulse(string name,
             IResourceBuilder<ServiceControlErrorInstanceResource> serviceControl,
             IResourceBuilder<ServiceControlMonitoringInstanceResource>? monitoring = null)
@@ -82,6 +100,14 @@ public static class ParticularPlatformExtensions
                 .WithLicense(platform);
         }
 
+        /// <summary>
+        /// Adds a ServiceControl Audit instance to the platform. The audit instance is automatically registered
+        /// as a remote instance on the specified error instance.
+        /// </summary>
+        /// <param name="name">The name of the audit instance resource in the Aspire application model.</param>
+        /// <param name="serviceControl">The ServiceControl error instance to register this audit instance with.</param>
+        /// <param name="persistence">The persistence resource to use, previously registered via a platform persistence extension.</param>
+        /// <returns>A resource builder for the ServiceControl Audit instance resource.</returns>
         public IResourceBuilder<ServiceControlAuditInstanceResource> AddServiceControlAuditInstance(string name,
             IResourceBuilder<ServiceControlErrorInstanceResource> serviceControl,
             IResourceBuilder<IResource> persistence)
@@ -110,6 +136,12 @@ public static class ParticularPlatformExtensions
                 .WithAuditQueueName(ServiceControlAuditInstanceResource.DefaultAuditQueueName);
         }
 
+        /// <summary>
+        /// Adds a ServiceControl Error instance to the platform.
+        /// </summary>
+        /// <param name="name">The name of the error instance resource in the Aspire application model.</param>
+        /// <param name="persistence">The persistence resource to use, previously registered via a platform persistence extension.</param>
+        /// <returns>A resource builder for the ServiceControl Error instance resource.</returns>
         public IResourceBuilder<ServiceControlErrorInstanceResource> AddServiceControlErrorInstance(string name, IResourceBuilder<IResource> persistence)
         {
             ArgumentException.ThrowIfNullOrEmpty(name);
@@ -133,6 +165,11 @@ public static class ParticularPlatformExtensions
                 .WithErrorQueueName(ServiceControlErrorInstanceResource.DefaultErrorQueueName);
         }
 
+        /// <summary>
+        /// Adds a ServiceControl Monitoring instance to the platform for collecting real-time endpoint performance data.
+        /// </summary>
+        /// <param name="name">The name of the monitoring instance resource in the Aspire application model.</param>
+        /// <returns>A resource builder for the ServiceControl Monitoring instance resource.</returns>
         public IResourceBuilder<ServiceControlMonitoringInstanceResource> AddServiceControlMonitoringInstance(string name)
         {
             ArgumentException.ThrowIfNullOrEmpty(name);
