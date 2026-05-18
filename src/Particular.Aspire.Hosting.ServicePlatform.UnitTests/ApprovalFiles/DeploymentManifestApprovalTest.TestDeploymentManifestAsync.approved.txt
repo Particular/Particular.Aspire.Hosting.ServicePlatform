@@ -1,0 +1,198 @@
+File: .env
+==
+# Parameter asb-client-id
+ASB_CLIENT_ID=
+
+# Parameter asb-client-secret
+ASB_CLIENT_SECRET=
+
+# Parameter asb-service-bus-name
+ASB_SERVICE_BUS_NAME=
+
+# Parameter asb-subscription-id
+ASB_SUBSCRIPTION_ID=
+
+# Parameter asb-tenant-id
+ASB_TENANT_ID=
+
+# Container image name for Billing
+BILLING_IMAGE=
+
+# Container image name for ClientUI
+CLIENTUI_IMAGE=
+
+# Parameter database-password
+DATABASE_PASSWORD=
+
+# Parameter particular-license
+PARTICULAR_LICENSE=
+
+# Container image name for Sales
+SALES_IMAGE=
+
+# Container image name for Shipping
+SHIPPING_IMAGE=
+
+# Parameter transport
+TRANSPORT=
+
+
+==
+File: docker-compose.yaml
+==
+services:
+  compose-dashboard:
+    image: "mcr.microsoft.com/dotnet/nightly/aspire-dashboard:latest"
+    ports:
+      - "18888"
+    expose:
+      - "18889"
+      - "18890"
+    networks:
+      - "aspire"
+    restart: "always"
+  particular-persistence:
+    image: "particular/servicecontrol-ravendb:latest"
+    expose:
+      - "8080"
+    networks:
+      - "aspire"
+  particular-error:
+    image: "particular/servicecontrol:latest"
+    command:
+      - "--setup-and-run"
+    environment:
+      RAVENDB_CONNECTIONSTRING: "http://particular-persistence:8080"
+      REMOTEINSTANCES: "[{\"api_uri\": \"http://particular-audit:44444\"}]"
+      PARTICULARSOFTWARE_LICENSE: "${PARTICULAR_LICENSE}"
+      TRANSPORTTYPE: "NetStandardAzureServiceBus"
+      CONNECTIONSTRING: "${TRANSPORT}"
+      SERVICEBUS_ERRORQUEUE: "error"
+      LICENSINGCOMPONENT_SERVICECONTROLTHROUGHPUTDATAQUEUE: "particular.throughput"
+      LICENSINGCOMPONENT_ASB_TENANTID: "${ASB_TENANT_ID}"
+      LICENSINGCOMPONENT_ASB_SUBSCRIPTIONID: "${ASB_SUBSCRIPTION_ID}"
+      LICENSINGCOMPONENT_ASB_CLIENTID: "${ASB_CLIENT_ID}"
+      LICENSINGCOMPONENT_ASB_CLIENTSECRET: "${ASB_CLIENT_SECRET}"
+      LICENSINGCOMPONENT_ASB_SERVICEBUSNAME: "${ASB_SERVICE_BUS_NAME}"
+    expose:
+      - "33333"
+    depends_on:
+      particular-persistence:
+        condition: "service_started"
+    networks:
+      - "aspire"
+  particular-monitoring:
+    image: "particular/servicecontrol-monitoring:latest"
+    command:
+      - "--setup-and-run"
+    environment:
+      PARTICULARSOFTWARE_LICENSE: "${PARTICULAR_LICENSE}"
+      TRANSPORTTYPE: "NetStandardAzureServiceBus"
+      CONNECTIONSTRING: "${TRANSPORT}"
+      MONITORING_INSTANCENAME: "Particular.Monitoring"
+      MONITORING_SERVICECONTROLTHROUGHPUTDATAQUEUE: "particular.throughput"
+    expose:
+      - "33633"
+    networks:
+      - "aspire"
+  particular-servicepulse:
+    image: "particular/servicepulse:latest"
+    environment:
+      SERVICECONTROL_URL: "http://particular-error:33333"
+      MONITORING_URL: "http://particular-monitoring:33633"
+      PARTICULARSOFTWARE_LICENSE: "${PARTICULAR_LICENSE}"
+    expose:
+      - "9090"
+    networks:
+      - "aspire"
+  particular-audit:
+    image: "particular/servicecontrol-audit:latest"
+    command:
+      - "--setup-and-run"
+    environment:
+      RAVENDB_CONNECTIONSTRING: "http://particular-persistence:8080"
+      PARTICULARSOFTWARE_LICENSE: "${PARTICULAR_LICENSE}"
+      TRANSPORTTYPE: "NetStandardAzureServiceBus"
+      CONNECTIONSTRING: "${TRANSPORT}"
+      SERVICEBUS_AUDITQUEUE: "audit"
+    expose:
+      - "44444"
+    depends_on:
+      particular-persistence:
+        condition: "service_started"
+    networks:
+      - "aspire"
+  database:
+    image: "docker.io/library/postgres:17.6"
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: "scram-sha-256"
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256 --auth-local=scram-sha-256"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "${DATABASE_PASSWORD}"
+    expose:
+      - "5432"
+    networks:
+      - "aspire"
+  billing:
+    image: "${BILLING_IMAGE}"
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      PARTICULARSOFTWARE_LICENSE: "${PARTICULAR_LICENSE}"
+      ConnectionStrings__transport: "${TRANSPORT}"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://compose-dashboard:18889"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_SERVICE_NAME: "Billing"
+    networks:
+      - "aspire"
+  sales:
+    image: "${SALES_IMAGE}"
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      PARTICULARSOFTWARE_LICENSE: "${PARTICULAR_LICENSE}"
+      ConnectionStrings__transport: "${TRANSPORT}"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://compose-dashboard:18889"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_SERVICE_NAME: "Sales"
+    networks:
+      - "aspire"
+  clientui:
+    image: "${CLIENTUI_IMAGE}"
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      PARTICULARSOFTWARE_LICENSE: "${PARTICULAR_LICENSE}"
+      ConnectionStrings__transport: "${TRANSPORT}"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://compose-dashboard:18889"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_SERVICE_NAME: "ClientUI"
+    depends_on:
+      sales:
+        condition: "service_started"
+    networks:
+      - "aspire"
+  shipping:
+    image: "${SHIPPING_IMAGE}"
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      ConnectionStrings__shipping-db: "Host=database;Port=5432;Username=postgres;Password=${DATABASE_PASSWORD};Database=shipping-db"
+      SHIPPING_DB_HOST: "database"
+      SHIPPING_DB_PORT: "5432"
+      SHIPPING_DB_USERNAME: "postgres"
+      SHIPPING_DB_PASSWORD: "${DATABASE_PASSWORD}"
+      SHIPPING_DB_URI: "postgresql://postgres:${DATABASE_PASSWORD}@database:5432/shipping-db"
+      SHIPPING_DB_JDBCCONNECTIONSTRING: "jdbc:postgresql://database:5432/shipping-db"
+      SHIPPING_DB_DATABASENAME: "shipping-db"
+      PARTICULARSOFTWARE_LICENSE: "${PARTICULAR_LICENSE}"
+      ConnectionStrings__transport: "${TRANSPORT}"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://compose-dashboard:18889"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_SERVICE_NAME: "Shipping"
+    depends_on:
+      database:
+        condition: "service_started"
+    networks:
+      - "aspire"
+networks:
+  aspire:
+    driver: "bridge"
+
+==

@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+      <SignAssembly>true</SignAssembly>
+      <AssemblyOriginatorKeyFile>..\NServiceBus.snk</AssemblyOriginatorKeyFile>
+      <Description>Azure Service Bus transport for NServiceBus</Description>
+      <Nullable>enable</Nullable>
+      <LangVersion>14.0</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Aspire.Hosting" Version="13.3.0" />
+    </ItemGroup>
+
+</Project>

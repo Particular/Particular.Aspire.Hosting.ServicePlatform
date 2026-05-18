@@ -1,0 +1,589 @@
+File: acr-acr/acr-acr.bicep
+==
+@description('The location for the resource(s) to be deployed.')
+param location string = resourceGroup().location
+
+resource acr_acr 'Microsoft.ContainerRegistry/registries@2025-04-01' = {
+  name: take('acracr${uniqueString(resourceGroup().id)}', 50)
+  location: location
+  sku: {
+    name: 'Basic'
+  }
+  tags: {
+    'aspire-resource-name': 'acr-acr'
+  }
+}
+
+output name string = acr_acr.name
+
+output loginServer string = acr_acr.properties.loginServer
+
+output id string = acr_acr.id
+==
+File: acr/acr.bicep
+==
+@description('The location for the resource(s) to be deployed.')
+param location string = resourceGroup().location
+
+param userPrincipalId string = ''
+
+param tags object = { }
+
+param acr_acr_outputs_name string
+
+resource acr_mi 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
+  name: take('acr_mi-${uniqueString(resourceGroup().id)}', 128)
+  location: location
+  tags: tags
+}
+
+resource acr_acr 'Microsoft.ContainerRegistry/registries@2025-04-01' existing = {
+  name: acr_acr_outputs_name
+}
+
+resource acr_acr_acr_mi_AcrPull 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(acr_acr.id, acr_mi.id, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d'))
+  properties: {
+    principalId: acr_mi.properties.principalId
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')
+    principalType: 'ServicePrincipal'
+  }
+  scope: acr_acr
+}
+
+resource acr_law 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
+  name: take('acrlaw-${uniqueString(resourceGroup().id)}', 63)
+  location: location
+  properties: {
+    sku: {
+      name: 'PerGB2018'
+    }
+  }
+  tags: tags
+}
+
+resource acr 'Microsoft.App/managedEnvironments@2025-07-01' = {
+  name: take('acr${uniqueString(resourceGroup().id)}', 24)
+  location: location
+  properties: {
+    appLogsConfiguration: {
+      destination: 'log-analytics'
+      logAnalyticsConfiguration: {
+        customerId: acr_law.properties.customerId
+        sharedKey: acr_law.listKeys().primarySharedKey
+      }
+    }
+    workloadProfiles: [
+      {
+        name: 'consumption'
+        workloadProfileType: 'Consumption'
+      }
+    ]
+  }
+  tags: tags
+}
+
+resource aspireDashboard 'Microsoft.App/managedEnvironments/dotNetComponents@2025-10-02-preview' = {
+  name: 'aspire-dashboard'
+  properties: {
+    componentType: 'AspireDashboard'
+  }
+  parent: acr
+}
+
+resource acr_storageVolume 'Microsoft.Storage/storageAccounts@2024-01-01' = {
+  name: take('acrstoragevolume${uniqueString(resourceGroup().id)}', 24)
+  kind: 'StorageV2'
+  location: location
+  sku: {
+    name: 'Standard_LRS'
+  }
+  properties: {
+    largeFileSharesState: 'Enabled'
+    minimumTlsVersion: 'TLS1_2'
+  }
+  tags: tags
+}
+
+resource storageVolumeFileService 'Microsoft.Storage/storageAccounts/fileServices@2024-01-01' = {
+  name: 'default'
+  parent: acr_storageVolume
+}
+
+resource shares_bindmounts_particular_error_0 'Microsoft.Storage/storageAccounts/fileServices/shares@2024-01-01' = {
+  name: take('sharesbindmountsparticularerror0-${uniqueString(resourceGroup().id)}', 63)
+  properties: {
+    enabledProtocols: 'SMB'
+    shareQuota: 1024
+  }
+  parent: storageVolumeFileService
+}
+
+resource managedStorage_bindmounts_particular_error_0 'Microsoft.App/managedEnvironments/storages@2025-07-01' = {
+  name: take('managedstoragebindmountsparticularerror${uniqueString(resourceGroup().id)}', 24)
+  properties: {
+    azureFile: {
+      accountName: acr_storageVolume.name
+      accountKey: acr_storageVolume.listKeys().keys[0].value
+      accessMode: 'ReadWrite'
+      shareName: shares_bindmounts_particular_error_0.name
+    }
+  }
+  parent: acr
+}
+
+resource shares_bindmounts_particular_monitoring_0 'Microsoft.Storage/storageAccounts/fileServices/shares@2024-01-01' = {
+  name: take('sharesbindmountsparticularmonitoring0-${uniqueString(resourceGroup().id)}', 63)
+  properties: {
+    enabledProtocols: 'SMB'
+    shareQuota: 1024
+  }
+  parent: storageVolumeFileService
+}
+
+resource managedStorage_bindmounts_particular_monitoring_0 'Microsoft.App/managedEnvironments/storages@2025-07-01' = {
+  name: take('managedstoragebindmountsparticularmonitoring${uniqueString(resourceGroup().id)}', 24)
+  properties: {
+    azureFile: {
+      accountName: acr_storageVolume.name
+      accountKey: acr_storageVolume.listKeys().keys[0].value
+      accessMode: 'ReadWrite'
+      shareName: shares_bindmounts_particular_monitoring_0.name
+    }
+  }
+  parent: acr
+}
+
+resource shares_bindmounts_particular_audit_0 'Microsoft.Storage/storageAccounts/fileServices/shares@2024-01-01' = {
+  name: take('sharesbindmountsparticularaudit0-${uniqueString(resourceGroup().id)}', 63)
+  properties: {
+    enabledProtocols: 'SMB'
+    shareQuota: 1024
+  }
+  parent: storageVolumeFileService
+}
+
+resource managedStorage_bindmounts_particular_audit_0 'Microsoft.App/managedEnvironments/storages@2025-07-01' = {
+  name: take('managedstoragebindmountsparticularaudit${uniqueString(resourceGroup().id)}', 24)
+  properties: {
+    azureFile: {
+      accountName: acr_storageVolume.name
+      accountKey: acr_storageVolume.listKeys().keys[0].value
+      accessMode: 'ReadWrite'
+      shareName: shares_bindmounts_particular_audit_0.name
+    }
+  }
+  parent: acr
+}
+
+output bindmounts_particular_error_0 string = managedStorage_bindmounts_particular_error_0.name
+
+output bindmounts_particular_monitoring_0 string = managedStorage_bindmounts_particular_monitoring_0.name
+
+output bindmounts_particular_audit_0 string = managedStorage_bindmounts_particular_audit_0.name
+
+output AZURE_LOG_ANALYTICS_WORKSPACE_NAME string = acr_law.name
+
+output AZURE_LOG_ANALYTICS_WORKSPACE_ID string = acr_law.id
+
+output AZURE_CONTAINER_REGISTRY_NAME string = acr_acr.name
+
+output AZURE_CONTAINER_REGISTRY_ENDPOINT string = acr_acr.properties.loginServer
+
+output AZURE_CONTAINER_REGISTRY_MANAGED_IDENTITY_ID string = acr_mi.id
+
+output AZURE_CONTAINER_APPS_ENVIRONMENT_NAME string = acr.name
+
+output AZURE_CONTAINER_APPS_ENVIRONMENT_ID string = acr.id
+
+output AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN string = acr.properties.defaultDomain
+==
+File: main.bicep
+==
+targetScope = 'subscription'
+
+param resourceGroupName string
+
+param location string
+
+param principalId string
+
+resource rg 'Microsoft.Resources/resourceGroups@2023-07-01' = {
+  name: resourceGroupName
+  location: location
+}
+
+module acr_acr 'acr-acr/acr-acr.bicep' = {
+  name: 'acr-acr'
+  scope: rg
+  params: {
+    location: location
+  }
+}
+
+module acr 'acr/acr.bicep' = {
+  name: 'acr'
+  scope: rg
+  params: {
+    location: location
+    acr_acr_outputs_name: acr_acr.outputs.name
+    userPrincipalId: principalId
+  }
+}
+
+output acr_AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN string = acr.outputs.AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN
+
+output acr_AZURE_CONTAINER_APPS_ENVIRONMENT_ID string = acr.outputs.AZURE_CONTAINER_APPS_ENVIRONMENT_ID
+
+output acr_bindmounts_particular_error_0 string = acr.outputs.bindmounts_particular_error_0
+
+output acr_bindmounts_particular_monitoring_0 string = acr.outputs.bindmounts_particular_monitoring_0
+
+output acr_bindmounts_particular_audit_0 string = acr.outputs.bindmounts_particular_audit_0
+==
+File: particular-audit/particular-audit.bicep
+==
+@description('The location for the resource(s) to be deployed.')
+param location string = resourceGroup().location
+
+param acr_outputs_azure_container_apps_environment_default_domain string
+
+param acr_outputs_azure_container_apps_environment_id string
+
+@secure()
+param particular_license_value string
+
+param acr_outputs_bindmounts_particular_audit_0 string
+
+resource particular_audit 'Microsoft.App/containerApps@2025-07-01' = {
+  name: 'particular-audit'
+  location: location
+  properties: {
+    configuration: {
+      secrets: [
+        {
+          name: 'particularsoftware-license'
+          value: particular_license_value
+        }
+      ]
+      activeRevisionsMode: 'Single'
+      ingress: {
+        external: false
+        targetPort: 44444
+        transport: 'http'
+      }
+    }
+    environmentId: acr_outputs_azure_container_apps_environment_id
+    template: {
+      containers: [
+        {
+          image: 'particular/servicecontrol-audit:latest'
+          name: 'particular-audit'
+          args: [
+            '--setup-and-run'
+          ]
+          env: [
+            {
+              name: 'RAVENDB_CONNECTIONSTRING'
+              value: 'http://particular-persistence:8080'
+            }
+            {
+              name: 'PARTICULARSOFTWARE_LICENSE'
+              secretRef: 'particularsoftware-license'
+            }
+            {
+              name: 'TRANSPORTTYPE'
+              value: 'LearningTransport'
+            }
+            {
+              name: 'CONNECTIONSTRING'
+              value: '/tmp/learningtransport'
+            }
+            {
+              name: 'SERVICEBUS_AUDITQUEUE'
+              value: 'audit'
+            }
+          ]
+          volumeMounts: [
+            {
+              volumeName: 'bm0'
+              mountPath: '/tmp/learningtransport'
+            }
+          ]
+        }
+      ]
+      scale: {
+        minReplicas: 1
+      }
+      volumes: [
+        {
+          name: 'bm0'
+          storageType: 'AzureFile'
+          storageName: acr_outputs_bindmounts_particular_audit_0
+        }
+      ]
+    }
+  }
+}
+==
+File: particular-error/particular-error.bicep
+==
+@description('The location for the resource(s) to be deployed.')
+param location string = resourceGroup().location
+
+param acr_outputs_azure_container_apps_environment_default_domain string
+
+param acr_outputs_azure_container_apps_environment_id string
+
+@secure()
+param particular_license_value string
+
+param acr_outputs_bindmounts_particular_error_0 string
+
+resource particular_error 'Microsoft.App/containerApps@2025-07-01' = {
+  name: 'particular-error'
+  location: location
+  properties: {
+    configuration: {
+      secrets: [
+        {
+          name: 'particularsoftware-license'
+          value: particular_license_value
+        }
+      ]
+      activeRevisionsMode: 'Single'
+      ingress: {
+        external: false
+        targetPort: 33333
+        transport: 'http'
+      }
+    }
+    environmentId: acr_outputs_azure_container_apps_environment_id
+    template: {
+      containers: [
+        {
+          image: 'particular/servicecontrol:latest'
+          name: 'particular-error'
+          args: [
+            '--setup-and-run'
+          ]
+          env: [
+            {
+              name: 'RAVENDB_CONNECTIONSTRING'
+              value: 'http://particular-persistence:8080'
+            }
+            {
+              name: 'REMOTEINSTANCES'
+              value: '[{"api_uri": "${'https://particular-audit.internal.${acr_outputs_azure_container_apps_environment_default_domain}'}"}]'
+            }
+            {
+              name: 'PARTICULARSOFTWARE_LICENSE'
+              secretRef: 'particularsoftware-license'
+            }
+            {
+              name: 'TRANSPORTTYPE'
+              value: 'LearningTransport'
+            }
+            {
+              name: 'CONNECTIONSTRING'
+              value: '/tmp/learningtransport'
+            }
+            {
+              name: 'SERVICEBUS_ERRORQUEUE'
+              value: 'error'
+            }
+          ]
+          volumeMounts: [
+            {
+              volumeName: 'bm0'
+              mountPath: '/tmp/learningtransport'
+            }
+          ]
+        }
+      ]
+      scale: {
+        minReplicas: 1
+      }
+      volumes: [
+        {
+          name: 'bm0'
+          storageType: 'AzureFile'
+          storageName: acr_outputs_bindmounts_particular_error_0
+        }
+      ]
+    }
+  }
+}
+==
+File: particular-monitoring/particular-monitoring.bicep
+==
+@description('The location for the resource(s) to be deployed.')
+param location string = resourceGroup().location
+
+param acr_outputs_azure_container_apps_environment_default_domain string
+
+param acr_outputs_azure_container_apps_environment_id string
+
+@secure()
+param particular_license_value string
+
+param acr_outputs_bindmounts_particular_monitoring_0 string
+
+resource particular_monitoring 'Microsoft.App/containerApps@2025-07-01' = {
+  name: 'particular-monitoring'
+  location: location
+  properties: {
+    configuration: {
+      secrets: [
+        {
+          name: 'particularsoftware-license'
+          value: particular_license_value
+        }
+      ]
+      activeRevisionsMode: 'Single'
+      ingress: {
+        external: false
+        targetPort: 33633
+        transport: 'http'
+      }
+    }
+    environmentId: acr_outputs_azure_container_apps_environment_id
+    template: {
+      containers: [
+        {
+          image: 'particular/servicecontrol-monitoring:latest'
+          name: 'particular-monitoring'
+          args: [
+            '--setup-and-run'
+          ]
+          env: [
+            {
+              name: 'PARTICULARSOFTWARE_LICENSE'
+              secretRef: 'particularsoftware-license'
+            }
+            {
+              name: 'TRANSPORTTYPE'
+              value: 'LearningTransport'
+            }
+            {
+              name: 'CONNECTIONSTRING'
+              value: '/tmp/learningtransport'
+            }
+          ]
+          volumeMounts: [
+            {
+              volumeName: 'bm0'
+              mountPath: '/tmp/learningtransport'
+            }
+          ]
+        }
+      ]
+      scale: {
+        minReplicas: 1
+      }
+      volumes: [
+        {
+          name: 'bm0'
+          storageType: 'AzureFile'
+          storageName: acr_outputs_bindmounts_particular_monitoring_0
+        }
+      ]
+    }
+  }
+}
+==
+File: particular-persistence/particular-persistence.bicep
+==
+@description('The location for the resource(s) to be deployed.')
+param location string = resourceGroup().location
+
+param acr_outputs_azure_container_apps_environment_default_domain string
+
+param acr_outputs_azure_container_apps_environment_id string
+
+resource particular_persistence 'Microsoft.App/containerApps@2025-07-01' = {
+  name: 'particular-persistence'
+  location: location
+  properties: {
+    configuration: {
+      activeRevisionsMode: 'Single'
+      ingress: {
+        external: false
+        targetPort: 8080
+        transport: 'http'
+      }
+    }
+    environmentId: acr_outputs_azure_container_apps_environment_id
+    template: {
+      containers: [
+        {
+          image: 'particular/servicecontrol-ravendb:latest'
+          name: 'particular-persistence'
+        }
+      ]
+      scale: {
+        minReplicas: 1
+      }
+    }
+  }
+}
+==
+File: particular-servicepulse/particular-servicepulse.bicep
+==
+@description('The location for the resource(s) to be deployed.')
+param location string = resourceGroup().location
+
+param acr_outputs_azure_container_apps_environment_default_domain string
+
+param acr_outputs_azure_container_apps_environment_id string
+
+@secure()
+param particular_license_value string
+
+resource particular_servicepulse 'Microsoft.App/containerApps@2025-07-01' = {
+  name: 'particular-servicepulse'
+  location: location
+  properties: {
+    configuration: {
+      secrets: [
+        {
+          name: 'particularsoftware-license'
+          value: particular_license_value
+        }
+      ]
+      activeRevisionsMode: 'Single'
+      ingress: {
+        external: false
+        targetPort: 9090
+        transport: 'http'
+      }
+    }
+    environmentId: acr_outputs_azure_container_apps_environment_id
+    template: {
+      containers: [
+        {
+          image: 'particular/servicepulse:latest'
+          name: 'particular-servicepulse'
+          env: [
+            {
+              name: 'SERVICECONTROL_URL'
+              value: 'https://particular-error.internal.${acr_outputs_azure_container_apps_environment_default_domain}'
+            }
+            {
+              name: 'MONITORING_URL'
+              value: 'https://particular-monitoring.internal.${acr_outputs_azure_container_apps_environment_default_domain}'
+            }
+            {
+              name: 'PARTICULARSOFTWARE_LICENSE'
+              secretRef: 'particularsoftware-license'
+            }
+          ]
+        }
+      ]
+      scale: {
+        minReplicas: 1
+      }
+    }
+  }
+}
+==
