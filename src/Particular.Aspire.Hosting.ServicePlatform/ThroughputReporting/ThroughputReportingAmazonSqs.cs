@@ -18,9 +18,9 @@ public sealed class ThroughputReportingAmazonSqs : IThroughputReportingProvider
     internal const string DoNotWrapOutgoingMessagesEnvVar = "LICENSINGCOMPONENT_AMAZONSQS_DONOTWRAPOUTGOINGMESSAGES";
     internal const string ReservedBytesInMessageSizeEnvVar = "LICENSINGCOMPONENT_AMAZONSQS_RESERVEDBYTESINMESSAGESIZE";
 
-    readonly ReferenceExpression accessKeyId;
-    readonly ReferenceExpression secretAccessKey;
-    readonly ReferenceExpression region;
+    readonly ReferenceExpression? accessKeyId;
+    readonly ReferenceExpression? secretAccessKey;
+    readonly ReferenceExpression? region;
     readonly ReferenceExpression? queueNamePrefix;
     readonly ReferenceExpression? topicNamePrefix;
     readonly ReferenceExpression? s3BucketForLargeMessages;
@@ -29,9 +29,9 @@ public sealed class ThroughputReportingAmazonSqs : IThroughputReportingProvider
     readonly ReferenceExpression? reservedBytesInMessageSize;
 
     public ThroughputReportingAmazonSqs(
-        ReferenceExpression accessKeyId,
-        ReferenceExpression secretAccessKey,
-        ReferenceExpression region,
+        ReferenceExpression? accessKeyId = null,
+        ReferenceExpression? secretAccessKey = null,
+        ReferenceExpression? region = null,
         ReferenceExpression? queueNamePrefix = null,
         ReferenceExpression? topicNamePrefix = null,
         ReferenceExpression? s3BucketForLargeMessages = null,
@@ -64,10 +64,20 @@ public sealed class ThroughputReportingAmazonSqs : IThroughputReportingProvider
                 $"{nameof(ThroughputReportingAmazonSqs)} requires the parent platform to be configured with WithTransportAmazonSqs first.");
         }
 
-        errorInstance
-            .WithEnvironment(AccessKeyIdEnvVar, accessKeyId)
-            .WithEnvironment(SecretAccessKeyEnvVar, secretAccessKey)
-            .WithEnvironment(RegionEnvVar, region);
+        if (accessKeyId != null)
+        {
+            errorInstance.WithEnvironment(AccessKeyIdEnvVar, accessKeyId);
+        }
+
+        if (secretAccessKey != null)
+        {
+            errorInstance.WithEnvironment(SecretAccessKeyEnvVar, secretAccessKey);
+        }
+
+        if (region != null)
+        {
+            errorInstance.WithEnvironment(RegionEnvVar, region);
+        }
 
         if (queueNamePrefix is not null)
         {
