@@ -1,82 +1,49 @@
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Particular.Aspire.ServicePlatform.Tests")]
 namespace Aspire.Hosting
 {
     public static class AuditInstanceExtensions
     {
-        extension(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ServiceControlAuditInstanceResource> auditInstance)
+        extension(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlAuditInstanceResource> auditInstance)
         {
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ServiceControlAuditInstanceResource> WithPersistence(Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResource> persistence) { }
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ServiceControlAuditInstanceResource> WithAuditQueueName(string queueName) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlAuditInstanceResource> WithPersistence(Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResource> persistence) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlAuditInstanceResource> WithAuditQueueName(string queueName) { }
         }
     }
     public static class DistributedApplicationBuilderExtensions
     {
         extension(Aspire.Hosting.IDistributedApplicationBuilder builder)
         {
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ParticularPlatformResource> AddParticularPlatform([Aspire.Hosting.ApplicationModel.ResourceName] string name) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> AddParticularPlatform([Aspire.Hosting.ApplicationModel.ResourceName] string name) { }
         }
     }
     public static class ErrorInstanceExtensions
     {
-        extension(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ServiceControlErrorInstanceResource> errorInstance)
+        extension(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> errorInstance)
         {
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ServiceControlErrorInstanceResource> WithPersistence(Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResource> persistence) { }
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ServiceControlErrorInstanceResource> WithRemoteInstance(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ServiceControlAuditInstanceResource> instance) { }
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ServiceControlErrorInstanceResource> WithThroughputQueue(string queueName) { }
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ServiceControlErrorInstanceResource> WithErrorQueueName(string queueName) { }
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ServiceControlErrorInstanceResource> WithThroughputReporting(Particular.Aspire.ServicePlatform.ThroughputReporting.IThroughputReportingProvider provider) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> WithPersistence(Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResource> persistence) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> WithRemoteInstance(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlAuditInstanceResource> instance) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> WithThroughputQueue(string queueName) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> WithErrorQueueName(string queueName) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> WithThroughputReporting(Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting.IThroughputReportingProvider provider) { }
         }
     }
     public static class MonitoringInstanceExtensions
     {
-        extension(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ServiceControlMonitoringInstanceResource> monitoring)
+        extension(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlMonitoringInstanceResource> monitoring)
         {
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ServiceControlMonitoringInstanceResource> WithThroughputQueueFrom(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ServiceControlErrorInstanceResource> errorInstance) { }
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ServiceControlMonitoringInstanceResource> WithThroughputQueue(string queueName) { }
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ServiceControlMonitoringInstanceResource> WithMonitoringQueueName(string queueName) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlMonitoringInstanceResource> WithThroughputQueueFrom(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> errorInstance) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlMonitoringInstanceResource> WithThroughputQueue(string queueName) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlMonitoringInstanceResource> WithMonitoringQueueName(string queueName) { }
         }
     }
     public static class ParticularPlatformExtensions
     {
-        extension(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ParticularPlatformResource> platform)
+        extension(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> platform)
         {
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ParticularPlatformResource> AddDefaultComponents() { }
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ServicePulseResource> AddServicePulse(string name, Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ServiceControlErrorInstanceResource> serviceControl, Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ServiceControlMonitoringInstanceResource>? monitoring = null) { }
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ServiceControlAuditInstanceResource> AddServiceControlAuditInstance(string name, Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ServiceControlErrorInstanceResource> serviceControl, Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResource> persistence) { }
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ServiceControlErrorInstanceResource> AddServiceControlErrorInstance(string name, Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResource> persistence) { }
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ServiceControlMonitoringInstanceResource> AddServiceControlMonitoringInstance(string name) { }
-        }
-    }
-    public static class ParticularPlatformLicensingExtensions
-    {
-        extension(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ParticularPlatformResource> platform)
-        {
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ParticularPlatformResource> WithLicenseFromFile(string file) { }
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ParticularPlatformResource> WithLicenseFromText(string licenseText) { }
-        }
-    }
-    public static class ParticularPlatformTransportExtensions
-    {
-        extension(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ParticularPlatformResource> platform)
-        {
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ParticularPlatformResource> WithTransportLearning(string? storagePath = null) { }
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ParticularPlatformResource> WithTransportAzureServiceBus(Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResourceWithConnectionString> azureServiceBus) { }
-        }
-    }
-    public static class ParticularServicePlatformPersistenceExtensions
-    {
-        extension(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ParticularPlatformResource> platform)
-        {
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Persistence.RavenDbPlatformPersistenceResource> AddPersistenceRavenDb(string name) { }
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ParticularPlatformResource> WithPersistenceRavenDb<TConnection>(Aspire.Hosting.ApplicationModel.IResourceBuilder<TConnection> persistence)
-                where TConnection : Aspire.Hosting.ApplicationModel.IResourceWithConnectionString { }
-        }
-    }
-    public static class PlatformComponentExtensions
-    {
-        extension<T>(Aspire.Hosting.ApplicationModel.IResourceBuilder<T> resource)
-            where T : Aspire.Hosting.ApplicationModel.IResource, Aspire.Hosting.ApplicationModel.IResourceWithWaitSupport, Particular.Aspire.ServicePlatform.Platform.IPlatformComponent, Aspire.Hosting.ApplicationModel.IResourceWithParent<Particular.Aspire.ServicePlatform.Platform.ParticularPlatformResource>
-        {
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> AddDefaultComponents() { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServicePulseResource> AddServicePulse(string name, Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> serviceControl, Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlMonitoringInstanceResource>? monitoring = null) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlAuditInstanceResource> AddServiceControlAuditInstance(string name, Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> serviceControl, Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResource> persistence) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> AddServiceControlErrorInstance(string name, Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResource> persistence) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlMonitoringInstanceResource> AddServiceControlMonitoringInstance(string name) { }
         }
     }
     public static class ResourceBuilderExtensions
@@ -84,83 +51,75 @@ namespace Aspire.Hosting
         extension<T>(Aspire.Hosting.ApplicationModel.IResourceBuilder<T> resource)
             where T :  notnull, Aspire.Hosting.ApplicationModel.IResource
         {
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<T> WithParticularPlatform(Particular.Aspire.ServicePlatform.Platform.ParticularPlatformResource platform) { }
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<T> WithParticularPlatform(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ParticularPlatformResource> platform) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<T> WithParticularPlatform(Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource platform) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<T> WithParticularPlatform(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> platform) { }
         }
         extension<T>(Aspire.Hosting.ApplicationModel.IResourceBuilder<T> resource)
             where T :  notnull, Aspire.Hosting.ApplicationModel.IResourceWithEnvironment
         {
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<T> WithLicense(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ParticularPlatformResource> platform) { }
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<T> WithTransportFrom(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ParticularPlatformResource> platform) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<T> WithLicense(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> platform) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<T> WithTransportFrom(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> platform) { }
         }
     }
     public static class ServicePulseExtensions
     {
-        extension(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ServicePulseResource> servicePulse)
+        extension(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServicePulseResource> servicePulse)
         {
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ServicePulseResource> WithMonitoringInstance(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ServiceControlMonitoringInstanceResource>? monitoring = null) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServicePulseResource> WithMonitoringInstance(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlMonitoringInstanceResource>? monitoring = null) { }
         }
     }
 }
 namespace Particular.Aspire.Hosting.ServicePlatform.Licensing
 {
-    public abstract class LicenseParameterDefault : Aspire.Hosting.ApplicationModel.ParameterDefault
+    public static class ParticularPlatformLicensingExtensions
     {
-        protected LicenseParameterDefault() { }
-        public override string GetDefaultValue() { }
-        protected abstract string LoadLicenseText();
-        public override void WriteToManifest(Aspire.Hosting.Publishing.ManifestPublishingContext context) { }
+        extension(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> platform)
+        {
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithLicenseFromFile(string file) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithLicenseFromText(string licenseText) { }
+        }
     }
 }
 namespace Particular.Aspire.Hosting.ServicePlatform.Persistence
 {
-    public interface IPlatformPersistenceAnnotation : Aspire.Hosting.ApplicationModel.IResourceAnnotation
+    public static class ParticularServicePlatformPersistenceExtensions
     {
-        Aspire.Hosting.ApplicationModel.IResource Resource { get; }
+        extension(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> platform)
+        {
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Persistence.RavenDbPlatformPersistenceResource> AddPersistenceRavenDb(string name) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithPersistenceRavenDb<TConnection>(Aspire.Hosting.ApplicationModel.IResourceBuilder<TConnection> persistence)
+                where TConnection : Aspire.Hosting.ApplicationModel.IResourceWithConnectionString { }
+        }
     }
-    public class RavenDbPlatformPersistenceAnnotation : Aspire.Hosting.ApplicationModel.IResourceAnnotation, Particular.Aspire.ServicePlatform.Persistence.IPlatformPersistenceAnnotation
-    {
-        public RavenDbPlatformPersistenceAnnotation(Aspire.Hosting.ApplicationModel.IResourceWithConnectionString connectionString) { }
-        public Aspire.Hosting.ApplicationModel.IResource Resource { get; }
-    }
-    public class RavenDbPlatformPersistenceResource : Aspire.Hosting.ApplicationModel.ContainerResource, Aspire.Hosting.ApplicationModel.IExpressionValue, Aspire.Hosting.ApplicationModel.IManifestExpressionProvider, Aspire.Hosting.ApplicationModel.IResource, Aspire.Hosting.ApplicationModel.IResourceWithConnectionString, Aspire.Hosting.ApplicationModel.IValueProvider, Aspire.Hosting.ApplicationModel.IValueWithReferences
+    public sealed class RavenDbPlatformPersistenceResource : Aspire.Hosting.ApplicationModel.ContainerResource, Aspire.Hosting.ApplicationModel.IExpressionValue, Aspire.Hosting.ApplicationModel.IManifestExpressionProvider, Aspire.Hosting.ApplicationModel.IResource, Aspire.Hosting.ApplicationModel.IResourceWithConnectionString, Aspire.Hosting.ApplicationModel.IValueProvider, Aspire.Hosting.ApplicationModel.IValueWithReferences
     {
         public Aspire.Hosting.ApplicationModel.ReferenceExpression ConnectionStringExpression { get; }
-        public Particular.Aspire.ServicePlatform.Platform.ParticularPlatformResource Parent { get; }
-        public string PersistenceType { get; }
+        public Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource Parent { get; }
     }
 }
 namespace Particular.Aspire.Hosting.ServicePlatform.Platform
 {
-    public interface IPlatformComponent : Aspire.Hosting.ApplicationModel.IResource { }
     public sealed class ParticularPlatformResource : Aspire.Hosting.ApplicationModel.Resource
     {
         public Aspire.Hosting.ApplicationModel.ReferenceExpression LicenseExpression { get; }
-        public bool TryGetPersistenceConfig(Aspire.Hosting.ApplicationModel.IResource persistenceResource, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out Particular.Aspire.ServicePlatform.Persistence.IPlatformPersistenceAnnotation? persistenceAnnotation) { }
     }
-    public class RemoteInstanceAnnotation : Aspire.Hosting.ApplicationModel.IResourceAnnotation
+    public sealed class ServiceControlAuditInstanceResource : Aspire.Hosting.ApplicationModel.ContainerResource, Aspire.Hosting.ApplicationModel.IResource, Aspire.Hosting.ApplicationModel.IResourceWithParent, Aspire.Hosting.ApplicationModel.IResourceWithParent<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource>
     {
-        public RemoteInstanceAnnotation(Aspire.Hosting.ApplicationModel.ReferenceExpression endpoint) { }
-        public Aspire.Hosting.ApplicationModel.ReferenceExpression Endpoint { get; }
+        public Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource Parent { get; }
     }
-    public class ServiceControlAuditInstanceResource : Aspire.Hosting.ApplicationModel.ContainerResource, Aspire.Hosting.ApplicationModel.IResource, Aspire.Hosting.ApplicationModel.IResourceWithParent, Aspire.Hosting.ApplicationModel.IResourceWithParent<Particular.Aspire.ServicePlatform.Platform.ParticularPlatformResource>, Particular.Aspire.ServicePlatform.Platform.IPlatformComponent
+    public sealed class ServiceControlErrorInstanceResource : Aspire.Hosting.ApplicationModel.ContainerResource, Aspire.Hosting.ApplicationModel.IResource, Aspire.Hosting.ApplicationModel.IResourceWithParent, Aspire.Hosting.ApplicationModel.IResourceWithParent<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource>
     {
-        public Particular.Aspire.ServicePlatform.Platform.ParticularPlatformResource Parent { get; }
+        public Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource Parent { get; }
     }
-    public class ServiceControlErrorInstanceResource : Aspire.Hosting.ApplicationModel.ContainerResource, Aspire.Hosting.ApplicationModel.IResource, Aspire.Hosting.ApplicationModel.IResourceWithParent, Aspire.Hosting.ApplicationModel.IResourceWithParent<Particular.Aspire.ServicePlatform.Platform.ParticularPlatformResource>, Particular.Aspire.ServicePlatform.Platform.IPlatformComponent
+    public sealed class ServiceControlMonitoringInstanceResource : Aspire.Hosting.ApplicationModel.ContainerResource, Aspire.Hosting.ApplicationModel.IResource, Aspire.Hosting.ApplicationModel.IResourceWithParent, Aspire.Hosting.ApplicationModel.IResourceWithParent<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource>
     {
-        public Particular.Aspire.ServicePlatform.Platform.ParticularPlatformResource Parent { get; }
-    }
-    public class ServiceControlMonitoringInstanceResource : Aspire.Hosting.ApplicationModel.ContainerResource, Aspire.Hosting.ApplicationModel.IResource, Aspire.Hosting.ApplicationModel.IResourceWithParent, Aspire.Hosting.ApplicationModel.IResourceWithParent<Particular.Aspire.ServicePlatform.Platform.ParticularPlatformResource>, Particular.Aspire.ServicePlatform.Platform.IPlatformComponent
-    {
-        public string InstanceQueueName { get; }
         public Aspire.Hosting.ApplicationModel.EndpointReference MonitoringEndpoint { get; }
-        public Particular.Aspire.ServicePlatform.Platform.ParticularPlatformResource Parent { get; }
+        public Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource Parent { get; }
     }
-    public class ServicePulseResource : Aspire.Hosting.ApplicationModel.ContainerResource, Aspire.Hosting.ApplicationModel.IResource, Aspire.Hosting.ApplicationModel.IResourceWithParent, Aspire.Hosting.ApplicationModel.IResourceWithParent<Particular.Aspire.ServicePlatform.Platform.ParticularPlatformResource>, Particular.Aspire.ServicePlatform.Platform.IPlatformComponent
+    public sealed class ServicePulseResource : Aspire.Hosting.ApplicationModel.ContainerResource, Aspire.Hosting.ApplicationModel.IResource, Aspire.Hosting.ApplicationModel.IResourceWithParent, Aspire.Hosting.ApplicationModel.IResourceWithParent<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource>
     {
-        public Aspire.Hosting.ApplicationModel.EndpointReference? MonitoringEndpoint { get; set; }
-        public Particular.Aspire.ServicePlatform.Platform.ParticularPlatformResource Parent { get; }
+        public Aspire.Hosting.ApplicationModel.EndpointReference? MonitoringEndpoint { get; }
+        public Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource Parent { get; }
         public Aspire.Hosting.ApplicationModel.EndpointReference ServiceControlEndpoint { get; }
     }
 }
@@ -168,11 +127,29 @@ namespace Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting
 {
     public interface IThroughputReportingProvider
     {
-        void ApplyTo(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ServiceControlErrorInstanceResource> errorInstance);
+        void ApplyTo(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> errorInstance);
     }
-    public sealed class ThroughputReportingAzureServiceBus : Particular.Aspire.ServicePlatform.ThroughputReporting.IThroughputReportingProvider
+    public sealed class ThroughputReportingAzureServiceBus : Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting.IThroughputReportingProvider
     {
         public ThroughputReportingAzureServiceBus(Aspire.Hosting.ApplicationModel.ReferenceExpression tenantId, Aspire.Hosting.ApplicationModel.ReferenceExpression subscriptionId, Aspire.Hosting.ApplicationModel.ReferenceExpression clientId, Aspire.Hosting.ApplicationModel.ReferenceExpression clientSecret, Aspire.Hosting.ApplicationModel.ReferenceExpression? serviceBusName = null, Aspire.Hosting.ApplicationModel.ReferenceExpression? managementUrl = null) { }
-        public void ApplyTo(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.ServicePlatform.Platform.ServiceControlErrorInstanceResource> errorInstance) { }
+        public void ApplyTo(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> errorInstance) { }
+    }
+}
+namespace Particular.Aspire.Hosting.ServicePlatform.Transport
+{
+    public sealed class LearningTransportAnnotation : Aspire.Hosting.ApplicationModel.IResourceAnnotation
+    {
+        public const string SettingsEnablePublish = "Particular:AllowLearningTransportPublish";
+        public LearningTransportAnnotation(string storagePath) { }
+        public void ApplyTo<T>(Aspire.Hosting.ApplicationModel.IResourceBuilder<T> resource)
+            where T : Aspire.Hosting.ApplicationModel.IResourceWithEnvironment { }
+    }
+    public static class ParticularPlatformTransportExtensions
+    {
+        extension(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> platform)
+        {
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportLearning(string? storagePath = null) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportAzureServiceBus(Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResourceWithConnectionString> azureServiceBus) { }
+        }
     }
 }
