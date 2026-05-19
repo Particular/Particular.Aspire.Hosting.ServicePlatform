@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting" Version="13.3.3" />
-    <PackageReference Include="Particular.Packaging" Version="4.5.0" PrivateAssets="all" />
+    <PackageReference Include="Particular.Packaging" Version="4.5.0" PrivateAssets="All" />
   </ItemGroup>
 
 </Project>
