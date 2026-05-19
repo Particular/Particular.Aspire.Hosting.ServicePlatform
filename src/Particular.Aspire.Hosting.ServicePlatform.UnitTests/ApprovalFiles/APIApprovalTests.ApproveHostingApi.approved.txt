@@ -158,14 +158,6 @@ namespace Particular.Aspire.Hosting.ServicePlatform.Transport
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportRabbitMq(Particular.Aspire.Hosting.ServicePlatform.Transport.RabbitMqRouting routingType, Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResourceWithConnectionString> rabbitMq) { }
         }
     }
-    public abstract class PlatformTransportAnnotation : Aspire.Hosting.ApplicationModel.IResourceAnnotation
-    {
-        protected PlatformTransportAnnotation() { }
-        public abstract Aspire.Hosting.ApplicationModel.IResourceWithConnectionString ConnectionSource { get; }
-        public abstract string TransportType { get; }
-        public virtual void ApplyTo<T>(Aspire.Hosting.ApplicationModel.IResourceBuilder<T> resource)
-            where T : Aspire.Hosting.ApplicationModel.IResourceWithEnvironment { }
-    }
     public enum RabbitMqRouting
     {
         QuorumConventionalRouting = 0,
