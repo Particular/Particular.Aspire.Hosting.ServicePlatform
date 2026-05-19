@@ -22,7 +22,7 @@ sealed class PlatformTopologyEventingSubscriber(
     public Task SubscribeAsync(
         IDistributedApplicationEventing eventing,
         DistributedApplicationExecutionContext executionContext,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         eventing.Subscribe<BeforeStartEvent>(OnBeforeStart);
         eventing.Subscribe<ResourceReadyEvent>(OnResourceReady);
