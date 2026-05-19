@@ -69,5 +69,57 @@ public static class ParticularPlatformTransportExtensions
             ArgumentNullException.ThrowIfNull(rabbitMq);
             return platform.WithAnnotation(new RabbitMqTransportAnnotation(routingType, rabbitMq.Resource));
         }
+
+        /// <summary>
+        /// Configures the platform to use Azure Storage Queues as the message transport.
+        /// </summary>
+        /// <param name="azureStorageQueues">The Azure Storage resource providing the connection string.</param>
+        /// <returns>The platform resource builder for chaining.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="azureStorageQueues"/> is null.</exception>
+        public IResourceBuilder<ParticularPlatformResource> WithTransportAzureStorageQueues(
+            IResourceBuilder<IResourceWithConnectionString> azureStorageQueues)
+        {
+            ArgumentNullException.ThrowIfNull(azureStorageQueues);
+            return platform.WithAnnotation(new AzureStorageQueuesTransportAnnotation(azureStorageQueues.Resource));
+        }
+
+        /// <summary>
+        /// Configures the platform to use SQL Server as the message transport.
+        /// </summary>
+        /// <param name="sqlServer">The SQL Server resource providing the connection string.</param>
+        /// <returns>The platform resource builder for chaining.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="sqlServer"/> is null.</exception>
+        public IResourceBuilder<ParticularPlatformResource> WithTransportSqlServer(
+            IResourceBuilder<IResourceWithConnectionString> sqlServer)
+        {
+            ArgumentNullException.ThrowIfNull(sqlServer);
+            return platform.WithAnnotation(new SqlServerTransportAnnotation(sqlServer.Resource));
+        }
+
+        /// <summary>
+        /// Configures the platform to use PostgreSQL as the message transport.
+        /// </summary>
+        /// <param name="postgreSql">The PostgreSQL resource providing the connection string.</param>
+        /// <returns>The platform resource builder for chaining.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="postgreSql"/> is null.</exception>
+        public IResourceBuilder<ParticularPlatformResource> WithTransportPostgreSql(
+            IResourceBuilder<IResourceWithConnectionString> postgreSql)
+        {
+            ArgumentNullException.ThrowIfNull(postgreSql);
+            return platform.WithAnnotation(new PostgreSqlTransportAnnotation(postgreSql.Resource));
+        }
+
+        /// <summary>
+        /// Configures the platform to use IBM MQ as the message transport.
+        /// </summary>
+        /// <param name="ibmMq">The IBM MQ resource providing the connection string.</param>
+        /// <returns>The platform resource builder for chaining.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="ibmMq"/> is null.</exception>
+        public IResourceBuilder<ParticularPlatformResource> WithTransportIbmMq(
+            IResourceBuilder<IResourceWithConnectionString> ibmMq)
+        {
+            ArgumentNullException.ThrowIfNull(ibmMq);
+            return platform.WithAnnotation(new IbmMqTransportAnnotation(ibmMq.Resource));
+        }
     }
 }
