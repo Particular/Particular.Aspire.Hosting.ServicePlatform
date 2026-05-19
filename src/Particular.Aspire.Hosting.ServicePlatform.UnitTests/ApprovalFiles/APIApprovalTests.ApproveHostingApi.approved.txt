@@ -131,7 +131,7 @@ namespace Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting
     }
     public sealed class ThroughputReportingAzureServiceBus : Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting.IThroughputReportingProvider
     {
-        public ThroughputReportingAzureServiceBus(Aspire.Hosting.ApplicationModel.ReferenceExpression tenantId, Aspire.Hosting.ApplicationModel.ReferenceExpression subscriptionId, Aspire.Hosting.ApplicationModel.ReferenceExpression clientId, Aspire.Hosting.ApplicationModel.ReferenceExpression clientSecret, Aspire.Hosting.ApplicationModel.ReferenceExpression? serviceBusName = null, Aspire.Hosting.ApplicationModel.ReferenceExpression? managementUrl = null) { }
+        public ThroughputReportingAzureServiceBus(Aspire.Hosting.ApplicationModel.IExpressionValue tenantId, Aspire.Hosting.ApplicationModel.IExpressionValue subscriptionId, Aspire.Hosting.ApplicationModel.IExpressionValue clientId, Aspire.Hosting.ApplicationModel.IExpressionValue clientSecret, Aspire.Hosting.ApplicationModel.IExpressionValue? serviceBusName = null, Aspire.Hosting.ApplicationModel.IExpressionValue? managementUrl = null) { }
         public void ApplyTo(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> errorInstance) { }
     }
 }
