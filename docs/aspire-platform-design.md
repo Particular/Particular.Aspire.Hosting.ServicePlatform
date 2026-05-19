@@ -181,7 +181,7 @@ sequenceDiagram
 
 - **Platform resource has no mutable state.** Config lives on annotations (`IPlatformTransportAnnotation`, `PlatformLicenseAnnotation`, `PlatformPersistenceAnnotation`) attached at configuration time.
 - **No subclassing of base platform annotation/resource types for extensions.** New transport/persistence integrations are added with new annotation types containing only the relevant fields.
-- **Cross-wiring happens at configuration time, order-independently.** via `With*` fluent methods (`ParticularPlatformExtensions`).
+- **Cross-wiring happens at configuration time, order-independently.** `With*` fluent methods (`ParticularPlatformExtensions`) attach annotations carrying `ReferenceExpression`s rather than resolved values, so the declaration order of resources doesn't matter — endpoints are resolved when env vars are projected at manifest/runtime time. See [Late-bound cross-wiring](#late-bound-cross-wiring).
 - **Platform readiness ↔ all children ready.** Readiness tracked by [`PlatformReadinessState`](https://github.com/Particular/Particular.Aspire.Hosting.ServicePlatform/blob/main/src/Particular.Aspire.Hosting.ServicePlatform/Platform/PlatformReadinessState.cs).
 - **Missing transport is detected at configuration time.** `ParticularPlatformResource.GetTransport()` throws if absent.
 - **No children → unhealthy state.** Marked by eventing subscriber at runtime.
@@ -209,6 +209,9 @@ var error = platform.AddServiceControlErrorInstance("servicecontrol", persistenc
         clientId:        builder.AddParameter("asb-client-id"),
         clientSecret:    builder.AddParameter("asb-client-secret", secret: true)));
 
+// Implicitly wires error → audit: AddServiceControlAuditInstance internally calls
+// error.WithRemoteInstance(audit), attaching a RemoteInstanceAnnotation whose
+// ReferenceExpression resolves at manifest/runtime time. See "Late-bound cross-wiring" below.
 var audit = platform.AddServiceControlAuditInstance("servicecontrol-audit", error, persistence);
 var monitoring = platform.AddServiceControlMonitoringInstance("servicecontrol-monitoring")
     .WithThroughputQueueFrom(error);                   // copies the throughput queue name from error
@@ -218,6 +221,16 @@ platform.AddServicePulse("servicepulse", error, monitoring);
 builder.AddProject<Projects.MyWorker>("worker")
     .WithParticularPlatform(platform);
 ```
+
+### Late-bound cross-wiring
+
+The example above hides one piece of wiring: `error` is declared before `audit`, yet `REMOTEINSTANCES` on the error instance must point at the audit endpoint. This works because cross-wiring is captured as a deferred expression, not a value:
+
+1. `AddServiceControlAuditInstance(name, error, persistence)` constructs the audit resource and, as a side effect, calls `error.WithRemoteInstance(audit)`. This is what makes the `error` parameter meaningful.
+2. `WithRemoteInstance` attaches a `RemoteInstanceAnnotation` to the error instance, holding a `ReferenceExpression` over `audit.GetEndpoint(AuditEndpointName)`. No URL is resolved at this point.
+3. `ServiceControlErrorInstanceResource` registers an env-var callback that, at manifest generation and at orchestrator startup, reads all `RemoteInstanceAnnotation`s off itself and projects `REMOTEINSTANCES` from the now-resolvable `ReferenceExpression`.
+
+The same pattern is used for any cross-resource env var whose right-hand side is an endpoint or connection string from another resource (e.g. ServicePulse's `SERVICECONTROL_URL` and `MONITORING_URL`). This is why declaration order is irrelevant: the only thing the configuration phase needs is the builder reference, not the resolved endpoint.
 
 License configuration options (all on `IResourceBuilder<ParticularPlatformResource>`):
 - `.WithLicenseFromFile("license.xml")` — reads from a specific file path.
