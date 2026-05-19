@@ -5,6 +5,9 @@ using System.Linq;
 using global::Aspire.Hosting.ApplicationModel;
 using Particular.Aspire.Hosting.ServicePlatform.Platform;
 
+/// <summary>
+/// Extension methods for configuring licensing for the Particular Service Platform within Aspire
+/// </summary>
 public static class ParticularPlatformLicensingExtensions
 {
     extension(IResourceBuilder<ParticularPlatformResource> platform)

@@ -8,15 +8,23 @@ using Particular.Aspire.Hosting.ServicePlatform.Licensing;
 using Particular.Aspire.Hosting.ServicePlatform.Persistence;
 using Particular.Aspire.Hosting.ServicePlatform.Transport;
 
-// Synthetic grouping resource — no process of its own. All topology config is attached via
-// annotations, and children are discovered by walking IResourceWithParent<ParticularPlatformResource>.
-// AddParticularPlatform sets its initial state to Starting and calls ExcludeFromManifest().
+/// <summary>
+/// The parent resource that represents the grouping of the Particular Service Platform.
+/// </summary>
+/// <remarks>
+/// Synthetic grouping resource — no process of its own. All topology config is attached via
+/// annotations, and children are discovered by walking <see cref="IResourceWithParent{T}"/> where T is <see cref="ParticularPlatformResource"/>.
+/// AddParticularPlatform sets its initial state to Starting and calls ExcludeFromManifest().
+/// </remarks>
 public sealed class ParticularPlatformResource : Resource
 {
     internal ParticularPlatformResource([ResourceName] string name) : base(name)
     {
     }
 
+    /// <summary>
+    /// This expression will provide the license information to be provided to endpoints and platform components.
+    /// </summary>
     public ReferenceExpression LicenseExpression => this.TryGetLastAnnotation<PlatformLicenseAnnotation>(out var la)
         ? ReferenceExpression.Create($"{la.License}")
         : ReferenceExpression.Create($"");

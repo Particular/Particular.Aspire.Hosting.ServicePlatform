@@ -4,13 +4,14 @@
         <TargetFramework>net10.0</TargetFramework>
       <SignAssembly>true</SignAssembly>
       <AssemblyOriginatorKeyFile>..\NServiceBus.snk</AssemblyOriginatorKeyFile>
-      <Description>Azure Service Bus transport for NServiceBus</Description>
+      <Description>NServiceBus platform hosting support for Aspire.</Description>
       <Nullable>enable</Nullable>
       <LangVersion>14.0</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="Aspire.Hosting" Version="13.3.0" />
+      <PackageReference Include="Particular.Packaging" Version="4.5.0" PrivateAssets="all" />
     </ItemGroup>
 
 </Project>

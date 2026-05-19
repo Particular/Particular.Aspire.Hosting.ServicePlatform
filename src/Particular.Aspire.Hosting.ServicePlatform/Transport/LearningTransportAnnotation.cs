@@ -5,11 +5,20 @@ using global::Aspire.Hosting;
 using global::Aspire.Hosting.ApplicationModel;
 using Particular.Aspire.Hosting.ServicePlatform.Platform;
 
+/// <summary>
+/// Configures the Learning transport for the Particular Service Platform. The Learning transport
+/// stores messages on the local file system and is intended for development and testing scenarios only.
+/// </summary>
 public sealed class LearningTransportAnnotation(string storagePath) : IPlatformTransportAnnotation
 {
     internal const string ContainerPath = "/tmp/learningtransport";
+
+    /// <summary>
+    /// The configuration key that must be set to <c>true</c> to allow the Learning transport in publish mode.
+    /// </summary>
     public const string SettingsEnablePublish = "Particular:AllowLearningTransportPublish";
 
+    /// <inheritdoc />
     public void ApplyTo<T>(IResourceBuilder<T> resource) where T : IResourceWithEnvironment
     {
         if (resource is IResourceBuilder<IPlatformComponent>)

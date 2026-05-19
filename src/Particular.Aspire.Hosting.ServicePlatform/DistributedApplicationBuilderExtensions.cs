@@ -7,10 +7,19 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Particular.Aspire.Hosting.ServicePlatform.Licensing;
 using Particular.Aspire.Hosting.ServicePlatform.Platform;
 
+/// <summary>
+/// Extension methods for adding the Particular Service Platform to an Aspire distributed application.
+/// </summary>
 public static class DistributedApplicationBuilderExtensions
 {
     extension(IDistributedApplicationBuilder builder)
     {
+        /// <summary>
+        /// Adds the Particular Service Platform resource to the distributed application. This is the entry point
+        /// for configuring ServiceControl, ServicePulse, and related platform components within an Aspire AppHost.
+        /// </summary>
+        /// <param name="name">The name of the platform resource in the Aspire application model.</param>
+        /// <returns>A resource builder for the platform resource, which can be used to configure transport, persistence, licensing, and platform components.</returns>
         public IResourceBuilder<ParticularPlatformResource> AddParticularPlatform([ResourceName] string name)
         {
             ArgumentNullException.ThrowIfNull(builder);
