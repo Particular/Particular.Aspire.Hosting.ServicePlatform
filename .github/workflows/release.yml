@@ -39,9 +39,8 @@ jobs:
           name: nugets
           path: nugets/*
           retention-days: 1
-      #removed for now becuase there is not yet an octopus project configured
-      #- name: Deploy
-        # Does not follow standard practice of targeting explicit versions because configuration is tightly coupled to Octopus Deploy configuration
-      #  uses: Particular/push-octopus-package-action@main
-      #  with:
-      #    octopus-deploy-api-key: ${{ secrets.OCTOPUS_DEPLOY_API_KEY }}
+      - name: Deploy
+        #Does not follow standard practice of targeting explicit versions because configuration is tightly coupled to Octopus Deploy configuration
+        uses: Particular/push-octopus-package-action@main
+        with:
+          octopus-deploy-api-key: ${{ secrets.OCTOPUS_DEPLOY_API_KEY }}
