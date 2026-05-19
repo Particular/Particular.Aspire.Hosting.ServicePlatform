@@ -9,7 +9,7 @@ using Particular.Aspire.Hosting.ServicePlatform.Platform;
 // the connection-string resource directly from configuration-time to BeforeStartEvent.
 // For file-based transports (Learning), ConnectionSource is null and StoragePath holds the host directory.
 
-abstract class PlatformTransportAnnotation : IPlatformTransportAnnotation
+public abstract class PlatformTransportAnnotation : IPlatformTransportAnnotation
 {
     public abstract string TransportType { get; }
     public abstract IResourceWithConnectionString ConnectionSource { get; }

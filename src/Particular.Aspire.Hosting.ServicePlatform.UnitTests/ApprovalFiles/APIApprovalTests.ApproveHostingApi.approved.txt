@@ -134,6 +134,11 @@ namespace Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting
         public ThroughputReportingAzureServiceBus(Aspire.Hosting.ApplicationModel.IExpressionValue tenantId, Aspire.Hosting.ApplicationModel.IExpressionValue subscriptionId, Aspire.Hosting.ApplicationModel.IExpressionValue clientId, Aspire.Hosting.ApplicationModel.IExpressionValue clientSecret, Aspire.Hosting.ApplicationModel.IExpressionValue? serviceBusName = null, Aspire.Hosting.ApplicationModel.IExpressionValue? managementUrl = null) { }
         public void ApplyTo(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> errorInstance) { }
     }
+    public sealed class ThroughputReportingRabbitMq : Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting.IThroughputReportingProvider
+    {
+        public ThroughputReportingRabbitMq(Aspire.Hosting.ApplicationModel.IExpressionValue? apiUrl, Aspire.Hosting.ApplicationModel.IExpressionValue? userName, Aspire.Hosting.ApplicationModel.IExpressionValue? password) { }
+        public void ApplyTo(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> errorInstance) { }
+    }
 }
 namespace Particular.Aspire.Hosting.ServicePlatform.Transport
 {
@@ -150,6 +155,22 @@ namespace Particular.Aspire.Hosting.ServicePlatform.Transport
         {
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportLearning(string? storagePath = null) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportAzureServiceBus(Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResourceWithConnectionString> azureServiceBus) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportRabbitMq(Particular.Aspire.Hosting.ServicePlatform.Transport.RabbitMqRouting routingType, Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResourceWithConnectionString> rabbitMq) { }
         }
+    }
+    public abstract class PlatformTransportAnnotation : Aspire.Hosting.ApplicationModel.IResourceAnnotation
+    {
+        protected PlatformTransportAnnotation() { }
+        public abstract Aspire.Hosting.ApplicationModel.IResourceWithConnectionString ConnectionSource { get; }
+        public abstract string TransportType { get; }
+        public virtual void ApplyTo<T>(Aspire.Hosting.ApplicationModel.IResourceBuilder<T> resource)
+            where T : Aspire.Hosting.ApplicationModel.IResourceWithEnvironment { }
+    }
+    public enum RabbitMqRouting
+    {
+        QuorumConventionalRouting = 0,
+        ClassicConventionalRouting = 1,
+        QuorumDirectRouting = 2,
+        ClassicDirectRouting = 3,
     }
 }
