@@ -2,7 +2,6 @@ namespace Particular.Aspire.Hosting.ServicePlatform.Platform;
 
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Threading;
 
 sealed class PlatformReadinessState
 {
@@ -23,7 +22,7 @@ sealed class PlatformReadinessState
     sealed class Tracker(int expectedCount)
     {
         readonly HashSet<string> readyResources = [];
-        readonly Lock readyLock = new();
+        readonly object readyLock = new();
         bool published;
 
         public int ExpectedCount { get; } = expectedCount;
