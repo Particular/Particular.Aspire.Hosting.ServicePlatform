@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="Particular.Aspire.Hosting.ServicePlatform.UnitTests/Particular.Aspire.Hosting.ServicePlatform.UnitTests.csproj" />
   <Project Path="Particular.Aspire.Hosting.ServicePlatform/Particular.Aspire.Hosting.ServicePlatform.csproj" />
+  <Project Path="ServicePlatform.AppHost\ServicePlatform.AppHost.csproj" />
 </Solution>

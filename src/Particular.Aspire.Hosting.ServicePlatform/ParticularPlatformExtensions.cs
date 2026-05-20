@@ -124,7 +124,11 @@ public static class ParticularPlatformExtensions
                 .AddResource(new ServiceControlAuditInstanceResource(name, platform.Resource))
                 .WithImage("particular/servicecontrol-audit", "latest")
                 .WithHttpEndpoint(port: 44444, targetPort: 44444, name: ServiceControlAuditInstanceResource.AuditEndpointName)
-                .WithUrlForEndpoint(ServiceControlAuditInstanceResource.AuditEndpointName, url => url.DisplayText = "ServiceControl Audit")
+                .WithUrlForEndpoint(ServiceControlAuditInstanceResource.AuditEndpointName, url =>
+                {
+                    url.Url += "/api";
+                    url.DisplayText = "ServiceControl Audit";
+                })
                 .WithArgs("--setup-and-run")
                 .WithHttpHealthCheck("api/configuration", endpointName: ServiceControlAuditInstanceResource.AuditEndpointName);
 
@@ -155,7 +159,11 @@ public static class ParticularPlatformExtensions
                 .AddResource(new ServiceControlErrorInstanceResource(name, platform.Resource))
                 .WithImage("particular/servicecontrol", "latest")
                 .WithHttpEndpoint(port: 33333, targetPort: 33333, name: ServiceControlErrorInstanceResource.ErrorEndpointName)
-                .WithUrlForEndpoint(ServiceControlErrorInstanceResource.ErrorEndpointName, url => url.DisplayText = "ServiceControl Error")
+                .WithUrlForEndpoint(ServiceControlErrorInstanceResource.ErrorEndpointName, url =>
+                {
+                    url.Url += "/api";
+                    url.DisplayText = "ServiceControl Error";
+                })
                 .WithArgs("--setup-and-run")
                 .WithHttpHealthCheck("api/configuration", endpointName: ServiceControlErrorInstanceResource.ErrorEndpointName);
             return errorInstance
