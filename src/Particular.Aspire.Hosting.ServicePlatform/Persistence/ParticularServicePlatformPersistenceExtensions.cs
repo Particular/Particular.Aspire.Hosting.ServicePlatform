@@ -1,8 +1,9 @@
-namespace Particular.Aspire.Hosting.ServicePlatform.Persistence;
+//extension methods should be in the Aspire hosting namespace as per https://github.com/Particular/Particular.Aspire.Hosting.ServicePlatform/blob/main/docs/aspire-integration-guide.md#naming-conventions
+namespace Aspire.Hosting;
 
 using System;
-using global::Aspire.Hosting;
 using global::Aspire.Hosting.ApplicationModel;
+using Particular.Aspire.Hosting.ServicePlatform.Persistence;
 using Particular.Aspire.Hosting.ServicePlatform.Platform;
 
 /// <summary>

@@ -1,10 +1,12 @@
-namespace Particular.Aspire.Hosting.ServicePlatform.Transport;
+//extension methods should be in the Aspire hosting namespace as per https://github.com/Particular/Particular.Aspire.Hosting.ServicePlatform/blob/main/docs/aspire-integration-guide.md#naming-conventions
+namespace Aspire.Hosting;
 
 using Particular.Aspire.Hosting.ServicePlatform.Platform;
-using global::Aspire.Hosting.ApplicationModel;
+using Aspire.Hosting.ApplicationModel;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 using System;
+using Particular.Aspire.Hosting.ServicePlatform.Transport;
 
 /// <summary>
 /// Extension methods for configuring the message transport for the Particular Service Platform.
@@ -53,6 +55,21 @@ public static class ParticularPlatformTransportExtensions
         {
             ArgumentNullException.ThrowIfNull(azureServiceBus);
             return platform.WithAnnotation(new AzureServiceBusTransportAnnotation(azureServiceBus.Resource));
+        }
+
+        /// <summary>
+        /// Configures the platform to use RabbitMQ as the message transport.
+        /// </summary>
+        /// <param name="routingType">The type of routing to use.</param>
+        /// <param name="rabbitMq">The RabbitMQ resource providing the connection string.</param>
+        /// <returns>The platform resource builder for chaining.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="rabbitMq"/> is null.</exception>
+        public IResourceBuilder<ParticularPlatformResource> WithTransportRabbitMq(
+            RabbitMqRouting routingType,
+            IResourceBuilder<IResourceWithConnectionString> rabbitMq)
+        {
+            ArgumentNullException.ThrowIfNull(rabbitMq);
+            return platform.WithAnnotation(new RabbitMqTransportAnnotation(routingType, rabbitMq.Resource));
         }
     }
 }
