@@ -1,10 +1,12 @@
-namespace Particular.Aspire.Hosting.ServicePlatform.Transport;
+//extension methods should be in the Aspire hosting namespace as per https://github.com/Particular/Particular.Aspire.Hosting.ServicePlatform/blob/main/docs/aspire-integration-guide.md#naming-conventions
+namespace Aspire.Hosting;
 
 using Particular.Aspire.Hosting.ServicePlatform.Platform;
 using global::Aspire.Hosting.ApplicationModel;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 using System;
+using Particular.Aspire.Hosting.ServicePlatform.Transport;
 
 /// <summary>
 /// Extension methods for configuring the message transport for the Particular Service Platform.
