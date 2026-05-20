@@ -2,7 +2,6 @@
 namespace Aspire.Hosting;
 
 using System;
-using global::Aspire.Hosting;
 using global::Aspire.Hosting.ApplicationModel;
 using Particular.Aspire.Hosting.ServicePlatform.Persistence;
 using Particular.Aspire.Hosting.ServicePlatform.Platform;
