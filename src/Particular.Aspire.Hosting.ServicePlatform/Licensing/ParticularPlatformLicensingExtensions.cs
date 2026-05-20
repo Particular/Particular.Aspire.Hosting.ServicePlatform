@@ -1,8 +1,10 @@
-namespace Particular.Aspire.Hosting.ServicePlatform.Licensing;
+//extension methods should be in the Aspire hosting namespace as per https://github.com/Particular/Particular.Aspire.Hosting.ServicePlatform/blob/main/docs/aspire-integration-guide.md#naming-conventions
+namespace Aspire.Hosting;
 
 using System;
 using System.Linq;
 using global::Aspire.Hosting.ApplicationModel;
+using Particular.Aspire.Hosting.ServicePlatform.Licensing;
 using Particular.Aspire.Hosting.ServicePlatform.Platform;
 
 /// <summary>

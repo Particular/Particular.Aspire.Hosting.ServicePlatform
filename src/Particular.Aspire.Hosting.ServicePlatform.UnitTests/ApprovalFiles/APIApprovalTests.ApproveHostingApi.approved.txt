@@ -46,6 +46,32 @@ namespace Aspire.Hosting
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlMonitoringInstanceResource> AddServiceControlMonitoringInstance(string name) { }
         }
     }
+    public static class ParticularPlatformLicensingExtensions
+    {
+        extension(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> platform)
+        {
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithLicenseFromFile(string file) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithLicenseFromText(string licenseText) { }
+        }
+    }
+    public static class ParticularPlatformTransportExtensions
+    {
+        extension(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> platform)
+        {
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportLearning(string? storagePath = null) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportAzureServiceBus(Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResourceWithConnectionString> azureServiceBus) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportRabbitMq(Particular.Aspire.Hosting.ServicePlatform.Transport.RabbitMqRouting routingType, Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResourceWithConnectionString> rabbitMq) { }
+        }
+    }
+    public static class ParticularServicePlatformPersistenceExtensions
+    {
+        extension(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> platform)
+        {
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Persistence.RavenDbPlatformPersistenceResource> AddPersistenceRavenDb(string name) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithPersistenceRavenDb<TConnection>(Aspire.Hosting.ApplicationModel.IResourceBuilder<TConnection> persistence)
+                where TConnection : Aspire.Hosting.ApplicationModel.IResourceWithConnectionString { }
+        }
+    }
     public static class ResourceBuilderExtensions
     {
         extension<T>(Aspire.Hosting.ApplicationModel.IResourceBuilder<T> resource)
@@ -69,28 +95,8 @@ namespace Aspire.Hosting
         }
     }
 }
-namespace Particular.Aspire.Hosting.ServicePlatform.Licensing
-{
-    public static class ParticularPlatformLicensingExtensions
-    {
-        extension(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> platform)
-        {
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithLicenseFromFile(string file) { }
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithLicenseFromText(string licenseText) { }
-        }
-    }
-}
 namespace Particular.Aspire.Hosting.ServicePlatform.Persistence
 {
-    public static class ParticularServicePlatformPersistenceExtensions
-    {
-        extension(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> platform)
-        {
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Persistence.RavenDbPlatformPersistenceResource> AddPersistenceRavenDb(string name) { }
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithPersistenceRavenDb<TConnection>(Aspire.Hosting.ApplicationModel.IResourceBuilder<TConnection> persistence)
-                where TConnection : Aspire.Hosting.ApplicationModel.IResourceWithConnectionString { }
-        }
-    }
     public sealed class RavenDbPlatformPersistenceResource : Aspire.Hosting.ApplicationModel.ContainerResource, Aspire.Hosting.ApplicationModel.IExpressionValue, Aspire.Hosting.ApplicationModel.IManifestExpressionProvider, Aspire.Hosting.ApplicationModel.IResource, Aspire.Hosting.ApplicationModel.IResourceWithConnectionString, Aspire.Hosting.ApplicationModel.IValueProvider, Aspire.Hosting.ApplicationModel.IValueWithReferences
     {
         public Aspire.Hosting.ApplicationModel.ReferenceExpression ConnectionStringExpression { get; }
@@ -148,15 +154,6 @@ namespace Particular.Aspire.Hosting.ServicePlatform.Transport
         public LearningTransportAnnotation(string storagePath) { }
         public void ApplyTo<T>(Aspire.Hosting.ApplicationModel.IResourceBuilder<T> resource)
             where T : Aspire.Hosting.ApplicationModel.IResourceWithEnvironment { }
-    }
-    public static class ParticularPlatformTransportExtensions
-    {
-        extension(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> platform)
-        {
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportLearning(string? storagePath = null) { }
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportAzureServiceBus(Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResourceWithConnectionString> azureServiceBus) { }
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportRabbitMq(Particular.Aspire.Hosting.ServicePlatform.Transport.RabbitMqRouting routingType, Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResourceWithConnectionString> rabbitMq) { }
-        }
     }
     public enum RabbitMqRouting
     {
