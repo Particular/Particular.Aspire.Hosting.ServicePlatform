@@ -1,6 +1,7 @@
-namespace Particular.Aspire.Hosting.ServicePlatform.Tests;
+namespace Particular.Aspire.Hosting.ServicePlatform.UnitTests;
 
 using global::Aspire.Hosting;
+using Tests;
 
 public class PublishPlatformLearningEndpointApprovalTest : AspireApplicationPublishingTestBase
 {
@@ -9,7 +10,6 @@ public class PublishPlatformLearningEndpointApprovalTest : AspireApplicationPubl
         builder.AddDockerComposeEnvironment("compose");
         var platform = builder
             .AddParticularPlatform("particular")
-            .WithTransportLearning("/tmp/.learningtransport")
             .AddDefaultComponents();
 
         builder.AddContainer("endpoint", "endpoint-container")
