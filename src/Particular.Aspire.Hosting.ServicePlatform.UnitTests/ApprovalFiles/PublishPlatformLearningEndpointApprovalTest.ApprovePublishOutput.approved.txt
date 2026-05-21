@@ -109,7 +109,7 @@ services:
     image: "endpoint-container:latest"
     environment:
       PARTICULARSOFTWARE_LICENSE: "${PARTICULAR_LICENSE}"
-      ConnectionStrings__learning-transport: "/Users/rhysbevilaqua/particular/Particular.Aspire.Hosting.ServicePlatform/src/Particular.Aspire.Hosting.ServicePlatform.UnitTests/bin/Debug/net10.0/.learningtransport"
+      ConnectionStrings__learning-transport: "/tmp/.learningtransport"
     networks:
       - "aspire"
 networks:
