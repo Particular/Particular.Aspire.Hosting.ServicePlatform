@@ -21,9 +21,7 @@ public abstract class AspireApplicationPublishingTestBase
     protected abstract void BuildApplication(IDistributedApplicationBuilder builder);
 
     [Test, CancelAfter(30_000)]
-#pragma warning disable PS0003 // A parameter of type CancellationToken on a non-private delegate or method should be optional
-    public async Task ApprovePublishOutput(CancellationToken cancellationToken)
-#pragma warning restore PS0003 // A parameter of type CancellationToken on a non-private delegate or method should be optional
+    public async Task ApprovePublishOutput(CancellationToken cancellationToken = default)
     {
         var outDir = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName().Replace(".", ""));
         try
