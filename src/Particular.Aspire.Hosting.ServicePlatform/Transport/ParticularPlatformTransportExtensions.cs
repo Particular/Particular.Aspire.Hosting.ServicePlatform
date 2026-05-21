@@ -25,15 +25,15 @@ public static class ParticularPlatformTransportExtensions
         /// <exception cref="InvalidOperationException">Thrown if used in publish mode without enabling <c>Particular:AllowLearningTransportPublish</c>.</exception>
         public IResourceBuilder<ParticularPlatformResource> WithTransportLearning(string? storagePath = null)
         {
-            var resolvedPath = Path.GetFullPath(storagePath ?? ".learningtransport");
+            storagePath ??= ".learningtransport";
+            var resolvedPath = Path.IsPathRooted(storagePath)
+                ? storagePath
+                : Path.GetFullPath(storagePath, platform.ApplicationBuilder.AppHostDirectory);
+
             Directory.CreateDirectory(resolvedPath);
 
-            var transportLocation = platform
-                .ApplicationBuilder
-                .AddParameter("learning-transport-path", resolvedPath);
-
             var transportConnection = platform.ApplicationBuilder
-                .AddConnectionString($"learning-transport", ReferenceExpression.Create($"{transportLocation}"))
+                .AddConnectionString($"learning-transport", ReferenceExpression.Create($"{resolvedPath}"))
                 .WithParentRelationship(platform);
 
             platform.WithAnnotation(new LearningTransportAnnotation(resolvedPath, transportConnection.Resource));

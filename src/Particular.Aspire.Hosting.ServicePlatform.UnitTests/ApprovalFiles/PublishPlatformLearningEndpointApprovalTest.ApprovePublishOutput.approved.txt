@@ -1,8 +1,5 @@
 File: .env
 ==
-# Parameter learning-transport-path
-LEARNING_TRANSPORT_PATH=
-
 # Bind mount source for particular-audit:/tmp/learningtransport
 PARTICULAR_AUDIT_BINDMOUNT_0=
 
@@ -112,7 +109,7 @@ services:
     image: "endpoint-container:latest"
     environment:
       PARTICULARSOFTWARE_LICENSE: "${PARTICULAR_LICENSE}"
-      ConnectionStrings__learning-transport: "${LEARNING_TRANSPORT_PATH}"
+      ConnectionStrings__learning-transport: "/tmp/.learningtransport"
     networks:
       - "aspire"
 networks:

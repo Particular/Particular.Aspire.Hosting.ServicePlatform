@@ -10,6 +10,7 @@ public class PublishPlatformLearningEndpointApprovalTest : AspireApplicationPubl
         builder.AddDockerComposeEnvironment("compose");
         var platform = builder
             .AddParticularPlatform("particular")
+            .WithTransportLearning("/tmp/.learningtransport")
             .AddDefaultComponents();
 
         builder.AddContainer("endpoint", "endpoint-container")
