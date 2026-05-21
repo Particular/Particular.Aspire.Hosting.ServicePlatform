@@ -9,7 +9,7 @@ using Particular.Aspire.Hosting.ServicePlatform.Platform;
 /// Configures the Learning transport for the Particular Service Platform. The Learning transport
 /// stores messages on the local file system and is intended for development and testing scenarios only.
 /// </summary>
-public sealed class LearningTransportAnnotation(string storagePath, IResourceWithConnectionString connectionString) : IPlatformTransportAnnotation
+sealed class LearningTransportAnnotation(string storagePath, IResourceWithConnectionString connectionString) : IPlatformTransportAnnotation
 {
     internal const string ContainerPath = "/tmp/learningtransport";
 

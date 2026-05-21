@@ -148,13 +148,6 @@ namespace Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting
 }
 namespace Particular.Aspire.Hosting.ServicePlatform.Transport
 {
-    public sealed class LearningTransportAnnotation : Aspire.Hosting.ApplicationModel.IResourceAnnotation
-    {
-        public const string SettingsEnablePublish = "Particular:AllowLearningTransportPublish";
-        public LearningTransportAnnotation(string storagePath) { }
-        public void ApplyTo<T>(Aspire.Hosting.ApplicationModel.IResourceBuilder<T> resource)
-            where T : Aspire.Hosting.ApplicationModel.IResourceWithEnvironment { }
-    }
     public enum RabbitMqRouting
     {
         QuorumConventionalRouting = 0,
