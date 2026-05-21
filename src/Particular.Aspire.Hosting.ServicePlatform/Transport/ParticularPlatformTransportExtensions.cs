@@ -29,7 +29,8 @@ public static class ParticularPlatformTransportExtensions
             Directory.CreateDirectory(resolvedPath);
 
             var transportConnection = platform.ApplicationBuilder
-                .AddConnectionString("learning-transport", ReferenceExpression.Create($"{resolvedPath}"));
+                .AddConnectionString("learning-transport", ReferenceExpression.Create($"{resolvedPath}"))
+                .WithParentRelationship(platform);
 
             platform.WithAnnotation(new LearningTransportAnnotation(resolvedPath, transportConnection.Resource));
 
