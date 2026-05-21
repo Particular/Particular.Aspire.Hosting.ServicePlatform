@@ -60,7 +60,7 @@ namespace Aspire.Hosting
         {
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportLearning(string? storagePath = null) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportAzureServiceBus(Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResourceWithConnectionString> azureServiceBus) { }
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportRabbitMq(Particular.Aspire.Hosting.ServicePlatform.Transport.RabbitMqRouting routingType, Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResourceWithConnectionString> rabbitMq) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportRabbitMQ(Particular.Aspire.Hosting.ServicePlatform.Transport.RabbitMqRouting routingType, Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResourceWithConnectionString> rabbitMQ) { }
         }
     }
     public static class ParticularServicePlatformPersistenceExtensions
@@ -148,13 +148,6 @@ namespace Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting
 }
 namespace Particular.Aspire.Hosting.ServicePlatform.Transport
 {
-    public sealed class LearningTransportAnnotation : Aspire.Hosting.ApplicationModel.IResourceAnnotation
-    {
-        public const string SettingsEnablePublish = "Particular:AllowLearningTransportPublish";
-        public LearningTransportAnnotation(string storagePath) { }
-        public void ApplyTo<T>(Aspire.Hosting.ApplicationModel.IResourceBuilder<T> resource)
-            where T : Aspire.Hosting.ApplicationModel.IResourceWithEnvironment { }
-    }
     public enum RabbitMqRouting
     {
         QuorumConventionalRouting = 0,

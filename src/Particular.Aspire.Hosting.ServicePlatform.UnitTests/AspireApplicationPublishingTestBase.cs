@@ -21,9 +21,7 @@ public abstract class AspireApplicationPublishingTestBase
     protected abstract void BuildApplication(IDistributedApplicationBuilder builder);
 
     [Test, CancelAfter(30_000)]
-#pragma warning disable PS0003 // A parameter of type CancellationToken on a non-private delegate or method should be optional
-    public async Task ApprovePublishOutput(CancellationToken cancellationToken)
-#pragma warning restore PS0003 // A parameter of type CancellationToken on a non-private delegate or method should be optional
+    public async Task ApprovePublishOutput(CancellationToken cancellationToken = default)
     {
         var outDir = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName().Replace(".", ""));
         try
@@ -42,7 +40,7 @@ public abstract class AspireApplicationPublishingTestBase
             // Publish does not use DCP - but it does validate this config object, so give it some sane values.
             builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?>
             {
-                [LearningTransportAnnotation.SettingsEnablePublish] = "true",
+                ["Particular:AllowLearningTransportPublish"] = "true",
                 ["ASPIRE_DCP_PATH"] = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".aspire/bin/dcp"),
                 ["ASPIRE_DASHBOARD_PATH"] = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".aspire/managed/wwwroot")
             });

@@ -25,9 +25,18 @@ public static class ParticularPlatformTransportExtensions
         /// <exception cref="InvalidOperationException">Thrown if used in publish mode without enabling <c>Particular:AllowLearningTransportPublish</c>.</exception>
         public IResourceBuilder<ParticularPlatformResource> WithTransportLearning(string? storagePath = null)
         {
-            var resolvedPath = Path.GetFullPath(storagePath ?? ".learningtransport");
+            storagePath ??= ".learningtransport";
+            var resolvedPath = Path.IsPathRooted(storagePath)
+                ? storagePath
+                : Path.GetFullPath(storagePath, platform.ApplicationBuilder.AppHostDirectory);
+
             Directory.CreateDirectory(resolvedPath);
-            platform.WithAnnotation(new LearningTransportAnnotation(resolvedPath));
+
+            var transportConnection = platform.ApplicationBuilder
+                .AddConnectionString($"learning-transport", ReferenceExpression.Create($"{resolvedPath}"))
+                .WithParentRelationship(platform);
+
+            platform.WithAnnotation(new LearningTransportAnnotation(resolvedPath, transportConnection.Resource));
 
             if (platform.ApplicationBuilder.ExecutionContext.IsPublishMode)
             {
@@ -61,15 +70,15 @@ public static class ParticularPlatformTransportExtensions
         /// Configures the platform to use RabbitMQ as the message transport.
         /// </summary>
         /// <param name="routingType">The type of routing to use.</param>
-        /// <param name="rabbitMq">The RabbitMQ resource providing the connection string.</param>
+        /// <param name="rabbitMQ">The RabbitMQ resource providing the connection string.</param>
         /// <returns>The platform resource builder for chaining.</returns>
-        /// <exception cref="ArgumentNullException">Thrown if <paramref name="rabbitMq"/> is null.</exception>
-        public IResourceBuilder<ParticularPlatformResource> WithTransportRabbitMq(
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="rabbitMQ"/> is null.</exception>
+        public IResourceBuilder<ParticularPlatformResource> WithTransportRabbitMQ(
             RabbitMqRouting routingType,
-            IResourceBuilder<IResourceWithConnectionString> rabbitMq)
+            IResourceBuilder<IResourceWithConnectionString> rabbitMQ)
         {
-            ArgumentNullException.ThrowIfNull(rabbitMq);
-            return platform.WithAnnotation(new RabbitMqTransportAnnotation(routingType, rabbitMq.Resource));
+            ArgumentNullException.ThrowIfNull(rabbitMQ);
+            return platform.WithAnnotation(new RabbitMqTransportAnnotation(routingType, rabbitMQ.Resource));
         }
     }
 }

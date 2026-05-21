@@ -13,7 +13,7 @@ public class PublishPlatformDefaultsRabbitMqApprovalTest : AspireApplicationPubl
 
         var platform = builder
             .AddParticularPlatform("particular")
-            .WithTransportRabbitMq(RabbitMqRouting.ClassicDirectRouting, builder.AddDummyConnectionString("transport-connection"));
+            .WithTransportRabbitMQ(RabbitMqRouting.ClassicDirectRouting, builder.AddDummyConnectionString("transport-connection"));
 
         platform.AddServiceControlErrorInstance("particular-error", platform.AddPersistenceRavenDb("particular-persistence"));
 
