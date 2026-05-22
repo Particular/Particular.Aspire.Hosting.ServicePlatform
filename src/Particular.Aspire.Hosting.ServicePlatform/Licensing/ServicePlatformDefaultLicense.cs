@@ -8,7 +8,7 @@ class ServicePlatformDefaultLicense : LicenseParameterDefault
     protected override string LoadLicenseText()
         => MaybeReadLicense(Environment.GetEnvironmentVariable("PROGRAMDATA"))
         ?? MaybeReadLicense(Environment.GetEnvironmentVariable("LOCALAPPDATA"))
-        ?? Environment.GetEnvironmentVariable(PlatformLicenseAnnotation.LicenseEnvironmentVariable)
+        ?? Environment.GetEnvironmentVariable(PlatformEnvironment.ParticularSoftwareLicense)
         ?? "";
 
     static string? MaybeReadLicense(string? rootPath)

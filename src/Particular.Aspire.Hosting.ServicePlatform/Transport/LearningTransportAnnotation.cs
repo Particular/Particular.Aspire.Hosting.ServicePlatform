@@ -25,8 +25,8 @@ sealed class LearningTransportAnnotation(string storagePath, IResourceWithConnec
         {
             resource.WithEnvironment(context =>
             {
-                context.EnvironmentVariables["TRANSPORTTYPE"] = "LearningTransport";
-                context.EnvironmentVariables["CONNECTIONSTRING"] = ContainerPath;
+                context.EnvironmentVariables[PlatformEnvironment.ServiceControl.TransportType] = "LearningTransport";
+                context.EnvironmentVariables[PlatformEnvironment.ServiceControl.ConnectionString] = ContainerPath;
             });
 
             if (resource is not IResourceBuilder<ContainerResource> container)

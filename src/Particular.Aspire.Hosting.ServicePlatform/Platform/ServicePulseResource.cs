@@ -1,6 +1,7 @@
 namespace Particular.Aspire.Hosting.ServicePlatform.Platform;
 
 using global::Aspire.Hosting.ApplicationModel;
+using Particular.Aspire.Hosting.ServicePlatform;
 
 /// <summary>
 /// Represents a ServicePulse instance running as a container resource within the Particular Service Platform.
@@ -19,14 +20,14 @@ public sealed class ServicePulseResource : ContainerResource, IPlatformComponent
 
         Annotations.Add(new EnvironmentCallbackAnnotation(context =>
         {
-            context.EnvironmentVariables["SERVICECONTROL_URL"] = ServiceControlEndpoint;
+            context.EnvironmentVariables[PlatformEnvironment.ServicePulse.ServiceControlUrl] = ServiceControlEndpoint;
             if (MonitoringEndpoint != null)
             {
-                context.EnvironmentVariables["MONITORING_URL"] = MonitoringEndpoint;
+                context.EnvironmentVariables[PlatformEnvironment.ServicePulse.MonitoringUrl] = MonitoringEndpoint;
             }
             else
             {
-                context.EnvironmentVariables["MONITORING_URL"] = "!";
+                context.EnvironmentVariables[PlatformEnvironment.ServicePulse.MonitoringUrl] = "!";
             }
         }));
     }

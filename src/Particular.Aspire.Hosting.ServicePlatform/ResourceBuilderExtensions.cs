@@ -1,6 +1,7 @@
 namespace Aspire.Hosting;
 
 using Aspire.Hosting.ApplicationModel;
+using Particular.Aspire.Hosting.ServicePlatform;
 using Particular.Aspire.Hosting.ServicePlatform.Licensing;
 using Particular.Aspire.Hosting.ServicePlatform.Platform;
 
@@ -47,7 +48,7 @@ public static class ResourceBuilderExtensions
         /// <param name="platform">The platform resource builder containing the license configuration.</param>
         /// <returns>The resource builder for chaining.</returns>
         public IResourceBuilder<T> WithLicense(IResourceBuilder<ParticularPlatformResource> platform)
-            => resource.WithEnvironment(PlatformLicenseAnnotation.LicenseEnvironmentVariable, platform.Resource.LicenseExpression);
+            => resource.WithEnvironment(PlatformEnvironment.ParticularSoftwareLicense, platform.Resource.LicenseExpression);
 
         /// <summary>
         /// Applies the platform's transport configuration to this resource, setting the appropriate
