@@ -2,7 +2,6 @@ namespace Aspire.Hosting;
 
 using Aspire.Hosting.ApplicationModel;
 using Particular.Aspire.Hosting.ServicePlatform;
-using Particular.Aspire.Hosting.ServicePlatform.Licensing;
 using Particular.Aspire.Hosting.ServicePlatform.Platform;
 
 /// <summary>
