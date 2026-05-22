@@ -56,7 +56,8 @@ public class LicensingTests
     public async Task LicenseShouldUseReadFromEnvVarByDefault()
     {
         var builder = new DistributedApplicationBuilder([]);
-        Environment.SetEnvironmentVariable("PARTICULARSOFTWARE_LICENSE", Guid.NewGuid().ToString());
+        var licenseText = Guid.NewGuid().ToString();
+        Environment.SetEnvironmentVariable("PARTICULARSOFTWARE_LICENSE", licenseText);
 
         builder.AddContainer("endpoint", "endpoint-container")
             .WithParticularPlatform(builder
@@ -67,18 +68,17 @@ public class LicensingTests
         var app = builder.Build();
         var model = app.Services.GetRequiredService<DistributedApplicationModel>();
 
-        //assert that the endpoint resource has the license env var set from the provided file
+        //assert that the endpoint resource has the license env var set
         var license = model.Resources.Single(x => x.Name == "particular-license");
         Assert.That(license, Is.InstanceOf<ParameterResource>());
         var licenseParameter = (ParameterResource)license;
 
         var licenseValue = await licenseParameter.GetValueAsync(CancellationToken.None).ConfigureAwait(false);
-        Assert.That(licenseValue, Is.Not.Null.And.Not.Empty);
-        Assert.That(licenseValue, Is.EqualTo(Environment.GetEnvironmentVariable("PARTICULARSOFTWARE_LICENSE")));
+        Assert.That(licenseValue, Is.EqualTo(licenseText));
     }
 
     [Test]
-    public async Task LicenseShouldOverriddenByText()
+    public async Task LicenseShouldBeOverriddenByText()
     {
         var builder = new DistributedApplicationBuilder([]);
         var text = Guid.NewGuid().ToString();
@@ -99,12 +99,11 @@ public class LicensingTests
         var licenseParameter = (ParameterResource)license;
 
         var licenseValue = await licenseParameter.GetValueAsync(CancellationToken.None).ConfigureAwait(false);
-        Assert.That(licenseValue, Is.Not.Null.And.Not.Empty);
         Assert.That(licenseValue, Is.EqualTo(text));
     }
 
     [Test]
-    public async Task LicenseShouldOverriddenByFile()
+    public async Task LicenseShouldBeOverriddenByFile()
     {
         var builder = new DistributedApplicationBuilder([]);
         var text = Guid.NewGuid().ToString();
@@ -127,7 +126,6 @@ public class LicensingTests
         var licenseParameter = (ParameterResource)license;
 
         var licenseValue = await licenseParameter.GetValueAsync(CancellationToken.None).ConfigureAwait(false);
-        Assert.That(licenseValue, Is.Not.Null.And.Not.Empty);
         Assert.That(licenseValue, Is.EqualTo(text));
     }
 
@@ -160,7 +158,6 @@ public class LicensingTests
         var licenseParameter = (ParameterResource)license;
 
         var licenseValue = await licenseParameter.GetValueAsync(CancellationToken.None).ConfigureAwait(false);
-        Assert.That(licenseValue, Is.Not.Null.And.Not.Empty);
         Assert.That(licenseValue, Is.EqualTo(text));
     }
 
