@@ -107,8 +107,7 @@ public class LicensingTests
     {
         var builder = new DistributedApplicationBuilder([]);
         var text = Guid.NewGuid().ToString();
-        var file = Path.GetTempFileName();
-        await File.WriteAllTextAsync(file, text).ConfigureAwait(false);
+        var file = Path.Combine(CreateTempLicenseRoot(text), "ParticularSoftware/license.xml");
 
         builder.AddContainer("endpoint", "endpoint-container")
             .WithParticularPlatform(builder
@@ -134,8 +133,6 @@ public class LicensingTests
     {
         var builder = new DistributedApplicationBuilder([]);
         var text = Guid.NewGuid().ToString();
-        var file = Path.GetTempFileName();
-        await File.WriteAllTextAsync(file, text).ConfigureAwait(false);
 
         builder.AddContainer("endpoint", "endpoint-container")
             .WithParticularPlatform(builder
