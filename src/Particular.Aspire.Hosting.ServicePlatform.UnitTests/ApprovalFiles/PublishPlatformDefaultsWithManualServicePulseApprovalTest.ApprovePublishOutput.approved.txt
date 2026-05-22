@@ -1,0 +1,88 @@
+File: .env
+==
+# Parameter particular-license
+PARTICULAR_LICENSE=
+
+
+==
+File: docker-compose.yaml
+==
+services:
+  compose-dashboard:
+    image: "mcr.microsoft.com/dotnet/nightly/aspire-dashboard:latest"
+    ports:
+      - "18888"
+    expose:
+      - "18889"
+      - "18890"
+    networks:
+      - "aspire"
+    restart: "always"
+  custom-persistence:
+    image: "particular/servicecontrol-ravendb:latest"
+    expose:
+      - "8080"
+    networks:
+      - "aspire"
+  custom-error:
+    image: "particular/servicecontrol:latest"
+    command:
+      - "--setup-and-run"
+    environment:
+      RAVENDB_CONNECTIONSTRING: "http://custom-persistence:8080"
+      REMOTEINSTANCES: "[{\"api_uri\": \"http://particular-audit:44444\"}]"
+      PARTICULARSOFTWARE_LICENSE: "${PARTICULAR_LICENSE}"
+      TRANSPORTTYPE: "NetStandardAzureServiceBus"
+      CONNECTIONSTRING: "Name=transport-connection"
+      SERVICEBUS_ERRORQUEUE: "error"
+    expose:
+      - "33333"
+    depends_on:
+      custom-persistence:
+        condition: "service_started"
+    networks:
+      - "aspire"
+  custom-servicepulse:
+    image: "particular/servicepulse:latest"
+    environment:
+      SERVICECONTROL_URL: "http://custom-error:33333"
+      MONITORING_URL: "!"
+      PARTICULARSOFTWARE_LICENSE: "${PARTICULAR_LICENSE}"
+    expose:
+      - "9090"
+    networks:
+      - "aspire"
+  particular-monitoring:
+    image: "particular/servicecontrol-monitoring:latest"
+    command:
+      - "--setup-and-run"
+    environment:
+      PARTICULARSOFTWARE_LICENSE: "${PARTICULAR_LICENSE}"
+      TRANSPORTTYPE: "NetStandardAzureServiceBus"
+      CONNECTIONSTRING: "Name=transport-connection"
+    expose:
+      - "33633"
+    networks:
+      - "aspire"
+  particular-audit:
+    image: "particular/servicecontrol-audit:latest"
+    command:
+      - "--setup-and-run"
+    environment:
+      RAVENDB_CONNECTIONSTRING: "http://custom-persistence:8080"
+      PARTICULARSOFTWARE_LICENSE: "${PARTICULAR_LICENSE}"
+      TRANSPORTTYPE: "NetStandardAzureServiceBus"
+      CONNECTIONSTRING: "Name=transport-connection"
+      SERVICEBUS_AUDITQUEUE: "audit"
+    expose:
+      - "44444"
+    depends_on:
+      custom-persistence:
+        condition: "service_started"
+    networks:
+      - "aspire"
+networks:
+  aspire:
+    driver: "bridge"
+
+==
