@@ -67,7 +67,8 @@ public static class ParticularPlatformExtensions
         private IResourceBuilder<T> SingleOrAddDefault<T>(Func<IResourceBuilder<T>> factory)
             where T : IResourceWithParent<ParticularPlatformResource>
         {
-            return platform.ApplicationBuilder.Resources.OfType<T>().ToList() switch
+            var children = platform.ApplicationBuilder.Resources.OfType<T>().Where(r => r.Parent == platform.Resource).ToList();
+            return children switch
             {
                 [{ } x] => platform.ApplicationBuilder.CreateResourceBuilder(x),
                 [] => factory(),
@@ -92,7 +93,7 @@ public static class ParticularPlatformExtensions
             var servicePulse = platform.ApplicationBuilder
                 .AddResource(new ServicePulseResource(name, platform.Resource, serviceControl.Resource))
                 .WithImage("particular/servicepulse", "latest")
-                .WithHttpEndpoint(port: 9090, targetPort: 9090, name: ServicePulseResource.PrimaryEndpointName)
+                .WithHttpEndpoint(targetPort: 9090, name: ServicePulseResource.PrimaryEndpointName)
                 .WithUrlForEndpoint(ServicePulseResource.PrimaryEndpointName, url => url.DisplayText = "ServicePulse");
 
             return servicePulse
@@ -123,7 +124,7 @@ public static class ParticularPlatformExtensions
             var audit = platform.ApplicationBuilder
                 .AddResource(new ServiceControlAuditInstanceResource(name, platform.Resource))
                 .WithImage("particular/servicecontrol-audit", "latest")
-                .WithHttpEndpoint(port: 44444, targetPort: 44444, name: ServiceControlAuditInstanceResource.AuditEndpointName)
+                .WithHttpEndpoint(targetPort: 44444, name: ServiceControlAuditInstanceResource.AuditEndpointName)
                 .WithUrlForEndpoint(ServiceControlAuditInstanceResource.AuditEndpointName, url =>
                 {
                     url.Url += "/api";
@@ -158,7 +159,7 @@ public static class ParticularPlatformExtensions
             var errorInstance = platform.ApplicationBuilder
                 .AddResource(new ServiceControlErrorInstanceResource(name, platform.Resource))
                 .WithImage("particular/servicecontrol", "latest")
-                .WithHttpEndpoint(port: 33333, targetPort: 33333, name: ServiceControlErrorInstanceResource.ErrorEndpointName)
+                .WithHttpEndpoint(targetPort: 33333, name: ServiceControlErrorInstanceResource.ErrorEndpointName)
                 .WithUrlForEndpoint(ServiceControlErrorInstanceResource.ErrorEndpointName, url =>
                 {
                     url.Url += "/api";
@@ -185,7 +186,7 @@ public static class ParticularPlatformExtensions
             var monitoringInstance = platform.ApplicationBuilder
                 .AddResource(new ServiceControlMonitoringInstanceResource(name, platform.Resource))
                 .WithImage("particular/servicecontrol-monitoring", "latest")
-                .WithHttpEndpoint(port: 33633, targetPort: 33633, name: ServiceControlMonitoringInstanceResource.MonitoringEndpointName)
+                .WithHttpEndpoint(targetPort: 33633, name: ServiceControlMonitoringInstanceResource.MonitoringEndpointName)
                 .WithUrlForEndpoint(ServiceControlMonitoringInstanceResource.MonitoringEndpointName, url => url.DisplayText = "ServiceControl Monitoring")
                 .WithArgs("--setup-and-run")
                 .WithHttpHealthCheck("connection", endpointName: ServiceControlMonitoringInstanceResource.MonitoringEndpointName);

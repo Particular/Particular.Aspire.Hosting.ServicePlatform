@@ -27,8 +27,7 @@ public static class ParticularServicePlatformPersistenceExtensions
             var db = platform.ApplicationBuilder
                 .AddResource(new RavenDbPlatformPersistenceResource(name, platform.Resource))
                 .WithImage("particular/servicecontrol-ravendb", "latest")
-                .WithHttpEndpoint(port: 8080, targetPort: 8080,
-                    name: RavenDbPlatformPersistenceResource.PrimaryEndpointName)
+                .WithHttpEndpoint(targetPort: 8080, name: RavenDbPlatformPersistenceResource.PrimaryEndpointName)
                 .WithUrlForEndpoint(RavenDbPlatformPersistenceResource.PrimaryEndpointName,
                     url => url.DisplayText = "Management Studio")
                 .WithHttpHealthCheck("databases", endpointName: RavenDbPlatformPersistenceResource.PrimaryEndpointName);
