@@ -7,7 +7,7 @@ using global::Aspire.Hosting.ApplicationModel;
 // after AddParticularPlatform has already returned.
 sealed class PlatformLicenseAnnotation(ParameterResource license) : IResourceAnnotation
 {
-    public static string LicenseEnvironmentVariable => "PARTICULARSOFTWARE_LICENSE";
+    public const string LicenseEnvironmentVariable = "PARTICULARSOFTWARE_LICENSE";
 
     public ParameterResource License { get; } = license;
 }
