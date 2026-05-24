@@ -2,6 +2,7 @@ namespace Aspire.Hosting;
 
 using System;
 using Aspire.Hosting.ApplicationModel;
+using Particular.Aspire.Hosting.ServicePlatform;
 using Particular.Aspire.Hosting.ServicePlatform.Platform;
 using Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting;
 
@@ -40,7 +41,7 @@ public static class ErrorInstanceExtensions
         public IResourceBuilder<ServiceControlErrorInstanceResource> WithThroughputQueue(string queueName) =>
             errorInstance
                 .WithAnnotation(new ThroughputQueueAnnotation(queueName))
-                .WithEnvironment(ServiceControlErrorInstanceResource.ThroughputQueueEnvVar, queueName);
+                .WithEnvironment(PlatformEnvironment.ServiceControl.LicensingComponent.ServiceControlThroughputDataQueue, queueName);
 
         /// <summary>
         /// Sets the name of the error queue that this instance will consume messages from.
@@ -48,7 +49,7 @@ public static class ErrorInstanceExtensions
         /// <param name="queueName">The name of the error queue.</param>
         /// <returns>The error instance resource builder for chaining.</returns>
         public IResourceBuilder<ServiceControlErrorInstanceResource> WithErrorQueueName(string queueName) =>
-            errorInstance.WithEnvironment(ServiceControlErrorInstanceResource.ErrorQueueEnvVar, queueName);
+            errorInstance.WithEnvironment(PlatformEnvironment.ServiceControl.ErrorQueue, queueName);
 
         /// <summary>
         /// Configures throughput reporting for this error instance using the specified provider.

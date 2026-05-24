@@ -12,10 +12,6 @@ using Transport;
 /// </summary>
 public sealed class ThroughputReportingRabbitMq : IThroughputReportingProvider
 {
-    internal const string ApiUrlEnvVar = "LICENSINGCOMPONENT_RABBITMQ_APIURL";
-    internal const string UsernameEnvVar = "LICENSINGCOMPONENT_RABBITMQ_USERNAME";
-    internal const string PasswordEnvVar = "LICENSINGCOMPONENT_RABBITMQ_PASSWORD";
-
     readonly IExpressionValue? apiUrl;
     readonly IExpressionValue? userName;
     readonly IExpressionValue? password;
@@ -48,17 +44,17 @@ public sealed class ThroughputReportingRabbitMq : IThroughputReportingProvider
 
         if (apiUrl is not null)
         {
-            errorInstance.WithEnvironment(ApiUrlEnvVar, apiUrl);
+            errorInstance.WithEnvironment(PlatformEnvironment.ServiceControl.LicensingComponent.RabbitMq.ApiUrl, apiUrl);
         }
 
         if (userName is not null)
         {
-            errorInstance.WithEnvironment(UsernameEnvVar, userName);
+            errorInstance.WithEnvironment(PlatformEnvironment.ServiceControl.LicensingComponent.RabbitMq.Username, userName);
         }
 
         if (password is not null)
         {
-            errorInstance.WithEnvironment(PasswordEnvVar, password);
+            errorInstance.WithEnvironment(PlatformEnvironment.ServiceControl.LicensingComponent.RabbitMq.Password, password);
         }
     }
 }

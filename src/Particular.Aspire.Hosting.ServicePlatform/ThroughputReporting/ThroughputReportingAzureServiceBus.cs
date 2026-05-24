@@ -11,13 +11,6 @@ using Particular.Aspire.Hosting.ServicePlatform.Platform;
 /// </summary>
 public sealed class ThroughputReportingAzureServiceBus : IThroughputReportingProvider
 {
-    internal const string ServiceBusNameEnvVar = "LICENSINGCOMPONENT_ASB_SERVICEBUSNAME";
-    internal const string TenantIdEnvVar = "LICENSINGCOMPONENT_ASB_TENANTID";
-    internal const string SubscriptionIdEnvVar = "LICENSINGCOMPONENT_ASB_SUBSCRIPTIONID";
-    internal const string ClientIdEnvVar = "LICENSINGCOMPONENT_ASB_CLIENTID";
-    internal const string ClientSecretEnvVar = "LICENSINGCOMPONENT_ASB_CLIENTSECRET";
-    internal const string ManagementUrlEnvVar = "LICENSINGCOMPONENT_ASB_MANAGEMENTURL";
-
     readonly IExpressionValue? serviceBusName;
     readonly IExpressionValue tenantId;
     readonly IExpressionValue subscriptionId;
@@ -67,19 +60,19 @@ public sealed class ThroughputReportingAzureServiceBus : IThroughputReportingPro
         }
 
         errorInstance
-            .WithEnvironment(TenantIdEnvVar, tenantId)
-            .WithEnvironment(SubscriptionIdEnvVar, subscriptionId)
-            .WithEnvironment(ClientIdEnvVar, clientId)
-            .WithEnvironment(ClientSecretEnvVar, clientSecret);
+            .WithEnvironment(PlatformEnvironment.ServiceControl.LicensingComponent.AzureServiceBus.TenantId, tenantId)
+            .WithEnvironment(PlatformEnvironment.ServiceControl.LicensingComponent.AzureServiceBus.SubscriptionId, subscriptionId)
+            .WithEnvironment(PlatformEnvironment.ServiceControl.LicensingComponent.AzureServiceBus.ClientId, clientId)
+            .WithEnvironment(PlatformEnvironment.ServiceControl.LicensingComponent.AzureServiceBus.ClientSecret, clientSecret);
 
         if (serviceBusName is not null)
         {
-            errorInstance.WithEnvironment(ServiceBusNameEnvVar, serviceBusName);
+            errorInstance.WithEnvironment(PlatformEnvironment.ServiceControl.LicensingComponent.AzureServiceBus.ServiceBusName, serviceBusName);
         }
 
         if (managementUrl is not null)
         {
-            errorInstance.WithEnvironment(ManagementUrlEnvVar, managementUrl);
+            errorInstance.WithEnvironment(PlatformEnvironment.ServiceControl.LicensingComponent.AzureServiceBus.ManagementUrl, managementUrl);
         }
     }
 }

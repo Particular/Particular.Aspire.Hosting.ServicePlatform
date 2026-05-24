@@ -8,6 +8,6 @@ sealed class RavenDbPlatformPersistenceAnnotation(IResourceWithConnectionString 
 
     void IPlatformPersistenceAnnotation.ApplyConfig(EnvironmentCallbackContext context)
     {
-        context.EnvironmentVariables["RAVENDB_CONNECTIONSTRING"] = connectionString;
+        context.EnvironmentVariables[PlatformEnvironment.RavenDbConnectionString] = connectionString;
     }
 }

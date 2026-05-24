@@ -1,6 +1,7 @@
 namespace Aspire.Hosting;
 
 using Aspire.Hosting.ApplicationModel;
+using Particular.Aspire.Hosting.ServicePlatform;
 using Particular.Aspire.Hosting.ServicePlatform.Platform;
 
 /// <summary>
@@ -24,6 +25,6 @@ public static class AuditInstanceExtensions
         /// <param name="queueName">The name of the audit queue.</param>
         /// <returns>The audit instance resource builder for chaining.</returns>
         public IResourceBuilder<ServiceControlAuditInstanceResource> WithAuditQueueName(string queueName) =>
-            auditInstance.WithEnvironment(ServiceControlAuditInstanceResource.AuditQueueEnvVar, queueName);
+            auditInstance.WithEnvironment(PlatformEnvironment.ServiceControl.AuditQueue, queueName);
     }
 }

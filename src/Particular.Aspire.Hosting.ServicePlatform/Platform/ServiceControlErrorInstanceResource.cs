@@ -24,13 +24,11 @@ public sealed class ServiceControlErrorInstanceResource : ContainerResource, IPl
             }
 
             annotation.ApplyConfig(context);
-            context.EnvironmentVariables["REMOTEINSTANCES"] = RemoteInstancesExpression;
+            context.EnvironmentVariables[PlatformEnvironment.ServiceControl.RemoteInstances] = RemoteInstancesExpression;
         }));
     }
 
     internal const string ErrorEndpointName = "error";
-    internal const string ThroughputQueueEnvVar = "LICENSINGCOMPONENT_SERVICECONTROLTHROUGHPUTDATAQUEUE";
-    internal const string ErrorQueueEnvVar = "SERVICEBUS_ERRORQUEUE";
     internal const string DefaultErrorQueueName = "error";
     /// <summary>
     /// The parent platform resource that this error instance belongs to.

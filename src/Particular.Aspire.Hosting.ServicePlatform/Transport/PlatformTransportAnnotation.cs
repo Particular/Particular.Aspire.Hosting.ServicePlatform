@@ -3,6 +3,7 @@ namespace Particular.Aspire.Hosting.ServicePlatform.Transport;
 using global::Aspire.Hosting;
 using global::Aspire.Hosting.ApplicationModel;
 using Particular.Aspire.Hosting.ServicePlatform.Platform;
+using Particular.Aspire.Hosting.ServicePlatform;
 
 // Consumer-supplied transport resources (Azure Service Bus, RabbitMQ, etc.) aren't owned by the platform,
 // so the topology subscriber can't find them via IResourceWithParent. An annotation on the platform holds
@@ -25,8 +26,8 @@ abstract class PlatformTransportAnnotation : IPlatformTransportAnnotation
         {
             resource.WithEnvironment(context =>
             {
-                context.EnvironmentVariables["TRANSPORTTYPE"] = TransportType;
-                context.EnvironmentVariables["CONNECTIONSTRING"] = ConnectionSource;
+                context.EnvironmentVariables[PlatformEnvironment.ServiceControl.TransportType] = TransportType;
+                context.EnvironmentVariables[PlatformEnvironment.ServiceControl.ConnectionString] = ConnectionSource;
             });
             return;
         }

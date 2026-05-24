@@ -1,6 +1,7 @@
 namespace Aspire.Hosting;
 
 using Aspire.Hosting.ApplicationModel;
+using Particular.Aspire.Hosting.ServicePlatform;
 using Particular.Aspire.Hosting.ServicePlatform.Platform;
 
 /// <summary>
@@ -22,7 +23,7 @@ public static class MonitoringInstanceExtensions
             {
                 if (errorInstance.Resource.TryGetLastAnnotation<ThroughputQueueAnnotation>(out var throughput))
                 {
-                    ctx.EnvironmentVariables[ServiceControlMonitoringInstanceResource.ThroughputQueueEnvVar] = throughput.QueueName;
+                    ctx.EnvironmentVariables[PlatformEnvironment.Monitoring.ServiceControlThroughputDataQueue] = throughput.QueueName;
                 }
             });
 
@@ -37,7 +38,7 @@ public static class MonitoringInstanceExtensions
             string queueName) =>
             monitoring.WithEnvironment(ctx =>
             {
-                ctx.EnvironmentVariables[ServiceControlMonitoringInstanceResource.ThroughputQueueEnvVar] = queueName;
+                ctx.EnvironmentVariables[PlatformEnvironment.Monitoring.ServiceControlThroughputDataQueue] = queueName;
             });
 
         /// <summary>
@@ -47,6 +48,6 @@ public static class MonitoringInstanceExtensions
         /// <returns>The monitoring instance resource builder for chaining.</returns>
         public IResourceBuilder<ServiceControlMonitoringInstanceResource> WithMonitoringQueueName(string queueName) =>
             monitoring
-                .WithEnvironment(ServiceControlMonitoringInstanceResource.MonitoringQueueEnvVar, queueName);
+                .WithEnvironment(PlatformEnvironment.Monitoring.InstanceName, queueName);
     }
 }
