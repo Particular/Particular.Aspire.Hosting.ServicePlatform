@@ -80,5 +80,46 @@ public static class ParticularPlatformTransportExtensions
             ArgumentNullException.ThrowIfNull(rabbitMQ);
             return platform.WithAnnotation(new RabbitMqTransportAnnotation(routingType, rabbitMQ.Resource));
         }
+
+        /// <summary>
+        /// Configures the platform to use Amazon SQS as the message transport.
+        /// </summary>
+        /// <param name="region">The AWS region.</param>
+        /// <param name="accessKeyId">The AWS access key ID.</param>
+        /// <param name="secretAccessKey">The AWS secret access key.</param>
+        /// <param name="queueNamePrefix">Optional queue name prefix.</param>
+        /// <param name="topicNamePrefix">Optional topic name prefix.</param>
+        /// <param name="s3BucketForLargeMessages">Optional S3 bucket for large message payloads.</param>
+        /// <param name="s3KeyPrefix">Optional S3 key prefix used with large messages.</param>
+        /// <param name="doNotWrapOutgoingMessages">Optional value to control message wrapping.</param>
+        /// <param name="reservedBytesInMessageSize">Optional reserved bytes setting for message size calculations.</param>
+        /// <returns>The platform resource builder for chaining.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if required values are null.</exception>
+        public IResourceBuilder<ParticularPlatformResource> WithTransportAmazonSqs(
+            IExpressionValue region,
+            IExpressionValue accessKeyId,
+            IExpressionValue secretAccessKey,
+            IExpressionValue? queueNamePrefix = null,
+            IExpressionValue? topicNamePrefix = null,
+            IExpressionValue? s3BucketForLargeMessages = null,
+            IExpressionValue? s3KeyPrefix = null,
+            IExpressionValue? doNotWrapOutgoingMessages = null,
+            IExpressionValue? reservedBytesInMessageSize = null)
+        {
+            ArgumentNullException.ThrowIfNull(region);
+            ArgumentNullException.ThrowIfNull(accessKeyId);
+            ArgumentNullException.ThrowIfNull(secretAccessKey);
+
+            return platform.WithAnnotation(new AmazonSqsTransportAnnotation(
+                region,
+                accessKeyId,
+                secretAccessKey,
+                queueNamePrefix,
+                topicNamePrefix,
+                s3BucketForLargeMessages,
+                s3KeyPrefix,
+                doNotWrapOutgoingMessages,
+                reservedBytesInMessageSize));
+        }
     }
 }

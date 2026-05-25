@@ -64,6 +64,7 @@ namespace Aspire.Hosting
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportLearning(string? storagePath = null) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportAzureServiceBus(Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResourceWithConnectionString> azureServiceBus) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportRabbitMQ(Particular.Aspire.Hosting.ServicePlatform.Transport.RabbitMqRouting routingType, Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResourceWithConnectionString> rabbitMQ) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportAmazonSqs(Aspire.Hosting.ApplicationModel.IExpressionValue region, Aspire.Hosting.ApplicationModel.IExpressionValue accessKeyId, Aspire.Hosting.ApplicationModel.IExpressionValue secretAccessKey, Aspire.Hosting.ApplicationModel.IExpressionValue? queueNamePrefix = null, Aspire.Hosting.ApplicationModel.IExpressionValue? topicNamePrefix = null, Aspire.Hosting.ApplicationModel.IExpressionValue? s3BucketForLargeMessages = null, Aspire.Hosting.ApplicationModel.IExpressionValue? s3KeyPrefix = null, Aspire.Hosting.ApplicationModel.IExpressionValue? doNotWrapOutgoingMessages = null, Aspire.Hosting.ApplicationModel.IExpressionValue? reservedBytesInMessageSize = null) { }
         }
     }
     public static class ParticularServicePlatformPersistenceExtensions
@@ -143,6 +144,11 @@ namespace Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting
     public interface IThroughputReportingProvider
     {
         void ApplyTo(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> errorInstance);
+    }
+    public sealed class ThroughputReportingAmazonSqs : Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting.IThroughputReportingProvider
+    {
+        public ThroughputReportingAmazonSqs(Aspire.Hosting.ApplicationModel.IExpressionValue? accessKey, Aspire.Hosting.ApplicationModel.IExpressionValue? secretKey, Aspire.Hosting.ApplicationModel.IExpressionValue? profile, Aspire.Hosting.ApplicationModel.IExpressionValue? region, Aspire.Hosting.ApplicationModel.IExpressionValue? prefix) { }
+        public void ApplyTo(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> errorInstance) { }
     }
     public sealed class ThroughputReportingAzureServiceBus : Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting.IThroughputReportingProvider
     {
