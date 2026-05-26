@@ -16,10 +16,10 @@ public class PublishPlatformDefaultsAmazonSqsUsageReportingApprovalTest : Aspire
         var platform = builder
             .AddParticularPlatform("particular")
             .WithTransportAmazonSqs(
-                ReferenceExpression.Create($"us-east-1"),
+                "us-east-1",
                 accesskey.Resource,
                 secretKey.Resource,
-                ReferenceExpression.Create($"transport-prefix"));
+                "transport-prefix");
 
         platform
             .AddServiceControlErrorInstance("particular-error", platform.AddPersistenceRavenDb("particular-persistence"))

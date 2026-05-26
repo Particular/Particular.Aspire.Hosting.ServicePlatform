@@ -5,15 +5,15 @@ using global::Aspire.Hosting.ApplicationModel;
 using Platform;
 
 class AmazonSqsTransportAnnotation(
-    IExpressionValue region,
+    string region,
     IExpressionValue accessKeyId,
     IExpressionValue secretAccessKey,
-    IExpressionValue? queueNamePrefix,
-    IExpressionValue? topicNamePrefix,
+    string? queueNamePrefix,
+    string? topicNamePrefix,
     IExpressionValue? s3BucketForLargeMessages,
-    IExpressionValue? s3KeyPrefix,
-    IExpressionValue? doNotWrapOutgoingMessages,
-    IExpressionValue? reservedBytesInMessageSize
+    string? s3KeyPrefix,
+    bool? doNotWrapOutgoingMessages,
+    int? reservedBytesInMessageSize
 ) : IPlatformTransportAnnotation
 {
     ReferenceExpression CreateConnectionString()
@@ -22,12 +22,12 @@ class AmazonSqsTransportAnnotation(
         builder.Append($"Region={region};AccessKeyId={accessKeyId};SecretAccessKey={secretAccessKey};");
         if (queueNamePrefix != null)
         {
-            builder.Append($"QueueNamePrefix={queueNamePrefix};");
+            builder.AppendLiteral($"QueueNamePrefix={queueNamePrefix};");
         }
 
         if (topicNamePrefix != null)
         {
-            builder.Append($"TopicNamePrefix={topicNamePrefix};");
+            builder.AppendLiteral($"TopicNamePrefix={topicNamePrefix};");
         }
 
         if (s3BucketForLargeMessages != null)
@@ -37,17 +37,17 @@ class AmazonSqsTransportAnnotation(
 
         if (s3KeyPrefix != null)
         {
-            builder.Append($"S3KeyPrefix={s3KeyPrefix};");
+            builder.AppendLiteral($"S3KeyPrefix={s3KeyPrefix};");
         }
 
         if (doNotWrapOutgoingMessages != null)
         {
-            builder.Append($"DoNotWrapOutgoingMessages={doNotWrapOutgoingMessages};");
+            builder.AppendLiteral($"DoNotWrapOutgoingMessages={doNotWrapOutgoingMessages};");
         }
 
         if (reservedBytesInMessageSize != null)
         {
-            builder.Append($"ReservedBytesInMessageSize={reservedBytesInMessageSize};");
+            builder.AppendLiteral($"ReservedBytesInMessageSize={reservedBytesInMessageSize};");
         }
 
         return builder.Build();

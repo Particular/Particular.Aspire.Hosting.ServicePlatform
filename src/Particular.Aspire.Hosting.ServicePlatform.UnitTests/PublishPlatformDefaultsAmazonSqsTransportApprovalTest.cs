@@ -1,7 +1,6 @@
 namespace Particular.Aspire.Hosting.ServicePlatform.UnitTests;
 
 using global::Aspire.Hosting;
-using global::Aspire.Hosting.ApplicationModel;
 using Particular.Aspire.Hosting.ServicePlatform.Tests;
 
 public class PublishPlatformDefaultsAmazonSqsTransportApprovalTest : AspireApplicationPublishingTestBase
@@ -16,10 +15,11 @@ public class PublishPlatformDefaultsAmazonSqsTransportApprovalTest : AspireAppli
         var platform = builder
             .AddParticularPlatform("particular")
             .WithTransportAmazonSqs(
-                ReferenceExpression.Create($"us-east-1"),
+                "us-east-1",
                 accesskey.Resource,
                 secretKey.Resource,
-                ReferenceExpression.Create($"transport-prefix"));
+                "transport-prefix",
+                s3BucketForLargeMessages: "stringBucket");
 
         platform.AddDefaultComponents();
     }
