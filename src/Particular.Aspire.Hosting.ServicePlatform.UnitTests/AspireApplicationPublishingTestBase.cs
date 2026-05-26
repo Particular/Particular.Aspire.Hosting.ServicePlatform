@@ -20,6 +20,12 @@ public abstract class AspireApplicationPublishingTestBase
 {
     protected abstract void BuildApplication(IDistributedApplicationBuilder builder);
 
+    /// <summary>
+    /// Optional scenario name appended to the approval file. Lets parameterised fixtures
+    /// produce one approval file per case (e.g. one per <c>RabbitMqRouting</c> value).
+    /// </summary>
+    protected virtual string? Scenario => null;
+
     [Test, CancelAfter(30_000)]
     public async Task ApprovePublishOutput(CancellationToken cancellationToken = default)
     {
@@ -68,6 +74,7 @@ public abstract class AspireApplicationPublishingTestBase
                         "File: " + Path.GetRelativePath(outDir, f).Replace("\\", "/"), "==",
                         File.ReadAllText(f), "=="
                     })),
+                scenario: Scenario,
                 // ReSharper disable once ExplicitCallerInfoArgument
                 // explicit override here to make the abstract base class look right in the approvals folder
                 callerFilePath: GetType().Name
