@@ -53,12 +53,12 @@ public static class MonitoringInstanceExtensions
                 .WithEnvironment(PlatformEnvironment.Monitoring.InstanceName, queueName);
 
         /// <summary>
-        /// Configures this monitoring instance to start without running setup, omitting the <c>--setup-and-run</c>
-        /// container argument so the instance starts directly in run mode. Use this when the message queues have
-        /// already been provisioned.
+        /// Sets the run mode for this monitoring instance, controlling whether the container performs setup,
+        /// runs the instance, or both. Defaults to <see cref="PlatformRunMode.SetupAndRun"/> when not configured.
         /// </summary>
+        /// <param name="runMode">The run mode to use.</param>
         /// <returns>The monitoring instance resource builder for chaining.</returns>
-        public IResourceBuilder<ServiceControlMonitoringInstanceResource> WithoutSetup() =>
-            monitoring.WithAnnotation(new SkipSetupAnnotation());
+        public IResourceBuilder<ServiceControlMonitoringInstanceResource> WithRunMode(PlatformRunMode runMode) =>
+            monitoring.WithAnnotation(new RunModeAnnotation(runMode), ResourceAnnotationMutationBehavior.Replace);
     }
 }

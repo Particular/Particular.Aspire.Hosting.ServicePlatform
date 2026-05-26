@@ -32,16 +32,30 @@ static class PlatformComponentExtensions
         where T : IResource, IResourceWithArgs
     {
         /// <summary>
-        /// Adds the "--setup-and-run" container argument unless the resource is marked to skip setup
-        /// via WithoutSetup(). The argument is applied via a callback so the
-        /// decision is evaluated at build/publish time and is order-independent relative to WithoutSetup().
+        /// Adds the container argument for the resource's configured <see cref="PlatformRunMode"/>
+        /// (<c>--setup-and-run</c>, <c>--setup</c>, or none), defaulting to
+        /// <see cref="PlatformRunMode.SetupAndRun"/> when unset. The argument is applied via a callback
+        /// so the decision is evaluated at build/publish time and is order-independent relative to
+        /// WithRunMode().
         /// </summary>
-        internal IResourceBuilder<T> WithSetupAndRunArgs() =>
+        internal IResourceBuilder<T> WithRunModeArgs() =>
             resource.WithArgs(context =>
             {
-                if (!resource.Resource.TryGetLastAnnotation<SkipSetupAnnotation>(out _))
+                var mode = resource.Resource.TryGetLastAnnotation<RunModeAnnotation>(out var annotation)
+                    ? annotation.Mode
+                    : PlatformRunMode.SetupAndRun;
+
+                var runModeArg = mode switch
                 {
-                    context.Args.Add("--setup-and-run");
+                    PlatformRunMode.SetupAndRun => "--setup-and-run",
+                    PlatformRunMode.Setup => "--setup",
+                    PlatformRunMode.Run => null,
+                    _ => throw new ArgumentOutOfRangeException(nameof(annotation), mode, "Unknown platform run mode")
+                };
+
+                if (runModeArg is not null)
+                {
+                    context.Args.Add(runModeArg);
                 }
             });
     }

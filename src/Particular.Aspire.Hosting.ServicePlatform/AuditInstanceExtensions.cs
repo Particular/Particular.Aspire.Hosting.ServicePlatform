@@ -28,12 +28,12 @@ public static class AuditInstanceExtensions
             auditInstance.WithEnvironment(PlatformEnvironment.ServiceControl.AuditQueue, queueName);
 
         /// <summary>
-        /// Configures this audit instance to start without running setup, omitting the <c>--setup-and-run</c>
-        /// container argument so the instance starts directly in run mode. Use this when the message queues and
-        /// persistence have already been provisioned.
+        /// Sets the run mode for this audit instance, controlling whether the container performs setup,
+        /// runs the instance, or both. Defaults to <see cref="PlatformRunMode.SetupAndRun"/> when not configured.
         /// </summary>
+        /// <param name="runMode">The run mode to use.</param>
         /// <returns>The audit instance resource builder for chaining.</returns>
-        public IResourceBuilder<ServiceControlAuditInstanceResource> WithoutSetup() =>
-            auditInstance.WithAnnotation(new SkipSetupAnnotation());
+        public IResourceBuilder<ServiceControlAuditInstanceResource> WithRunMode(PlatformRunMode runMode) =>
+            auditInstance.WithAnnotation(new RunModeAnnotation(runMode), ResourceAnnotationMutationBehavior.Replace);
     }
 }

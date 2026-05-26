@@ -52,13 +52,13 @@ public static class ErrorInstanceExtensions
             errorInstance.WithEnvironment(PlatformEnvironment.ServiceControl.ErrorQueue, queueName);
 
         /// <summary>
-        /// Configures this error instance to start without running setup, omitting the <c>--setup-and-run</c>
-        /// container argument so the instance starts directly in run mode. Use this when the message queues and
-        /// persistence have already been provisioned.
+        /// Sets the run mode for this error instance, controlling whether the container performs setup,
+        /// runs the instance, or both. Defaults to <see cref="PlatformRunMode.SetupAndRun"/> when not configured.
         /// </summary>
+        /// <param name="runMode">The run mode to use.</param>
         /// <returns>The error instance resource builder for chaining.</returns>
-        public IResourceBuilder<ServiceControlErrorInstanceResource> WithoutSetup() =>
-            errorInstance.WithAnnotation(new SkipSetupAnnotation());
+        public IResourceBuilder<ServiceControlErrorInstanceResource> WithRunMode(PlatformRunMode runMode) =>
+            errorInstance.WithAnnotation(new RunModeAnnotation(runMode), ResourceAnnotationMutationBehavior.Replace);
 
         /// <summary>
         /// Configures throughput reporting for this error instance using the specified provider.

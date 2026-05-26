@@ -35,6 +35,8 @@ services:
       - "aspire"
   particular-error:
     image: "particular/servicecontrol:latest"
+    command:
+      - "--setup"
     environment:
       RAVENDB_CONNECTIONSTRING: "http://particular-persistence:8080"
       REMOTEINSTANCES: "[{\"api_uri\": \"http://particular-audit:44444\"}]"
@@ -71,6 +73,8 @@ services:
       - "aspire"
   particular-audit:
     image: "particular/servicecontrol-audit:latest"
+    command:
+      - "--setup-and-run"
     environment:
       RAVENDB_CONNECTIONSTRING: "http://particular-persistence:8080"
       PARTICULARSOFTWARE_LICENSE: "${PARTICULAR_LICENSE}"

@@ -6,7 +6,7 @@ namespace Aspire.Hosting
         {
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlAuditInstanceResource> WithPersistence(Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResource> persistence) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlAuditInstanceResource> WithAuditQueueName(string queueName) { }
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlAuditInstanceResource> WithoutSetup() { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlAuditInstanceResource> WithRunMode(Particular.Aspire.Hosting.ServicePlatform.Platform.PlatformRunMode runMode) { }
         }
     }
     public static class DistributedApplicationBuilderExtensions
@@ -24,7 +24,7 @@ namespace Aspire.Hosting
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> WithRemoteInstance(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlAuditInstanceResource> instance) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> WithThroughputQueue(string queueName) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> WithErrorQueueName(string queueName) { }
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> WithoutSetup() { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> WithRunMode(Particular.Aspire.Hosting.ServicePlatform.Platform.PlatformRunMode runMode) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> WithThroughputReporting(Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting.IThroughputReportingProvider provider) { }
         }
     }
@@ -35,7 +35,7 @@ namespace Aspire.Hosting
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlMonitoringInstanceResource> WithThroughputQueueFrom(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> errorInstance) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlMonitoringInstanceResource> WithThroughputQueue(string queueName) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlMonitoringInstanceResource> WithMonitoringQueueName(string queueName) { }
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlMonitoringInstanceResource> WithoutSetup() { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlMonitoringInstanceResource> WithRunMode(Particular.Aspire.Hosting.ServicePlatform.Platform.PlatformRunMode runMode) { }
         }
     }
     public static class ParticularPlatformExtensions
@@ -111,6 +111,12 @@ namespace Particular.Aspire.Hosting.ServicePlatform.Platform
     public sealed class ParticularPlatformResource : Aspire.Hosting.ApplicationModel.Resource
     {
         public Aspire.Hosting.ApplicationModel.ReferenceExpression LicenseExpression { get; }
+    }
+    public enum PlatformRunMode
+    {
+        SetupAndRun = 0,
+        Run = 1,
+        Setup = 2,
     }
     public sealed class ServiceControlAuditInstanceResource : Aspire.Hosting.ApplicationModel.ContainerResource, Aspire.Hosting.ApplicationModel.IResource, Aspire.Hosting.ApplicationModel.IResourceWithParent, Aspire.Hosting.ApplicationModel.IResourceWithParent<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource>
     {

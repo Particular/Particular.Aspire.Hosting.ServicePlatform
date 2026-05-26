@@ -1,11 +1,13 @@
 namespace Particular.Aspire.Hosting.ServicePlatform.Tests;
 
 using global::Aspire.Hosting;
+using Particular.Aspire.Hosting.ServicePlatform.Platform;
 
-public class PublishPlatformWithoutSetupApprovalTest : AspireApplicationPublishingTestBase
+public class PublishPlatformRunModesApprovalTest : AspireApplicationPublishingTestBase
 {
-    // Mirrors the default-components topology, but disables setup on each ServiceControl instance so the
-    // published container commands omit the "--setup-and-run" argument.
+    // Exercises each PlatformRunMode so the published container commands reflect the mapping:
+    // Setup -> "--setup", Run -> (no command), and the default when WithRunMode is not
+    // called -> "--setup-and-run".
     protected override void BuildApplication(IDistributedApplicationBuilder builder)
     {
         builder.AddDockerComposeEnvironment("compose");
@@ -18,15 +20,14 @@ public class PublishPlatformWithoutSetupApprovalTest : AspireApplicationPublishi
 
         var error = platform
             .AddServiceControlErrorInstance("particular-error", persistence)
-            .WithoutSetup();
+            .WithRunMode(PlatformRunMode.Setup);
 
         var monitoring = platform
             .AddServiceControlMonitoringInstance("particular-monitoring")
-            .WithoutSetup();
+            .WithRunMode(PlatformRunMode.Run);
 
-        platform
-            .AddServiceControlAuditInstance("particular-audit", error, persistence)
-            .WithoutSetup();
+        // No WithRunMode call: exercises the default, which must emit "--setup-and-run".
+        platform.AddServiceControlAuditInstance("particular-audit", error, persistence);
 
         platform.AddServicePulse("particular-servicepulse", error, monitoring);
     }

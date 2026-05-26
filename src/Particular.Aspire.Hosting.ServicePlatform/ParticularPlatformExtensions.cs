@@ -134,7 +134,7 @@ public static class ParticularPlatformExtensions
                     url.Url += "/api";
                     url.DisplayText = "ServiceControl Audit";
                 })
-                .WithSetupAndRunArgs()
+                .WithRunModeArgs()
                 .WithHttpHealthCheck("api/configuration", endpointName: ServiceControlAuditInstanceResource.HttpEndpointName);
 
             serviceControl.WithRemoteInstance(audit);
@@ -169,7 +169,7 @@ public static class ParticularPlatformExtensions
                     url.Url += "/api";
                     url.DisplayText = "ServiceControl Error";
                 })
-                .WithSetupAndRunArgs()
+                .WithRunModeArgs()
                 .WithHttpHealthCheck("api/configuration", endpointName: ServiceControlErrorInstanceResource.HttpEndpointName);
             return errorInstance
                 .WithLicense(platform)
@@ -192,7 +192,7 @@ public static class ParticularPlatformExtensions
                 .WithImage("particular/servicecontrol-monitoring", "latest")
                 .WithHttpEndpoint(targetPort: 33633, name: ServiceControlMonitoringInstanceResource.HttpEndpointName)
                 .WithUrlForEndpoint(ServiceControlMonitoringInstanceResource.HttpEndpointName, url => url.DisplayText = "ServiceControl Monitoring")
-                .WithSetupAndRunArgs()
+                .WithRunModeArgs()
                 .WithHttpHealthCheck("connection", endpointName: ServiceControlMonitoringInstanceResource.HttpEndpointName);
 
             return monitoringInstance
