@@ -19,13 +19,15 @@ public static class MonitoringInstanceExtensions
         /// <returns>The monitoring instance resource builder for chaining.</returns>
         public IResourceBuilder<ServiceControlMonitoringInstanceResource> WithThroughputQueueFrom(
             IResourceBuilder<ServiceControlErrorInstanceResource> errorInstance) =>
-            monitoring.WithEnvironment(ctx =>
-            {
-                if (errorInstance.Resource.TryGetLastAnnotation<ThroughputQueueAnnotation>(out var throughput))
+            monitoring
+                .WithEnvironment(ctx =>
                 {
-                    ctx.EnvironmentVariables[PlatformEnvironment.Monitoring.ServiceControlThroughputDataQueue] = throughput.QueueName;
-                }
-            });
+                    if (errorInstance.Resource.TryGetLastAnnotation<ThroughputQueueAnnotation>(out var throughput))
+                    {
+                        ctx.EnvironmentVariables[PlatformEnvironment.Monitoring.ServiceControlThroughputDataQueue] = throughput.QueueName;
+                    }
+                })
+                .WithRelationship(errorInstance.Resource, "Throughput source");
 
         /// <summary>
         /// Sets the name of the throughput data queue for this monitoring instance. Use this when the queue address
@@ -49,5 +51,14 @@ public static class MonitoringInstanceExtensions
         public IResourceBuilder<ServiceControlMonitoringInstanceResource> WithMonitoringQueueName(string queueName) =>
             monitoring
                 .WithEnvironment(PlatformEnvironment.Monitoring.InstanceName, queueName);
+
+        /// <summary>
+        /// Configures this monitoring instance to start without running setup, omitting the <c>--setup-and-run</c>
+        /// container argument so the instance starts directly in run mode. Use this when the message queues have
+        /// already been provisioned.
+        /// </summary>
+        /// <returns>The monitoring instance resource builder for chaining.</returns>
+        public IResourceBuilder<ServiceControlMonitoringInstanceResource> WithoutSetup() =>
+            monitoring.WithAnnotation(new SkipSetupAnnotation());
     }
 }

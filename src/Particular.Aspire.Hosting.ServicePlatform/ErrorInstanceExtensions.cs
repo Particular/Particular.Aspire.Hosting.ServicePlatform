@@ -28,10 +28,10 @@ public static class ErrorInstanceExtensions
         /// <param name="instance">The audit instance to register as a remote instance.</param>
         /// <returns>The error instance resource builder for chaining.</returns>
         public IResourceBuilder<ServiceControlErrorInstanceResource> WithRemoteInstance(IResourceBuilder<ServiceControlAuditInstanceResource> instance) =>
-            errorInstance.WithAnnotation(new RemoteInstanceAnnotation(
-                    ReferenceExpression.Create(
-                        $"{instance.Resource.GetEndpoint(ServiceControlAuditInstanceResource.AuditEndpointName)}"))
-                );
+            errorInstance
+                .WithAnnotation(new RemoteInstanceAnnotation(
+                    ReferenceExpression.Create($"{instance.Resource.GetEndpoint(ServiceControlAuditInstanceResource.HttpEndpointName)}")))
+                .WithRelationship(instance.Resource, "Remote instance");
 
         /// <summary>
         /// Sets the name of the queue used for throughput data reporting.
@@ -50,6 +50,15 @@ public static class ErrorInstanceExtensions
         /// <returns>The error instance resource builder for chaining.</returns>
         public IResourceBuilder<ServiceControlErrorInstanceResource> WithErrorQueueName(string queueName) =>
             errorInstance.WithEnvironment(PlatformEnvironment.ServiceControl.ErrorQueue, queueName);
+
+        /// <summary>
+        /// Configures this error instance to start without running setup, omitting the <c>--setup-and-run</c>
+        /// container argument so the instance starts directly in run mode. Use this when the message queues and
+        /// persistence have already been provisioned.
+        /// </summary>
+        /// <returns>The error instance resource builder for chaining.</returns>
+        public IResourceBuilder<ServiceControlErrorInstanceResource> WithoutSetup() =>
+            errorInstance.WithAnnotation(new SkipSetupAnnotation());
 
         /// <summary>
         /// Configures throughput reporting for this error instance using the specified provider.

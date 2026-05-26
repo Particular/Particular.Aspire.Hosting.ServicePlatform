@@ -16,7 +16,7 @@ public sealed class ServicePulseResource : ContainerResource, IPlatformComponent
     {
         Parent = parent;
         ServiceControlEndpoint =
-            new EndpointReference(errorInstance, ServiceControlErrorInstanceResource.ErrorEndpointName);
+            new EndpointReference(errorInstance, ServiceControlErrorInstanceResource.HttpEndpointName);
 
         Annotations.Add(new EnvironmentCallbackAnnotation(context =>
         {
@@ -32,7 +32,8 @@ public sealed class ServicePulseResource : ContainerResource, IPlatformComponent
         }));
     }
 
-    internal const string PrimaryEndpointName = "servicepulse";
+    internal const string HttpEndpointName = "http";
+
     /// <summary>
     /// The parent platform resource that this ServicePulse instance belongs to.
     /// </summary>

@@ -31,6 +31,7 @@ public static class ParticularServicePlatformPersistenceExtensions
                 .WithUrlForEndpoint(RavenDbPlatformPersistenceResource.PrimaryEndpointName,
                     url => url.DisplayText = "Management Studio")
                 .WithHttpHealthCheck("databases", endpointName: RavenDbPlatformPersistenceResource.PrimaryEndpointName);
+
             platform.WithPersistenceRavenDb(db);
             return db.WithParentRelationship(platform);
         }
@@ -49,7 +50,7 @@ public static class ParticularServicePlatformPersistenceExtensions
 
             return platform
                 .WithAnnotation(new RavenDbPlatformPersistenceAnnotation(persistence.Resource))
-                .WithRelationship(persistence.Resource, "Particular.Persistence");
+                .WithRelationship(persistence.Resource, "Persistence");
         }
     }
 }

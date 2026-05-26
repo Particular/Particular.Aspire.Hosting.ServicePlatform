@@ -28,8 +28,9 @@ public sealed class ServiceControlErrorInstanceResource : ContainerResource, IPl
         }));
     }
 
-    internal const string ErrorEndpointName = "error";
+    internal const string HttpEndpointName = "http";
     internal const string DefaultErrorQueueName = "error";
+
     /// <summary>
     /// The parent platform resource that this error instance belongs to.
     /// </summary>

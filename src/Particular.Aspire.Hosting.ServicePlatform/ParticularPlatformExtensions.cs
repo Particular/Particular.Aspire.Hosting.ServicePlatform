@@ -45,35 +45,38 @@ public static class ParticularPlatformExtensions
                 _ => throw new ArgumentException("Multiple persistence annotations found for platform resource, default setup cannot continue"),
             };
 
-            var serviceControl = platform.SingleOrAddDefault(() =>
+            var serviceControl = SingleOrAddDefault(() =>
                 platform.AddServiceControlErrorInstance(platform.Resource.Name + "-error", persistence)
             );
 
-            var monitoring = platform.SingleOrAddDefault(() =>
+            var monitoring = SingleOrAddDefault(() =>
                 platform.AddServiceControlMonitoringInstance(platform.Resource.Name + "-monitoring")
             );
 
-            platform.SingleOrAddDefault(() =>
+            SingleOrAddDefault(() =>
                 platform.AddServiceControlAuditInstance(platform.Resource.Name + "-audit", serviceControl, persistence)
             );
 
-            platform.SingleOrAddDefault(() =>
+            SingleOrAddDefault(() =>
                 platform.AddServicePulse(platform.Resource.Name + "-servicepulse", serviceControl, monitoring)
             );
 
             return platform;
-        }
 
-        private IResourceBuilder<T> SingleOrAddDefault<T>(Func<IResourceBuilder<T>> factory)
-            where T : IResourceWithParent<ParticularPlatformResource>
-        {
-            var children = platform.ApplicationBuilder.Resources.OfType<T>().Where(r => r.Parent == platform.Resource).ToList();
-            return children switch
+            // Local function: only used while composing the default topology. Kept local (rather than a
+            // private extension member) so the analyzer can see it is used - IDE0051 does not yet track
+            // usages of private members declared inside an extension block.
+            IResourceBuilder<T> SingleOrAddDefault<T>(Func<IResourceBuilder<T>> factory)
+                where T : IResourceWithParent<ParticularPlatformResource>
             {
-                [{ } x] => platform.ApplicationBuilder.CreateResourceBuilder(x),
-                [] => factory(),
-                _ => throw new Exception("More than one instance of " + typeof(T).Name + " found, cannot determine which one to use for default wiring")
-            };
+                var children = platform.ApplicationBuilder.Resources.OfType<T>().Where(r => r.Parent == platform.Resource).ToList();
+                return children switch
+                {
+                    [{ } x] => platform.ApplicationBuilder.CreateResourceBuilder(x),
+                    [] => factory(),
+                    _ => throw new Exception("More than one instance of " + typeof(T).Name + " found, cannot determine which one to use for default wiring")
+                };
+            }
         }
 
         /// <summary>
@@ -93,8 +96,9 @@ public static class ParticularPlatformExtensions
             var servicePulse = platform.ApplicationBuilder
                 .AddResource(new ServicePulseResource(name, platform.Resource, serviceControl.Resource))
                 .WithImage("particular/servicepulse", "latest")
-                .WithHttpEndpoint(targetPort: 9090, name: ServicePulseResource.PrimaryEndpointName)
-                .WithUrlForEndpoint(ServicePulseResource.PrimaryEndpointName, url => url.DisplayText = "ServicePulse");
+                .WithHttpEndpoint(targetPort: 9090, name: ServicePulseResource.HttpEndpointName)
+                .WithUrlForEndpoint(ServicePulseResource.HttpEndpointName, url => url.DisplayText = "ServicePulse")
+                .WithRelationship(serviceControl.Resource, "ServiceControl");
 
             return servicePulse
                 .WithMonitoringInstance(monitoring)
@@ -124,14 +128,14 @@ public static class ParticularPlatformExtensions
             var audit = platform.ApplicationBuilder
                 .AddResource(new ServiceControlAuditInstanceResource(name, platform.Resource))
                 .WithImage("particular/servicecontrol-audit", "latest")
-                .WithHttpEndpoint(targetPort: 44444, name: ServiceControlAuditInstanceResource.AuditEndpointName)
-                .WithUrlForEndpoint(ServiceControlAuditInstanceResource.AuditEndpointName, url =>
+                .WithHttpEndpoint(targetPort: 44444, name: ServiceControlAuditInstanceResource.HttpEndpointName)
+                .WithUrlForEndpoint(ServiceControlAuditInstanceResource.HttpEndpointName, url =>
                 {
                     url.Url += "/api";
                     url.DisplayText = "ServiceControl Audit";
                 })
-                .WithArgs("--setup-and-run")
-                .WithHttpHealthCheck("api/configuration", endpointName: ServiceControlAuditInstanceResource.AuditEndpointName);
+                .WithSetupAndRunArgs()
+                .WithHttpHealthCheck("api/configuration", endpointName: ServiceControlAuditInstanceResource.HttpEndpointName);
 
             serviceControl.WithRemoteInstance(audit);
 
@@ -159,14 +163,14 @@ public static class ParticularPlatformExtensions
             var errorInstance = platform.ApplicationBuilder
                 .AddResource(new ServiceControlErrorInstanceResource(name, platform.Resource))
                 .WithImage("particular/servicecontrol", "latest")
-                .WithHttpEndpoint(targetPort: 33333, name: ServiceControlErrorInstanceResource.ErrorEndpointName)
-                .WithUrlForEndpoint(ServiceControlErrorInstanceResource.ErrorEndpointName, url =>
+                .WithHttpEndpoint(targetPort: 33333, name: ServiceControlErrorInstanceResource.HttpEndpointName)
+                .WithUrlForEndpoint(ServiceControlErrorInstanceResource.HttpEndpointName, url =>
                 {
                     url.Url += "/api";
                     url.DisplayText = "ServiceControl Error";
                 })
-                .WithArgs("--setup-and-run")
-                .WithHttpHealthCheck("api/configuration", endpointName: ServiceControlErrorInstanceResource.ErrorEndpointName);
+                .WithSetupAndRunArgs()
+                .WithHttpHealthCheck("api/configuration", endpointName: ServiceControlErrorInstanceResource.HttpEndpointName);
             return errorInstance
                 .WithLicense(platform)
                 .WithTransportFrom(platform)
@@ -186,10 +190,10 @@ public static class ParticularPlatformExtensions
             var monitoringInstance = platform.ApplicationBuilder
                 .AddResource(new ServiceControlMonitoringInstanceResource(name, platform.Resource))
                 .WithImage("particular/servicecontrol-monitoring", "latest")
-                .WithHttpEndpoint(targetPort: 33633, name: ServiceControlMonitoringInstanceResource.MonitoringEndpointName)
-                .WithUrlForEndpoint(ServiceControlMonitoringInstanceResource.MonitoringEndpointName, url => url.DisplayText = "ServiceControl Monitoring")
-                .WithArgs("--setup-and-run")
-                .WithHttpHealthCheck("connection", endpointName: ServiceControlMonitoringInstanceResource.MonitoringEndpointName);
+                .WithHttpEndpoint(targetPort: 33633, name: ServiceControlMonitoringInstanceResource.HttpEndpointName)
+                .WithUrlForEndpoint(ServiceControlMonitoringInstanceResource.HttpEndpointName, url => url.DisplayText = "ServiceControl Monitoring")
+                .WithSetupAndRunArgs()
+                .WithHttpHealthCheck("connection", endpointName: ServiceControlMonitoringInstanceResource.HttpEndpointName);
 
             return monitoringInstance
                 .WithLicense(platform)

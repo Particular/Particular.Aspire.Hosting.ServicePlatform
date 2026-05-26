@@ -20,6 +20,10 @@ public static class ServicePulseExtensions
             IResourceBuilder<ServiceControlMonitoringInstanceResource>? monitoring = null)
         {
             servicePulse.Resource.MonitoringEndpoint = monitoring?.Resource.MonitoringEndpoint;
+            if (monitoring is not null)
+            {
+                servicePulse.WithRelationship(monitoring.Resource, "Monitoring");
+            }
             return servicePulse;
         }
     }

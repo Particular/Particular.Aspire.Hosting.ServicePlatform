@@ -26,5 +26,14 @@ public static class AuditInstanceExtensions
         /// <returns>The audit instance resource builder for chaining.</returns>
         public IResourceBuilder<ServiceControlAuditInstanceResource> WithAuditQueueName(string queueName) =>
             auditInstance.WithEnvironment(PlatformEnvironment.ServiceControl.AuditQueue, queueName);
+
+        /// <summary>
+        /// Configures this audit instance to start without running setup, omitting the <c>--setup-and-run</c>
+        /// container argument so the instance starts directly in run mode. Use this when the message queues and
+        /// persistence have already been provisioned.
+        /// </summary>
+        /// <returns>The audit instance resource builder for chaining.</returns>
+        public IResourceBuilder<ServiceControlAuditInstanceResource> WithoutSetup() =>
+            auditInstance.WithAnnotation(new SkipSetupAnnotation());
     }
 }

@@ -23,7 +23,26 @@ static class PlatformComponentExtensions
             return resource
                 //must use wait annotation explicitly inside the platform hierarchy
                 .WithAnnotation(new WaitAnnotation(persistence.Resource, WaitType.WaitUntilHealthy) { WaitBehavior = WaitBehavior.WaitOnResourceUnavailable })
+                .WithRelationship(persistence.Resource, "Persistence")
                 .WithAnnotation(persistenceConfig);
         }
+    }
+
+    extension<T>(IResourceBuilder<T> resource)
+        where T : IResource, IResourceWithArgs
+    {
+        /// <summary>
+        /// Adds the "--setup-and-run" container argument unless the resource is marked to skip setup
+        /// via WithoutSetup(). The argument is applied via a callback so the
+        /// decision is evaluated at build/publish time and is order-independent relative to WithoutSetup().
+        /// </summary>
+        internal IResourceBuilder<T> WithSetupAndRunArgs() =>
+            resource.WithArgs(context =>
+            {
+                if (!resource.Resource.TryGetLastAnnotation<SkipSetupAnnotation>(out _))
+                {
+                    context.Args.Add("--setup-and-run");
+                }
+            });
     }
 }
