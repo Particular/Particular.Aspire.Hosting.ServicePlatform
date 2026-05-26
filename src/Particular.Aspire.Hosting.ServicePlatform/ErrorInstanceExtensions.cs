@@ -52,6 +52,14 @@ public static class ErrorInstanceExtensions
             errorInstance.WithEnvironment(PlatformEnvironment.ServiceControl.ErrorQueue, queueName);
 
         /// <summary>
+        /// Sets the name of the error queue that this instance will consume messages from.
+        /// </summary>
+        /// <param name="queueName">The name of the error queue.</param>
+        /// <returns>The error instance resource builder for chaining.</returns>
+        public IResourceBuilder<ServiceControlErrorInstanceResource> WithErrorQueueName<T>(T queueName) where T : IManifestExpressionProvider, IValueProvider =>
+            errorInstance.WithEnvironment(PlatformEnvironment.ServiceControl.ErrorQueue, queueName);
+
+        /// <summary>
         /// Sets the run mode for this error instance, controlling whether the container performs setup,
         /// runs the instance, or both. Defaults to <see cref="PlatformRunMode.SetupAndRun"/> when not configured.
         /// </summary>

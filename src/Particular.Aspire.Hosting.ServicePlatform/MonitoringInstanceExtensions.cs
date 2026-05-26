@@ -53,6 +53,14 @@ public static class MonitoringInstanceExtensions
                 .WithEnvironment(PlatformEnvironment.Monitoring.InstanceName, queueName);
 
         /// <summary>
+        /// Sets the name of the monitoring queue that this instance will consume messages from.
+        /// </summary>
+        /// <param name="queueName">The name of the monitoring queue.</param>
+        /// <returns>The monitoring instance resource builder for chaining.</returns>
+        public IResourceBuilder<ServiceControlMonitoringInstanceResource> WithMonitoringQueueName<T>(T queueName) where T : IManifestExpressionProvider, IValueProvider =>
+            monitoring
+                .WithEnvironment(PlatformEnvironment.Monitoring.InstanceName, queueName);
+
         /// Sets the run mode for this monitoring instance, controlling whether the container performs setup,
         /// runs the instance, or both. Defaults to <see cref="PlatformRunMode.SetupAndRun"/> when not configured.
         /// </summary>

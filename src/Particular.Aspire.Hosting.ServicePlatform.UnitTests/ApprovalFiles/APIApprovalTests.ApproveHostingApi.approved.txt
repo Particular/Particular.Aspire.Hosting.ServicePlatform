@@ -6,6 +6,8 @@ namespace Aspire.Hosting
         {
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlAuditInstanceResource> WithPersistence(Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResource> persistence) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlAuditInstanceResource> WithAuditQueueName(string queueName) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlAuditInstanceResource> WithAuditQueueName<T>(T queueName)
+                where T : Aspire.Hosting.ApplicationModel.IManifestExpressionProvider, Aspire.Hosting.ApplicationModel.IValueProvider { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlAuditInstanceResource> WithRunMode(Particular.Aspire.Hosting.ServicePlatform.Platform.PlatformRunMode runMode) { }
         }
     }
@@ -24,6 +26,8 @@ namespace Aspire.Hosting
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> WithRemoteInstance(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlAuditInstanceResource> instance) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> WithThroughputQueue(string queueName) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> WithErrorQueueName(string queueName) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> WithErrorQueueName<T>(T queueName)
+                where T : Aspire.Hosting.ApplicationModel.IManifestExpressionProvider, Aspire.Hosting.ApplicationModel.IValueProvider { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> WithRunMode(Particular.Aspire.Hosting.ServicePlatform.Platform.PlatformRunMode runMode) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> WithThroughputReporting(Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting.IThroughputReportingProvider provider) { }
         }
@@ -35,6 +39,8 @@ namespace Aspire.Hosting
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlMonitoringInstanceResource> WithThroughputQueueFrom(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> errorInstance) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlMonitoringInstanceResource> WithThroughputQueue(string queueName) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlMonitoringInstanceResource> WithMonitoringQueueName(string queueName) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlMonitoringInstanceResource> WithMonitoringQueueName<T>(T queueName)
+                where T : Aspire.Hosting.ApplicationModel.IManifestExpressionProvider, Aspire.Hosting.ApplicationModel.IValueProvider { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlMonitoringInstanceResource> WithRunMode(Particular.Aspire.Hosting.ServicePlatform.Platform.PlatformRunMode runMode) { }
         }
     }
