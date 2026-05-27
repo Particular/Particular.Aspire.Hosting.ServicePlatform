@@ -1,7 +1,6 @@
 namespace Particular.Aspire.Hosting.ServicePlatform.UnitTests;
 
 using global::Aspire.Hosting;
-using global::Aspire.Hosting.ApplicationModel;
 using Particular.Aspire.Hosting.ServicePlatform.Tests;
 using Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting;
 
@@ -28,10 +27,10 @@ public class PublishPlatformDefaultsAmazonSqsUsageReportingApprovalTest : Aspire
             .WithThroughputReporting(new ThroughputReportingAmazonSqs(
                 accesskey.Resource,
                 secretKey.Resource,
-                ReferenceExpression.Create($"throughput-profile"),
-                ReferenceExpression.Create($"throughput-region"),
-                ReferenceExpression.Create($"throughput-prefix")
-            ));
+                "throughput-profile",
+                "throughput-region",
+                "throughput-prefix")
+            );
 
         platform.AddDefaultComponents();
     }

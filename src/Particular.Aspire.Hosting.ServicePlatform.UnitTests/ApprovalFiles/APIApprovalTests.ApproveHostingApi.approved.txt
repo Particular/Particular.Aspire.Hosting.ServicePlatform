@@ -70,7 +70,7 @@ namespace Aspire.Hosting
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportLearning(string? storagePath = null) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportAzureServiceBus(Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResourceWithConnectionString> azureServiceBus) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportRabbitMQ(Particular.Aspire.Hosting.ServicePlatform.Transport.RabbitMqRouting routingType, Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResourceWithConnectionString> rabbitMQ) { }
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportAmazonSqs(string region, Aspire.Hosting.ApplicationModel.IExpressionValue accessKeyId, Aspire.Hosting.ApplicationModel.IExpressionValue secretAccessKey, System.Action<Particular.Aspire.Hosting.ServicePlatform.Transport.AmazonSqsTransportSettings>? configure) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportAmazonSqs(string region, Aspire.Hosting.ApplicationModel.IExpressionValue accessKeyId, Aspire.Hosting.ApplicationModel.IExpressionValue secretAccessKey, System.Action<Particular.Aspire.Hosting.ServicePlatform.Transport.AmazonSqsTransportSettings>? configure = null) { }
         }
     }
     public static class ParticularServicePlatformPersistenceExtensions
@@ -153,7 +153,7 @@ namespace Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting
     }
     public sealed class ThroughputReportingAmazonSqs : Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting.IThroughputReportingProvider
     {
-        public ThroughputReportingAmazonSqs(Aspire.Hosting.ApplicationModel.IExpressionValue? accessKey, Aspire.Hosting.ApplicationModel.IExpressionValue? secretKey, Aspire.Hosting.ApplicationModel.IExpressionValue? profile, Aspire.Hosting.ApplicationModel.IExpressionValue? region, Aspire.Hosting.ApplicationModel.IExpressionValue? prefix) { }
+        public ThroughputReportingAmazonSqs(Aspire.Hosting.ApplicationModel.IExpressionValue? accessKey = null, Aspire.Hosting.ApplicationModel.IExpressionValue? secretKey = null, string? profile = null, string? region = null, string? prefix = null) { }
         public void ApplyTo(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> errorInstance) { }
     }
     public sealed class ThroughputReportingAzureServiceBus : Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting.IThroughputReportingProvider
