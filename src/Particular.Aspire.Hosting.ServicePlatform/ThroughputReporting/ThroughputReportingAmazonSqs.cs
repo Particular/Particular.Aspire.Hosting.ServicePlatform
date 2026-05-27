@@ -13,9 +13,9 @@ using Transport;
 public sealed class ThroughputReportingAmazonSqs(
     IExpressionValue? accessKey = null,
     IExpressionValue? secretKey = null,
-    IExpressionValue? profile = null,
-    IExpressionValue? region = null,
-    IExpressionValue? prefix = null) : IThroughputReportingProvider
+    string? profile = null,
+    string? region = null,
+    string? prefix = null) : IThroughputReportingProvider
 {
     /// <inheritdoc />
     public void ApplyTo(IResourceBuilder<ServiceControlErrorInstanceResource> errorInstance)
