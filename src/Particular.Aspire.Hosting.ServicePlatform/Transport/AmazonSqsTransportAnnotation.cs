@@ -55,8 +55,11 @@ class AmazonSqsTransportAnnotation(AmazonSqsTransportSettings settings) : IPlatf
                 context.EnvironmentVariables[PlatformEnvironment.ServiceControl.TransportType] = "AmazonSQS";
                 context.EnvironmentVariables[PlatformEnvironment.ServiceControl.ConnectionString] = CreateConnectionString();
             });
+            return;
         }
 
-        // Note: deliberately not expanding properties onto endpoints, as SQS Connection Strings are not a canonical thing
+        resource.WithEnvironment("AWS_REGION", Settings.Region);
+        resource.WithEnvironment("AWS_ACCESS_KEY_ID", Settings.AccessKeyId);
+        resource.WithEnvironment("AWS_SECRET_ACCESS_KEY", Settings.SecretAccessKey);
     }
 }
