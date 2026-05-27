@@ -4,50 +4,42 @@ using global::Aspire.Hosting;
 using global::Aspire.Hosting.ApplicationModel;
 using Platform;
 
-class AmazonSqsTransportAnnotation(
-    string region,
-    IExpressionValue accessKeyId,
-    IExpressionValue secretAccessKey,
-    string? queueNamePrefix,
-    string? topicNamePrefix,
-    IExpressionValue? s3BucketForLargeMessages,
-    string? s3KeyPrefix,
-    bool? doNotWrapOutgoingMessages,
-    int? reservedBytesInMessageSize
-) : IPlatformTransportAnnotation
+class AmazonSqsTransportAnnotation(AmazonSqsTransportSettings settings) : IPlatformTransportAnnotation
 {
+    public AmazonSqsTransportSettings Settings { get; } = settings;
+
     ReferenceExpression CreateConnectionString()
     {
         var builder = new ReferenceExpressionBuilder();
-        builder.Append($"Region={region};AccessKeyId={accessKeyId};SecretAccessKey={secretAccessKey};");
-        if (queueNamePrefix != null)
+        builder.Append($"Region={Settings.Region};AccessKeyId={Settings.AccessKeyId};SecretAccessKey={Settings.SecretAccessKey};");
+        if (Settings.QueueNamePrefix != null)
         {
-            builder.AppendLiteral($"QueueNamePrefix={queueNamePrefix};");
+            builder.AppendLiteral($"QueueNamePrefix={Settings.QueueNamePrefix};");
         }
 
-        if (topicNamePrefix != null)
+        if (Settings.TopicNamePrefix != null)
         {
-            builder.AppendLiteral($"TopicNamePrefix={topicNamePrefix};");
+            builder.AppendLiteral($"TopicNamePrefix={Settings.TopicNamePrefix};");
         }
 
-        if (s3BucketForLargeMessages != null)
+        if (Settings.S3BucketForLargeMessages != null)
         {
-            builder.Append($"S3BucketForLargeMessages={s3BucketForLargeMessages};");
+            builder.Append($"S3BucketForLargeMessages={Settings.S3BucketForLargeMessages};");
         }
 
-        if (s3KeyPrefix != null)
+        if (Settings.S3KeyPrefix != null)
         {
-            builder.AppendLiteral($"S3KeyPrefix={s3KeyPrefix};");
+            builder.AppendLiteral($"S3KeyPrefix={Settings.S3KeyPrefix};");
         }
 
-        if (doNotWrapOutgoingMessages != null)
+        if (Settings.DoNotWrapOutgoingMessages != null)
         {
-            builder.AppendLiteral($"DoNotWrapOutgoingMessages={doNotWrapOutgoingMessages};");
+            builder.AppendLiteral($"DoNotWrapOutgoingMessages={Settings.DoNotWrapOutgoingMessages};");
         }
 
-        if (reservedBytesInMessageSize != null)
+        if (Settings.ReservedBytesInMessageSize != null)
         {
-            builder.AppendLiteral($"ReservedBytesInMessageSize={reservedBytesInMessageSize};");
+            builder.AppendLiteral($"ReservedBytesInMessageSize={Settings.ReservedBytesInMessageSize};");
         }
 
         return builder.Build();
@@ -65,6 +57,6 @@ class AmazonSqsTransportAnnotation(
             });
         }
 
-        // deliberately not expanding properties onto endpoints, as SQL Connection Strings are not a canonical thing
+        // Note: deliberately not expanding properties onto endpoints, as SQS Connection Strings are not a canonical thing
     }
 }

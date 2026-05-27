@@ -89,74 +89,29 @@ public static class ParticularPlatformTransportExtensions
         /// <param name="region">The AWS region.</param>
         /// <param name="accessKeyId">The AWS access key ID.</param>
         /// <param name="secretAccessKey">The AWS secret access key.</param>
-        /// <param name="queueNamePrefix">Optional queue name prefix.</param>
-        /// <param name="topicNamePrefix">Optional topic name prefix.</param>
-        /// <param name="s3BucketForLargeMessages">Optional S3 bucket for large message payloads, can be provided from a cloud formation output</param>
-        /// <param name="s3KeyPrefix">Optional S3 key prefix used with large messages.</param>
-        /// <param name="doNotWrapOutgoingMessages">Optional value to control message wrapping.</param>
-        /// <param name="reservedBytesInMessageSize">Optional reserved bytes setting for message size calculations.</param>
+        /// <param name="configure">Callback for configuring advanced options</param>
         /// <returns>The platform resource builder for chaining.</returns>
         /// <exception cref="ArgumentNullException">Thrown if required values are null.</exception>
         public IResourceBuilder<ParticularPlatformResource> WithTransportAmazonSqs(
             string region,
             IExpressionValue accessKeyId,
             IExpressionValue secretAccessKey,
-            string? queueNamePrefix = null,
-            string? topicNamePrefix = null,
-            object? s3BucketForLargeMessages = null,
-            string? s3KeyPrefix = null,
-            bool? doNotWrapOutgoingMessages = null,
-            int? reservedBytesInMessageSize = null)
+            Action<AmazonSqsTransportSettings>? configure = null)
         {
             ArgumentNullException.ThrowIfNull(region);
             ArgumentNullException.ThrowIfNull(accessKeyId);
             ArgumentNullException.ThrowIfNull(secretAccessKey);
 
-            var s3BucketExpression = s3BucketForLargeMessages switch
+            var options = new AmazonSqsTransportSettings
             {
-                null => null,
-                string s => ReferenceExpression.Create($"{s}"),
-                IExpressionValue ev => ev,
-                IValueProvider and IManifestExpressionProvider x => new ExpressionValueAdapter(x),
-                _ => throw new ArgumentException("S3 bucket must be either a string or an expression value", nameof(s3BucketForLargeMessages)),
+                Region = region,
+                AccessKeyId = accessKeyId,
+                SecretAccessKey = secretAccessKey
             };
 
-            return platform.WithAnnotation(new AmazonSqsTransportAnnotation(
-                region,
-                accessKeyId,
-                secretAccessKey,
-                queueNamePrefix,
-                topicNamePrefix,
-                s3BucketExpression,
-                s3KeyPrefix,
-                doNotWrapOutgoingMessages,
-                reservedBytesInMessageSize));
+            configure?.Invoke(options);
+
+            return platform.WithAnnotation(new AmazonSqsTransportAnnotation(options));
         }
-    }
-
-    /// <summary>
-    /// Allows classes that implement both IValueProvider and IManifestExpressionProvider but not IExpressionValue to be
-    /// passed as parameters that can participate in reference expressions.
-    /// This is required because the AWS aspire hosting library doesn't use the combined interface required downstream.
-    /// </summary>
-    class ExpressionValueAdapter : IExpressionValue
-    {
-        readonly object _backingValue;
-
-        /// <summary>
-        /// Allows classes that implement both IValueProvider and IManifestExpressionProvider 
-        /// </summary>
-        public ExpressionValueAdapter(object backingValue)
-        {
-            if (backingValue is not IValueProvider or not IManifestExpressionProvider)
-            {
-                throw new ArgumentException($"Backing value must implement both {nameof(IValueProvider)} and {nameof(IManifestExpressionProvider)}");
-            }
-            _backingValue = backingValue;
-        }
-
-        ValueTask<string?> IValueProvider.GetValueAsync(CancellationToken cancellationToken) => ((IValueProvider)_backingValue).GetValueAsync(cancellationToken);
-
-        string IManifestExpressionProvider.ValueExpression => ((IManifestExpressionProvider)_backingValue).ValueExpression;
     }
 }

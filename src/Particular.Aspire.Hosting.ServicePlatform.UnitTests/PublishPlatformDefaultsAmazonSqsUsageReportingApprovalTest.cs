@@ -18,8 +18,10 @@ public class PublishPlatformDefaultsAmazonSqsUsageReportingApprovalTest : Aspire
             .WithTransportAmazonSqs(
                 "us-east-1",
                 accesskey.Resource,
-                secretKey.Resource,
-                "transport-prefix");
+                secretKey.Resource, conf =>
+                {
+                    conf.QueueNamePrefix = "transport-prefix";
+                });
 
         platform
             .AddServiceControlErrorInstance("particular-error", platform.AddPersistenceRavenDb("particular-persistence"))

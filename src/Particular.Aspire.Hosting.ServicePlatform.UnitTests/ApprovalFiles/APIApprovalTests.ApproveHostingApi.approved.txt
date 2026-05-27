@@ -70,7 +70,7 @@ namespace Aspire.Hosting
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportLearning(string? storagePath = null) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportAzureServiceBus(Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResourceWithConnectionString> azureServiceBus) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportRabbitMQ(Particular.Aspire.Hosting.ServicePlatform.Transport.RabbitMqRouting routingType, Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResourceWithConnectionString> rabbitMQ) { }
-            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportAmazonSqs(string region, Aspire.Hosting.ApplicationModel.IExpressionValue accessKeyId, Aspire.Hosting.ApplicationModel.IExpressionValue secretAccessKey, string? queueNamePrefix = null, string? topicNamePrefix = null, object? s3BucketForLargeMessages = null, string? s3KeyPrefix = null, bool? doNotWrapOutgoingMessages = default, int? reservedBytesInMessageSize = default) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportAmazonSqs(string region, Aspire.Hosting.ApplicationModel.IExpressionValue accessKeyId, Aspire.Hosting.ApplicationModel.IExpressionValue secretAccessKey, System.Action<Particular.Aspire.Hosting.ServicePlatform.Transport.AmazonSqsTransportSettings>? configure) { }
         }
     }
     public static class ParticularServicePlatformPersistenceExtensions
@@ -169,6 +169,19 @@ namespace Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting
 }
 namespace Particular.Aspire.Hosting.ServicePlatform.Transport
 {
+    public class AmazonSqsTransportSettings
+    {
+        public AmazonSqsTransportSettings() { }
+        public required Aspire.Hosting.ApplicationModel.IExpressionValue AccessKeyId { get; init; }
+        public bool? DoNotWrapOutgoingMessages { get; set; }
+        public string? QueueNamePrefix { get; set; }
+        public required string Region { get; init; }
+        public int? ReservedBytesInMessageSize { get; set; }
+        public Aspire.Hosting.ApplicationModel.IExpressionValue? S3BucketForLargeMessages { get; set; }
+        public string? S3KeyPrefix { get; set; }
+        public required Aspire.Hosting.ApplicationModel.IExpressionValue SecretAccessKey { get; init; }
+        public string? TopicNamePrefix { get; set; }
+    }
     public enum RabbitMqRouting
     {
         QuorumConventionalRouting = 0,
