@@ -61,6 +61,7 @@ public static class MonitoringInstanceExtensions
             monitoring
                 .WithEnvironment(PlatformEnvironment.Monitoring.InstanceName, queueName);
 
+        /// <summary>
         /// Sets the run mode for this monitoring instance, controlling whether the container performs setup,
         /// runs the instance, or both. Defaults to <see cref="PlatformRunMode.SetupAndRun"/> when not configured.
         /// </summary>
