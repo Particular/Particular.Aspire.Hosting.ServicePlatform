@@ -24,7 +24,7 @@ public sealed class ServiceControlAuditInstanceResource : ContainerResource, IPl
             }));
     }
 
-    internal const string AuditEndpointName = "audit";
+    internal const string HttpEndpointName = "http";
     internal const string DefaultAuditQueueName = "audit";
     /// <summary>
     /// The parent platform resource that this audit instance belongs to.

@@ -1,0 +1,110 @@
+File: .env
+==
+# Bind mount source for particular-audit:/tmp/learningtransport
+PARTICULAR_AUDIT_BINDMOUNT_0=
+
+# Bind mount source for particular-error:/tmp/learningtransport
+PARTICULAR_ERROR_BINDMOUNT_0=
+
+# Parameter particular-license
+PARTICULAR_LICENSE=
+
+# Bind mount source for particular-monitoring:/tmp/learningtransport
+PARTICULAR_MONITORING_BINDMOUNT_0=
+
+
+==
+File: docker-compose.yaml
+==
+services:
+  compose-dashboard:
+    image: "mcr.microsoft.com/dotnet/nightly/aspire-dashboard:latest"
+    ports:
+      - "18888"
+    expose:
+      - "18889"
+      - "18890"
+    networks:
+      - "aspire"
+    restart: "always"
+  particular-persistence:
+    image: "particular/servicecontrol-ravendb:latest"
+    expose:
+      - "8080"
+    networks:
+      - "aspire"
+  particular-error:
+    image: "particular/servicecontrol:latest"
+    command:
+      - "--setup"
+    environment:
+      RAVENDB_CONNECTIONSTRING: "http://particular-persistence:8080"
+      REMOTEINSTANCES: "[{\"api_uri\": \"http://particular-audit:44444\"}]"
+      PARTICULARSOFTWARE_LICENSE: "${PARTICULAR_LICENSE}"
+      TRANSPORTTYPE: "LearningTransport"
+      CONNECTIONSTRING: "/tmp/learningtransport"
+      SERVICEBUS_ERRORQUEUE: "error"
+    expose:
+      - "33333"
+    volumes:
+      - type: "bind"
+        target: "/tmp/learningtransport"
+        source: "${PARTICULAR_ERROR_BINDMOUNT_0}"
+        read_only: false
+    depends_on:
+      particular-persistence:
+        condition: "service_started"
+    networks:
+      - "aspire"
+  particular-monitoring:
+    image: "particular/servicecontrol-monitoring:latest"
+    environment:
+      PARTICULARSOFTWARE_LICENSE: "${PARTICULAR_LICENSE}"
+      TRANSPORTTYPE: "LearningTransport"
+      CONNECTIONSTRING: "/tmp/learningtransport"
+    expose:
+      - "33633"
+    volumes:
+      - type: "bind"
+        target: "/tmp/learningtransport"
+        source: "${PARTICULAR_MONITORING_BINDMOUNT_0}"
+        read_only: false
+    networks:
+      - "aspire"
+  particular-audit:
+    image: "particular/servicecontrol-audit:latest"
+    command:
+      - "--setup-and-run"
+    environment:
+      RAVENDB_CONNECTIONSTRING: "http://particular-persistence:8080"
+      PARTICULARSOFTWARE_LICENSE: "${PARTICULAR_LICENSE}"
+      TRANSPORTTYPE: "LearningTransport"
+      CONNECTIONSTRING: "/tmp/learningtransport"
+      SERVICEBUS_AUDITQUEUE: "audit"
+    expose:
+      - "44444"
+    volumes:
+      - type: "bind"
+        target: "/tmp/learningtransport"
+        source: "${PARTICULAR_AUDIT_BINDMOUNT_0}"
+        read_only: false
+    depends_on:
+      particular-persistence:
+        condition: "service_started"
+    networks:
+      - "aspire"
+  particular-servicepulse:
+    image: "particular/servicepulse:latest"
+    environment:
+      SERVICECONTROL_URL: "http://particular-error:33333"
+      MONITORING_URL: "http://particular-monitoring:33633"
+      PARTICULARSOFTWARE_LICENSE: "${PARTICULAR_LICENSE}"
+    expose:
+      - "9090"
+    networks:
+      - "aspire"
+networks:
+  aspire:
+    driver: "bridge"
+
+==

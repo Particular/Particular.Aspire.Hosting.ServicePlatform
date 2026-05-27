@@ -19,13 +19,15 @@ public static class MonitoringInstanceExtensions
         /// <returns>The monitoring instance resource builder for chaining.</returns>
         public IResourceBuilder<ServiceControlMonitoringInstanceResource> WithThroughputQueueFrom(
             IResourceBuilder<ServiceControlErrorInstanceResource> errorInstance) =>
-            monitoring.WithEnvironment(ctx =>
-            {
-                if (errorInstance.Resource.TryGetLastAnnotation<ThroughputQueueAnnotation>(out var throughput))
+            monitoring
+                .WithEnvironment(ctx =>
                 {
-                    ctx.EnvironmentVariables[PlatformEnvironment.Monitoring.ServiceControlThroughputDataQueue] = throughput.QueueName;
-                }
-            });
+                    if (errorInstance.Resource.TryGetLastAnnotation<ThroughputQueueAnnotation>(out var throughput))
+                    {
+                        ctx.EnvironmentVariables[PlatformEnvironment.Monitoring.ServiceControlThroughputDataQueue] = throughput.QueueName;
+                    }
+                })
+                .WithRelationship(errorInstance.Resource, "Throughput source");
 
         /// <summary>
         /// Sets the name of the throughput data queue for this monitoring instance. Use this when the queue address
@@ -49,5 +51,14 @@ public static class MonitoringInstanceExtensions
         public IResourceBuilder<ServiceControlMonitoringInstanceResource> WithMonitoringQueueName(string queueName) =>
             monitoring
                 .WithEnvironment(PlatformEnvironment.Monitoring.InstanceName, queueName);
+
+        /// <summary>
+        /// Sets the run mode for this monitoring instance, controlling whether the container performs setup,
+        /// runs the instance, or both. Defaults to <see cref="PlatformRunMode.SetupAndRun"/> when not configured.
+        /// </summary>
+        /// <param name="runMode">The run mode to use.</param>
+        /// <returns>The monitoring instance resource builder for chaining.</returns>
+        public IResourceBuilder<ServiceControlMonitoringInstanceResource> WithRunMode(PlatformRunMode runMode) =>
+            monitoring.WithAnnotation(new RunModeAnnotation(runMode), ResourceAnnotationMutationBehavior.Replace);
     }
 }

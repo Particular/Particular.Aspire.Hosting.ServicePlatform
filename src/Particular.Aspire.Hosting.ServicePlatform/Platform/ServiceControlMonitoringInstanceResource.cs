@@ -8,7 +8,7 @@ using global::Aspire.Hosting.ApplicationModel;
 /// </summary>
 public sealed class ServiceControlMonitoringInstanceResource : ContainerResource, IPlatformComponent, IResourceWithParent<ParticularPlatformResource>
 {
-    internal const string MonitoringEndpointName = "monitoring";
+    internal const string HttpEndpointName = "http";
     internal const string DefaultMonitoringQueueName = "Particular.Monitoring";
 
     internal ServiceControlMonitoringInstanceResource([ResourceName] string name, ParticularPlatformResource parent)
@@ -25,5 +25,5 @@ public sealed class ServiceControlMonitoringInstanceResource : ContainerResource
     /// <summary>
     /// The HTTP endpoint reference for the monitoring instance API.
     /// </summary>
-    public EndpointReference MonitoringEndpoint => new(this, MonitoringEndpointName);
+    public EndpointReference MonitoringEndpoint => new(this, HttpEndpointName);
 }

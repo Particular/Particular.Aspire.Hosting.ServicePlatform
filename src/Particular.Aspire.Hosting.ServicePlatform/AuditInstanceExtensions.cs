@@ -26,5 +26,14 @@ public static class AuditInstanceExtensions
         /// <returns>The audit instance resource builder for chaining.</returns>
         public IResourceBuilder<ServiceControlAuditInstanceResource> WithAuditQueueName(string queueName) =>
             auditInstance.WithEnvironment(PlatformEnvironment.ServiceControl.AuditQueue, queueName);
+
+        /// <summary>
+        /// Sets the run mode for this audit instance, controlling whether the container performs setup,
+        /// runs the instance, or both. Defaults to <see cref="PlatformRunMode.SetupAndRun"/> when not configured.
+        /// </summary>
+        /// <param name="runMode">The run mode to use.</param>
+        /// <returns>The audit instance resource builder for chaining.</returns>
+        public IResourceBuilder<ServiceControlAuditInstanceResource> WithRunMode(PlatformRunMode runMode) =>
+            auditInstance.WithAnnotation(new RunModeAnnotation(runMode), ResourceAnnotationMutationBehavior.Replace);
     }
 }
