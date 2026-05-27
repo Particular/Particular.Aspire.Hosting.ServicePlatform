@@ -6,6 +6,8 @@ namespace Aspire.Hosting
         {
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlAuditInstanceResource> WithPersistence(Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResource> persistence) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlAuditInstanceResource> WithAuditQueueName(string queueName) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlAuditInstanceResource> WithAuditQueueName<T>(T queueName)
+                where T : Aspire.Hosting.ApplicationModel.IManifestExpressionProvider, Aspire.Hosting.ApplicationModel.IValueProvider { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlAuditInstanceResource> WithRunMode(Particular.Aspire.Hosting.ServicePlatform.Platform.PlatformRunMode runMode) { }
         }
     }
@@ -24,6 +26,8 @@ namespace Aspire.Hosting
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> WithRemoteInstance(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlAuditInstanceResource> instance) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> WithThroughputQueue(string queueName) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> WithErrorQueueName(string queueName) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> WithErrorQueueName<T>(T queueName)
+                where T : Aspire.Hosting.ApplicationModel.IManifestExpressionProvider, Aspire.Hosting.ApplicationModel.IValueProvider { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> WithRunMode(Particular.Aspire.Hosting.ServicePlatform.Platform.PlatformRunMode runMode) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> WithThroughputReporting(Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting.IThroughputReportingProvider provider) { }
         }
@@ -35,6 +39,8 @@ namespace Aspire.Hosting
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlMonitoringInstanceResource> WithThroughputQueueFrom(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> errorInstance) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlMonitoringInstanceResource> WithThroughputQueue(string queueName) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlMonitoringInstanceResource> WithMonitoringQueueName(string queueName) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlMonitoringInstanceResource> WithMonitoringQueueName<T>(T queueName)
+                where T : Aspire.Hosting.ApplicationModel.IManifestExpressionProvider, Aspire.Hosting.ApplicationModel.IValueProvider { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlMonitoringInstanceResource> WithRunMode(Particular.Aspire.Hosting.ServicePlatform.Platform.PlatformRunMode runMode) { }
         }
     }
@@ -64,6 +70,7 @@ namespace Aspire.Hosting
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportLearning(string? storagePath = null) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportAzureServiceBus(Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResourceWithConnectionString> azureServiceBus) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportRabbitMQ(Particular.Aspire.Hosting.ServicePlatform.Transport.RabbitMqRouting routingType, Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResourceWithConnectionString> rabbitMQ) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportAmazonSqs(string region, Aspire.Hosting.ApplicationModel.IExpressionValue accessKeyId, Aspire.Hosting.ApplicationModel.IExpressionValue secretAccessKey, System.Action<Particular.Aspire.Hosting.ServicePlatform.Transport.AmazonSqsTransportSettings>? configure = null) { }
         }
     }
     public static class ParticularServicePlatformPersistenceExtensions
@@ -144,6 +151,11 @@ namespace Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting
     {
         void ApplyTo(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> errorInstance);
     }
+    public sealed class ThroughputReportingAmazonSqs : Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting.IThroughputReportingProvider
+    {
+        public ThroughputReportingAmazonSqs(Aspire.Hosting.ApplicationModel.IExpressionValue? accessKey = null, Aspire.Hosting.ApplicationModel.IExpressionValue? secretKey = null, string? profile = null, string? region = null, string? prefix = null) { }
+        public void ApplyTo(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> errorInstance) { }
+    }
     public sealed class ThroughputReportingAzureServiceBus : Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting.IThroughputReportingProvider
     {
         public ThroughputReportingAzureServiceBus(Aspire.Hosting.ApplicationModel.IExpressionValue tenantId, Aspire.Hosting.ApplicationModel.IExpressionValue subscriptionId, Aspire.Hosting.ApplicationModel.IExpressionValue clientId, Aspire.Hosting.ApplicationModel.IExpressionValue clientSecret, Aspire.Hosting.ApplicationModel.IExpressionValue? serviceBusName = null, Aspire.Hosting.ApplicationModel.IExpressionValue? managementUrl = null) { }
@@ -157,6 +169,19 @@ namespace Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting
 }
 namespace Particular.Aspire.Hosting.ServicePlatform.Transport
 {
+    public class AmazonSqsTransportSettings
+    {
+        public AmazonSqsTransportSettings() { }
+        public required Aspire.Hosting.ApplicationModel.IExpressionValue AccessKeyId { get; init; }
+        public bool? DoNotWrapOutgoingMessages { get; set; }
+        public string? QueueNamePrefix { get; set; }
+        public required string Region { get; init; }
+        public int? ReservedBytesInMessageSize { get; set; }
+        public Aspire.Hosting.ApplicationModel.IExpressionValue? S3BucketForLargeMessages { get; set; }
+        public string? S3KeyPrefix { get; set; }
+        public required Aspire.Hosting.ApplicationModel.IExpressionValue SecretAccessKey { get; init; }
+        public string? TopicNamePrefix { get; set; }
+    }
     public enum RabbitMqRouting
     {
         QuorumConventionalRouting = 0,

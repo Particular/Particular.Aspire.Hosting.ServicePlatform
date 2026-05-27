@@ -28,6 +28,14 @@ public static class AuditInstanceExtensions
             auditInstance.WithEnvironment(PlatformEnvironment.ServiceControl.AuditQueue, queueName);
 
         /// <summary>
+        /// Sets the name of the audit queue that this instance will consume messages from.
+        /// </summary>
+        /// <param name="queueName">The name of the audit queue.</param>
+        /// <returns>The audit instance resource builder for chaining.</returns>
+        public IResourceBuilder<ServiceControlAuditInstanceResource> WithAuditQueueName<T>(T queueName) where T : IManifestExpressionProvider, IValueProvider =>
+            auditInstance.WithEnvironment(PlatformEnvironment.ServiceControl.AuditQueue, queueName);
+
+        /// <summary>
         /// Sets the run mode for this audit instance, controlling whether the container performs setup,
         /// runs the instance, or both. Defaults to <see cref="PlatformRunMode.SetupAndRun"/> when not configured.
         /// </summary>

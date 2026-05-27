@@ -37,6 +37,15 @@ static class PlatformEnvironment
                 public const string Username = "LICENSINGCOMPONENT_RABBITMQ_USERNAME";
                 public const string Password = "LICENSINGCOMPONENT_RABBITMQ_PASSWORD";
             }
+
+            public static class AmazonSqs
+            {
+                public const string AccessKey = "LICENSINGCOMPONENT_AMAZONSQS_ACCESSKEY";
+                public const string SecretKey = "LICENSINGCOMPONENT_AMAZONSQS_SECRETKEY";
+                public const string Profile = "LICENSINGCOMPONENT_AMAZONSQS_PROFILE";
+                public const string Region = "LICENSINGCOMPONENT_AMAZONSQS_REGION";
+                public const string Prefix = "LICENSINGCOMPONENT_AMAZONSQS_PREFIX";
+            }
         }
     }
 

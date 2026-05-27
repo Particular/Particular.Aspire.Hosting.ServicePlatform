@@ -80,5 +80,36 @@ public static class ParticularPlatformTransportExtensions
             ArgumentNullException.ThrowIfNull(rabbitMQ);
             return platform.WithAnnotation(new RabbitMqTransportAnnotation(routingType, rabbitMQ.Resource));
         }
+
+        /// <summary>
+        /// Configures the platform to use Amazon SQS as the message transport.
+        /// </summary>
+        /// <param name="region">The AWS region.</param>
+        /// <param name="accessKeyId">The AWS access key ID.</param>
+        /// <param name="secretAccessKey">The AWS secret access key.</param>
+        /// <param name="configure">Callback for configuring advanced options</param>
+        /// <returns>The platform resource builder for chaining.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if required values are null.</exception>
+        public IResourceBuilder<ParticularPlatformResource> WithTransportAmazonSqs(
+            string region,
+            IExpressionValue accessKeyId,
+            IExpressionValue secretAccessKey,
+            Action<AmazonSqsTransportSettings>? configure = null)
+        {
+            ArgumentNullException.ThrowIfNull(region);
+            ArgumentNullException.ThrowIfNull(accessKeyId);
+            ArgumentNullException.ThrowIfNull(secretAccessKey);
+
+            var options = new AmazonSqsTransportSettings
+            {
+                Region = region,
+                AccessKeyId = accessKeyId,
+                SecretAccessKey = secretAccessKey
+            };
+
+            configure?.Invoke(options);
+
+            return platform.WithAnnotation(new AmazonSqsTransportAnnotation(options));
+        }
     }
 }
