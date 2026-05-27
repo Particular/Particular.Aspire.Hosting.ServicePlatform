@@ -11,11 +11,11 @@ using Transport;
 /// https://docs.particular.net/servicecontrol/servicecontrol-instances/configuration#usage-reporting-when-using-the-amazon-sqs-transport
 /// </summary>
 public sealed class ThroughputReportingAmazonSqs(
-    IExpressionValue? accessKey,
-    IExpressionValue? secretKey,
-    IExpressionValue? profile,
-    IExpressionValue? region,
-    IExpressionValue? prefix) : IThroughputReportingProvider
+    IExpressionValue? accessKey = null,
+    IExpressionValue? secretKey = null,
+    IExpressionValue? profile = null,
+    IExpressionValue? region = null,
+    IExpressionValue? prefix = null) : IThroughputReportingProvider
 {
     /// <inheritdoc />
     public void ApplyTo(IResourceBuilder<ServiceControlErrorInstanceResource> errorInstance)
