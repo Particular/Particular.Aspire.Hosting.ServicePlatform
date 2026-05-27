@@ -4,7 +4,8 @@
     <TargetFramework>net10.0</TargetFramework>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\NServiceBus.snk</AssemblyOriginatorKeyFile>
-    <Description>NServiceBus platform hosting support for Aspire.</Description>
+    <Description>An Aspire hosting integration for the Particular Service Platform (ServiceControl, ServicePulse).</Description>
+    <PackageTags>aspire hosting integration particular nservicebus servicecontrol servicepulse</PackageTags>
     <Nullable>enable</Nullable>
     <LangVersion>14.0</LangVersion>
   </PropertyGroup>
