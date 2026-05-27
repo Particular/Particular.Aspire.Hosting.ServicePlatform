@@ -6,8 +6,6 @@ using Aspire.Hosting.ApplicationModel;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Particular.Aspire.Hosting.ServicePlatform.Transport;
 
 /// <summary>
