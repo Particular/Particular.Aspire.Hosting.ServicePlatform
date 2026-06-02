@@ -46,6 +46,7 @@ sealed class PlatformTopologyEventingSubscriber(
         var children = FindChildren(model, platform).ToList();
 
         await ValidateTopology(platform, children, cancellationToken).ConfigureAwait(false);
+        ValidateContainerImageVersionAlignment(platform, children);
 
         readinessState.Register(platform, children.Count);
     }
@@ -111,6 +112,27 @@ sealed class PlatformTopologyEventingSubscriber(
             {
                 State = new ResourceStateSnapshot(KnownResourceStates.RuntimeUnhealthy, KnownResourceStateStyles.Warn)
             }).ConfigureAwait(false);
+        }
+    }
+
+    void ValidateContainerImageVersionAlignment(ParticularPlatformResource platform, IReadOnlyList<IResource> children)
+    {
+        var pinnedContainers = children
+            .Where(c => c.TryGetLastAnnotation<ContainerImageAnnotation>(out var a) && a.Tag is not null and not "latest")
+            .Select(c =>
+            {
+                c.TryGetLastAnnotation<ContainerImageAnnotation>(out var annotation);
+                return $"{c.Name} ({annotation!.Image}:{annotation.Tag})";
+            })
+            .ToList();
+
+        if (pinnedContainers.Count > 0)
+        {
+            var details = string.Join(", ", pinnedContainers);
+            logger.LogWarning(
+                "Platform '{Platform}' has container images not using the 'latest' tag: {Details}. " +
+                "Using the latest tag is recommended to ensure all platform components are compatible.",
+                platform.Name, details);
         }
     }
 
