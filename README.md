@@ -1,10 +1,8 @@
 # Particular.Aspire.Hosting.ServicePlatform
 
-Particular.Aspire.Hosting.ServicePlatform enables the use of [Aspire](https://aspire.dev/) service as the underlying transport used by NServiceBus. This packages uses the [Aspire.Hosting package](https://www.nuget.org/packages/Aspire.Hosting/).
+The `Particular.Aspire.Hosting.ServicePlatform` package is an [Aspire](https://aspire.dev/) hosting integration that runs the Particular Platform (the ServiceControl instances, ServicePulse, persistence, and message transport) as part of an Aspire AppHost. It is intended for developers and technical leads who run the platform locally during development and want the same AppHost to carry through to publish-mode deployments, without maintaining a separate set of infrastructure scripts.
 
-It is part of the [Particular Service Platform](https://particular.net/service-platform), which includes [NServiceBus](https://particular.net/nservicebus) and tools to build, monitor, and debug distributed systems.
-
-See the [Aspire documentation](https://docs.particular.net/shape-the-future/aspire) for more details on how to use it.
+See the [Aspire documentation](https://docs.particular.net/platform/aspire) for more details on how to use it.
 
 ## Installation
 
@@ -50,10 +48,6 @@ builder
     .WithLicenseFromFile("license.xml")
     .AddDefaultComponents();
 ```
-
-## Further reading
-
-- [Particular Aspire documentation](https://docs.particular.net/shape-the-future/aspire) — official, externally hosted usage docs.
 
 ## How to Test Locally
 
