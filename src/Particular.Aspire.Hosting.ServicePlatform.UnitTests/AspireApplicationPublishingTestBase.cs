@@ -11,7 +11,6 @@ using global::Aspire.Hosting.ApplicationModel;
 using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 using Particular.Approvals;
-using Particular.Aspire.Hosting.ServicePlatform.Transport;
 
 /// <summary>
 /// Base class for a test that performs an approval test on the publish output on an Aspire distributed application.
