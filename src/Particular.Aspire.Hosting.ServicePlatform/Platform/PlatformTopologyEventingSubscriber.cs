@@ -1,5 +1,6 @@
 namespace Particular.Aspire.Hosting.ServicePlatform.Platform;
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -46,6 +47,7 @@ sealed class PlatformTopologyEventingSubscriber(
         var children = FindChildren(model, platform).ToList();
 
         await ValidateTopology(platform, children, cancellationToken).ConfigureAwait(false);
+        ValidateContainerImageVersionAlignment(platform, children);
 
         readinessState.Register(platform, children.Count);
     }
@@ -111,6 +113,31 @@ sealed class PlatformTopologyEventingSubscriber(
             {
                 State = new ResourceStateSnapshot(KnownResourceStates.RuntimeUnhealthy, KnownResourceStateStyles.Warn)
             }).ConfigureAwait(false);
+        }
+    }
+
+    void ValidateContainerImageVersionAlignment(ParticularPlatformResource platform, IReadOnlyList<IResource> children)
+    {
+        var serviceControlVersions = children
+            .Where(c => c is ServiceControlErrorInstanceResource or ServiceControlAuditInstanceResource or ServiceControlMonitoringInstanceResource)
+            .Select(c => (Resource: c, Annotation: c.TryGetLastAnnotation<ContainerImageAnnotation>(out var a) ? a : null))
+            .Where(c => c.Annotation is not null)
+            .Select(c => (c.Resource, c.Annotation!.Image, Tag: c.Annotation.Tag ?? "latest"))
+            .ToList();
+
+        if (serviceControlVersions.Count < 2)
+        {
+            return;
+        }
+
+        var distinctTags = serviceControlVersions.Select(v => v.Tag).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+        if (distinctTags.Count > 1)
+        {
+            var details = string.Join(", ", serviceControlVersions.Select(v => $"{v.Resource.Name} ({v.Image}:{v.Tag})"));
+            logger.LogWarning(
+                "Platform '{Platform}' has mismatched ServiceControl container image versions: {Details}. " +
+                "All ServiceControl components should use the same version to ensure compatibility.",
+                platform.Name, details);
         }
     }
 
