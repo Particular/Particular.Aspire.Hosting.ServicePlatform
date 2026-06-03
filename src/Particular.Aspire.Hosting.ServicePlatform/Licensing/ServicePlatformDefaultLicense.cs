@@ -1,7 +1,6 @@
 ﻿namespace Particular.Aspire.Hosting.ServicePlatform.Licensing;
 
 using System;
-using Particular.Licensing;
 
 class ServicePlatformDefaultLicense() : LicenseParameterDefault(
     new FileLicenseSource(LicenseFileLocationResolver.ApplicationFolderLicenseFile),
