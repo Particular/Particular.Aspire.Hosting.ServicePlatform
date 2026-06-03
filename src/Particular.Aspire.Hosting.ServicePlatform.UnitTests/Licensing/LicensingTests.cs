@@ -278,19 +278,4 @@ public class LicensingTests
         _tempPaths.Add(rootDir);
         return rootDir;
     }
-
-    async Task<string?> ResolveDefaultLicenseAsync(CancellationToken cancellationToken)
-    {
-        var builder = new DistributedApplicationBuilder([]);
-        builder.AddContainer("endpoint", "endpoint-container")
-            .WithParticularPlatform(builder
-                .AddParticularPlatform("particular")
-                .WithTransportLearning()
-            );
-
-        var app = builder.Build();
-        var model = app.Services.GetRequiredService<DistributedApplicationModel>();
-        var licenseParameter = (ParameterResource)model.Resources.Single(x => x.Name == "particular-license");
-        return await licenseParameter.GetValueAsync(cancellationToken).ConfigureAwait(false);
-    }
 }

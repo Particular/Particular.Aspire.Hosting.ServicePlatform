@@ -4,5 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 interface ILicenseSource
 {
-    bool TryLoadText([NotNullWhen(true)]out string? text);
+    bool TryLoadText(
+        [NotNullWhen(true)]
+        out string? text);
 }
