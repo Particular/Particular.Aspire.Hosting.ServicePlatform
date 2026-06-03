@@ -129,7 +129,7 @@ sealed class PlatformTopologyEventingSubscriber(
             return;
         }
 
-        var distinctTags = serviceControlVersions.Select(v => v.Tag).Distinct().ToList();
+        var distinctTags = serviceControlVersions.Select(v => v.Tag).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
         if (distinctTags.Count > 1)
         {
             var details = string.Join(", ", serviceControlVersions.Select(v => $"{v.Resource.Name} ({v.Image}:{v.Tag})"));
