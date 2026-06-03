@@ -46,7 +46,7 @@ sealed class PlatformTopologyEventingSubscriber(
         var children = FindChildren(model, platform).ToList();
 
         await ValidateTopology(platform, children, cancellationToken).ConfigureAwait(false);
-        ValidateContainerImagesAreUsingLatestVersion(platform, children);
+        ValidateContainerImageVersionAlignment(platform, children);
 
         readinessState.Register(platform, children.Count);
     }
@@ -115,23 +115,27 @@ sealed class PlatformTopologyEventingSubscriber(
         }
     }
 
-    void ValidateContainerImagesAreUsingLatestVersion(ParticularPlatformResource platform, IReadOnlyList<IResource> children)
+    void ValidateContainerImageVersionAlignment(ParticularPlatformResource platform, IReadOnlyList<IResource> children)
     {
-        var pinnedContainers = children
-            .Where(c => c.TryGetLastAnnotation<ContainerImageAnnotation>(out var a) && a.Tag is not null and not "latest")
-            .Select(c =>
-            {
-                c.TryGetLastAnnotation<ContainerImageAnnotation>(out var annotation);
-                return $"{c.Name} ({annotation!.Image}:{annotation.Tag})";
-            })
+        var serviceControlVersions = children
+            .Where(c => c is ServiceControlErrorInstanceResource or ServiceControlAuditInstanceResource or ServiceControlMonitoringInstanceResource)
+            .Select(c => (Resource: c, Annotation: c.TryGetLastAnnotation<ContainerImageAnnotation>(out var a) ? a : null))
+            .Where(c => c.Annotation is not null)
+            .Select(c => (c.Resource, c.Annotation!.Image, Tag: c.Annotation.Tag ?? "latest"))
             .ToList();
 
-        if (pinnedContainers.Count > 0)
+        if (serviceControlVersions.Count < 2)
         {
-            var details = string.Join(", ", pinnedContainers);
+            return;
+        }
+
+        var distinctTags = serviceControlVersions.Select(v => v.Tag).Distinct().ToList();
+        if (distinctTags.Count > 1)
+        {
+            var details = string.Join(", ", serviceControlVersions.Select(v => $"{v.Resource.Name} ({v.Image}:{v.Tag})"));
             logger.LogWarning(
-                "Platform '{Platform}' has container images not using the 'latest' tag: {Details}. " +
-                "Using the latest tag is recommended to ensure all platform components are compatible.",
+                "Platform '{Platform}' has mismatched ServiceControl container image versions: {Details}. " +
+                "All ServiceControl components should use the same version to ensure compatibility.",
                 platform.Name, details);
         }
     }
