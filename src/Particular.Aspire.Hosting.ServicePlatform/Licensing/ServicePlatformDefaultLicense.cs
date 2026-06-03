@@ -2,24 +2,32 @@
 
 using System;
 using System.IO;
+using System.Linq;
+using Particular.Licensing;
 
 class ServicePlatformDefaultLicense : LicenseParameterDefault
 {
     protected override string LoadLicenseText()
-        => MaybeReadLicense(Environment.GetEnvironmentVariable("PROGRAMDATA"))
-        ?? MaybeReadLicense(Environment.GetEnvironmentVariable("LOCALAPPDATA"))
-        ?? Environment.GetEnvironmentVariable(PlatformEnvironment.ParticularSoftwareLicense)
-        ?? "";
+    {
+        string[] licenseLocations =
+        [
+            LicenseFileLocationResolver.ApplicationFolderLicenseFile,
+            LicenseFileLocationResolver.GetPathFor(Environment.SpecialFolder.LocalApplicationData),
+            LicenseFileLocationResolver.GetPathFor(Environment.SpecialFolder.CommonApplicationData)
+        ];
 
-    static string? MaybeReadLicense(string? rootPath)
-        => rootPath switch
+        return licenseLocations
+                   .Select(MaybeReadLicense)
+                   .FirstOrDefault(x => x != null)
+               ?? Environment.GetEnvironmentVariable(PlatformEnvironment.ParticularSoftwareLicense)
+               ?? "";
+    }
+
+    static string? MaybeReadLicense(string? licensePath)
+        => licensePath switch
         {
             null => null,
-            _ => Path.Combine(rootPath, "ParticularSoftware", "license.xml") switch
-            {
-                var licensePath => File.Exists(licensePath)
-                    ? File.ReadAllText(licensePath)
-                    : null
-            }
+            _ when File.Exists(licensePath) => File.ReadAllText(licensePath),
+            _ => null
         };
 }
