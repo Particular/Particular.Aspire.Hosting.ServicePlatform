@@ -46,7 +46,7 @@ sealed class PlatformTopologyEventingSubscriber(
         var children = FindChildren(model, platform).ToList();
 
         await ValidateTopology(platform, children, cancellationToken).ConfigureAwait(false);
-        ValidateContainerImageVersionAlignment(platform, children);
+        ValidateContainerImagesAreUsingLatestVersion(platform, children);
 
         readinessState.Register(platform, children.Count);
     }
@@ -115,7 +115,7 @@ sealed class PlatformTopologyEventingSubscriber(
         }
     }
 
-    void ValidateContainerImageVersionAlignment(ParticularPlatformResource platform, IReadOnlyList<IResource> children)
+    void ValidateContainerImagesAreUsingLatestVersion(ParticularPlatformResource platform, IReadOnlyList<IResource> children)
     {
         var pinnedContainers = children
             .Where(c => c.TryGetLastAnnotation<ContainerImageAnnotation>(out var a) && a.Tag is not null and not "latest")
