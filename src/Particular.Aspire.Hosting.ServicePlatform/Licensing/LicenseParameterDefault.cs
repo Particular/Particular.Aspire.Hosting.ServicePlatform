@@ -5,6 +5,8 @@ using global::Aspire.Hosting.Publishing;
 
 class LicenseParameterDefault(params ILicenseSource[] searchLocations) : ParameterDefault
 {
+    public ILicenseSource[] SearchLocations { get; } = searchLocations;
+
     string? _licenseText;
 
     public override void WriteToManifest(ManifestPublishingContext context)
@@ -15,7 +17,7 @@ class LicenseParameterDefault(params ILicenseSource[] searchLocations) : Paramet
 
     string LoadLicenseText()
     {
-        foreach (ILicenseSource searchLocation in searchLocations)
+        foreach (ILicenseSource searchLocation in SearchLocations)
         {
             if (searchLocation.TryLoadText(out var text))
             {

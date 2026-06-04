@@ -9,6 +9,7 @@ using global::Aspire.Hosting;
 using global::Aspire.Hosting.ApplicationModel;
 using global::Aspire.Hosting.Eventing;
 using global::Aspire.Hosting.Lifecycle;
+using Licensing;
 using Microsoft.Extensions.Logging;
 
 //Validates the platform topology at startup and displays an unhealthy state if no children are defined.
@@ -48,8 +49,37 @@ sealed class PlatformTopologyEventingSubscriber(
 
         await ValidateTopology(platform, children, cancellationToken).ConfigureAwait(false);
         ValidateContainerImageVersionAlignment(platform, children);
+        await ValidateLicense(platform, cancellationToken).ConfigureAwait(false);
 
         readinessState.Register(platform, children.Count);
+    }
+
+    async Task ValidateLicense(ParticularPlatformResource platform, CancellationToken cancellationToken)
+    {
+        if (!platform.TryGetLastAnnotation(out PlatformLicenseAnnotation? licenseAnnotation))
+        {
+            logger.LogError("No license configured for the plaform. Please configure a license to run the Particular Service Platform.");
+            return;
+        }
+
+        var license = await licenseAnnotation.License.GetValueAsync(cancellationToken).ConfigureAwait(false);
+        var defaultLicense = licenseAnnotation.License.Default?.GetDefaultValue();
+
+        if (string.IsNullOrWhiteSpace(license) && string.IsNullOrWhiteSpace(defaultLicense))
+        {
+            var searchPaths = (licenseAnnotation.License.Default as LicenseParameterDefault)?.SearchLocations ?? [];
+            var pathsString = string.Join(", ", searchPaths.Select(p => p switch
+            {
+                FileLicenseSource fs => $"File:{fs.File}",
+                EnvironmentVariableLicenseSource evs => $"Environment:{evs.VariableName}",
+                _ => p.GetType().Name
+            }));
+
+            logger.LogWarning(
+                "License '{ParamName}' is empty. Searched in: {SearchPaths}",
+                licenseAnnotation.License.Name,
+                pathsString);
+        }
     }
 
     async Task ValidateTopology(ParticularPlatformResource platform, IReadOnlyList<IResource> children, CancellationToken cancellationToken)

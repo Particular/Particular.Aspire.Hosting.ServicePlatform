@@ -5,9 +5,11 @@ using System.Diagnostics.CodeAnalysis;
 
 class EnvironmentVariableLicenseSource(string variable) : ILicenseSource
 {
+    public string VariableName { get; } = variable;
+
     public bool TryLoadText([NotNullWhen(true)] out string? text)
     {
-        text = Environment.GetEnvironmentVariable(variable);
+        text = Environment.GetEnvironmentVariable(VariableName);
         return !string.IsNullOrEmpty(text);
     }
 }
