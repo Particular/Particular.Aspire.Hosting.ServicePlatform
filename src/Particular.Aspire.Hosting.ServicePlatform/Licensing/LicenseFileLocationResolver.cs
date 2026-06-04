@@ -16,6 +16,8 @@ static class LicenseFileLocationResolver
 
     public static string GetPathFor(SpecialFolder specialFolder, string licenseFileName = "license.xml")
     {
+        ArgumentNullException.ThrowIfNull(licenseFileName);
+
         var specialFolderPath = GetSpecialFolderPath(specialFolder);
 
         if (specialFolderPath == string.Empty)
@@ -23,7 +25,7 @@ static class LicenseFileLocationResolver
             specialFolderPath = AppDomain.CurrentDomain.BaseDirectory;
         }
 
-        return Path.Combine(specialFolderPath, CompanyFolder, licenseFileName ?? string.Empty);
+        return Path.Combine(specialFolderPath, CompanyFolder, licenseFileName);
     }
 
     static string GetSpecialFolderPath(SpecialFolder specialFolder)
