@@ -70,13 +70,7 @@ sealed class PlatformTopologyEventingSubscriber(
             }
         }
 
-        if (licenseAnnotation == null)
-        {
-            logger.LogError("No license configured for the platform. Please configure a license to run the Particular Service Platform.");
-            return;
-        }
-
-        if (string.IsNullOrWhiteSpace(licenseAnnotation.License.Default?.GetDefaultValue()))
+        if (licenseAnnotation != null && string.IsNullOrWhiteSpace(licenseAnnotation.License.Default?.GetDefaultValue()))
         {
             var searchPaths = (licenseAnnotation.License.Default as LicenseParameterDefault)?.SearchLocations ?? [];
             var pathsString = string.Join(", ", searchPaths.Select(p => p switch
@@ -90,7 +84,10 @@ sealed class PlatformTopologyEventingSubscriber(
                 "License '{ParamName}' is empty. Searched in: {SearchPaths}",
                 licenseAnnotation.License.Name,
                 pathsString);
+            return;
         }
+
+        logger.LogError("No license configured for the platform. Please configure a license to run the Particular Service Platform.");
     }
 
     async Task ValidateTopology(ParticularPlatformResource platform, IReadOnlyList<IResource> children, CancellationToken cancellationToken)
