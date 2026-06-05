@@ -54,18 +54,29 @@ sealed class PlatformTopologyEventingSubscriber(
         readinessState.Register(platform, children.Count);
     }
 
+    /// <summary>
+    /// Checks that license discovery was successful, if it was not then it will log a warning and
+    /// attempt to notify the search paths that were used.
+    /// </summary>
     async Task ValidateLicense(ParticularPlatformResource platform, CancellationToken cancellationToken)
     {
-        if (!platform.TryGetLastAnnotation(out PlatformLicenseAnnotation? licenseAnnotation))
+        if (platform.TryGetLastAnnotation(out PlatformLicenseAnnotation? licenseAnnotation))
         {
-            logger.LogError("No license configured for the plaform. Please configure a license to run the Particular Service Platform.");
+            var license = await licenseAnnotation.License.GetValueAsync(cancellationToken).ConfigureAwait(false);
+            if (!string.IsNullOrWhiteSpace(license))
+            {
+                //license found, nothing to do
+                return;
+            }
+        }
+
+        if (licenseAnnotation == null)
+        {
+            logger.LogError("No license configured for the platform. Please configure a license to run the Particular Service Platform.");
             return;
         }
 
-        var license = await licenseAnnotation.License.GetValueAsync(cancellationToken).ConfigureAwait(false);
-        var defaultLicense = licenseAnnotation.License.Default?.GetDefaultValue();
-
-        if (string.IsNullOrWhiteSpace(license) && string.IsNullOrWhiteSpace(defaultLicense))
+        if (string.IsNullOrWhiteSpace(licenseAnnotation.License.Default?.GetDefaultValue()))
         {
             var searchPaths = (licenseAnnotation.License.Default as LicenseParameterDefault)?.SearchLocations ?? [];
             var pathsString = string.Join(", ", searchPaths.Select(p => p switch
