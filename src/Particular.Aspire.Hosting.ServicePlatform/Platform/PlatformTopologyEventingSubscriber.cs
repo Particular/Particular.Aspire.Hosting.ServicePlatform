@@ -9,6 +9,7 @@ using global::Aspire.Hosting;
 using global::Aspire.Hosting.ApplicationModel;
 using global::Aspire.Hosting.Eventing;
 using global::Aspire.Hosting.Lifecycle;
+using Licensing;
 using Microsoft.Extensions.Logging;
 
 //Validates the platform topology at startup and displays an unhealthy state if no children are defined.
@@ -48,8 +49,45 @@ sealed class PlatformTopologyEventingSubscriber(
 
         await ValidateTopology(platform, children, cancellationToken).ConfigureAwait(false);
         ValidateContainerImageVersionAlignment(platform, children);
+        await ValidateLicense(platform, cancellationToken).ConfigureAwait(false);
 
         readinessState.Register(platform, children.Count);
+    }
+
+    /// <summary>
+    /// Checks that license discovery was successful, if it was not then it will log a warning and
+    /// attempt to notify the search paths that were used.
+    /// </summary>
+    async Task ValidateLicense(ParticularPlatformResource platform, CancellationToken cancellationToken)
+    {
+        if (platform.TryGetLastAnnotation(out PlatformLicenseAnnotation? licenseAnnotation))
+        {
+            var license = await licenseAnnotation.License.GetValueAsync(cancellationToken).ConfigureAwait(false);
+            if (!string.IsNullOrWhiteSpace(license))
+            {
+                //license found, nothing to do
+                return;
+            }
+        }
+
+        if (licenseAnnotation != null && string.IsNullOrWhiteSpace(licenseAnnotation.License.Default?.GetDefaultValue()))
+        {
+            var searchPaths = (licenseAnnotation.License.Default as LicenseParameterDefault)?.SearchLocations ?? [];
+            var pathsString = string.Join(", ", searchPaths.Select(p => p switch
+            {
+                FileLicenseSource fs => $"File:{fs.File}",
+                EnvironmentVariableLicenseSource evs => $"Environment:{evs.VariableName}",
+                _ => p.GetType().Name
+            }));
+
+            logger.LogWarning(
+                "License '{ParamName}' is empty. Searched in: {SearchPaths}",
+                licenseAnnotation.License.Name,
+                pathsString);
+            return;
+        }
+
+        logger.LogError("No license configured for the platform. Please configure a license to run the Particular Service Platform.");
     }
 
     async Task ValidateTopology(ParticularPlatformResource platform, IReadOnlyList<IResource> children, CancellationToken cancellationToken)

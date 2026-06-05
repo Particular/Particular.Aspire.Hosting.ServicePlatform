@@ -3,8 +3,10 @@ namespace Particular.Aspire.Hosting.ServicePlatform.Licensing;
 using global::Aspire.Hosting.ApplicationModel;
 using global::Aspire.Hosting.Publishing;
 
-abstract class LicenseParameterDefault : ParameterDefault
+class LicenseParameterDefault(params ILicenseSource[] searchLocations) : ParameterDefault
 {
+    public ILicenseSource[] SearchLocations { get; } = searchLocations;
+
     string? _licenseText;
 
     public override void WriteToManifest(ManifestPublishingContext context)
@@ -13,5 +15,15 @@ abstract class LicenseParameterDefault : ParameterDefault
     public override string GetDefaultValue()
         => _licenseText ??= LoadLicenseText();
 
-    protected abstract string LoadLicenseText();
+    string LoadLicenseText()
+    {
+        foreach (ILicenseSource searchLocation in SearchLocations)
+        {
+            if (searchLocation.TryLoadText(out var text))
+            {
+                return text;
+            }
+        }
+        return "";
+    }
 }

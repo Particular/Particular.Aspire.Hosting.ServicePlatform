@@ -1,25 +1,10 @@
 ﻿namespace Particular.Aspire.Hosting.ServicePlatform.Licensing;
 
 using System;
-using System.IO;
 
-class ServicePlatformDefaultLicense : LicenseParameterDefault
-{
-    protected override string LoadLicenseText()
-        => MaybeReadLicense(Environment.GetEnvironmentVariable("PROGRAMDATA"))
-        ?? MaybeReadLicense(Environment.GetEnvironmentVariable("LOCALAPPDATA"))
-        ?? Environment.GetEnvironmentVariable(PlatformEnvironment.ParticularSoftwareLicense)
-        ?? "";
-
-    static string? MaybeReadLicense(string? rootPath)
-        => rootPath switch
-        {
-            null => null,
-            _ => Path.Combine(rootPath, "ParticularSoftware", "license.xml") switch
-            {
-                var licensePath => File.Exists(licensePath)
-                    ? File.ReadAllText(licensePath)
-                    : null
-            }
-        };
-}
+class ServicePlatformDefaultLicense() : LicenseParameterDefault(
+    new FileLicenseSource(LicenseFileLocationResolver.ApplicationFolderLicenseFile),
+    new FileLicenseSource(LicenseFileLocationResolver.GetPathFor(Environment.SpecialFolder.LocalApplicationData)),
+    new FileLicenseSource(LicenseFileLocationResolver.GetPathFor(Environment.SpecialFolder.CommonApplicationData)),
+    new EnvironmentVariableLicenseSource(PlatformEnvironment.ParticularSoftwareLicense)
+);

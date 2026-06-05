@@ -11,34 +11,18 @@ using global::Aspire.Hosting.ApplicationModel;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
+using ServicePlatform.Licensing;
 
 public class LicensingTests
 {
-    // Tests mutate process-wide PARTICULARSOFTWARE_LICENSE, PROGRAMDATA, and LOCALAPPDATA. Capture
-    // and restore so a developer's real license/paths aren't clobbered by the test run.
-    string? _originalLicenseEnv;
-    string? _originalProgramData;
-    string? _originalLocalAppData;
     List<string> _tempPaths = [];
 
     [SetUp]
-    public void SetUp()
-    {
-        _originalLicenseEnv = Environment.GetEnvironmentVariable("PARTICULARSOFTWARE_LICENSE");
-        _originalProgramData = Environment.GetEnvironmentVariable("PROGRAMDATA");
-        _originalLocalAppData = Environment.GetEnvironmentVariable("LOCALAPPDATA");
-        Environment.SetEnvironmentVariable("PARTICULARSOFTWARE_LICENSE", null);
-        Environment.SetEnvironmentVariable("PROGRAMDATA", null);
-        Environment.SetEnvironmentVariable("LOCALAPPDATA", null);
-        _tempPaths = [];
-    }
+    public void SetUp() => _tempPaths = [];
 
     [TearDown]
     public void TearDown()
     {
-        Environment.SetEnvironmentVariable("PARTICULARSOFTWARE_LICENSE", _originalLicenseEnv);
-        Environment.SetEnvironmentVariable("PROGRAMDATA", _originalProgramData);
-        Environment.SetEnvironmentVariable("LOCALAPPDATA", _originalLocalAppData);
         foreach (var path in _tempPaths)
         {
             if (File.Exists(path))
@@ -52,12 +36,64 @@ public class LicensingTests
         }
     }
 
+    [TestCase(null, true)]
+    [TestCase("", true)]
+    [TestCase("a string", true)]
+    public void TestTextLicenseSource(string? text, bool expected)
+    {
+        var source = new TextLicenseSource(text!);
+        Assert.That(source.TryLoadText(out var loadedText), Is.EqualTo(expected));
+        Assert.That(loadedText, Is.EqualTo(text));
+    }
+
     [Test]
-    public async Task LicenseShouldUseReadFromEnvVarByDefault()
+    public void TestFileLicenseSourceReturnsLicenseFromFile()
+    {
+        var text = Guid.NewGuid().ToString();
+        var file = Path.Combine(CreateTempLicenseRoot(text), "ParticularSoftware/license.xml");
+        var source = new FileLicenseSource(file);
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(source.TryLoadText(out var result), Is.True);
+            Assert.That(result, Is.EqualTo(text));
+        }
+    }
+
+    [Test]
+    public void TestFileLicenseSourceReturnsFalseForNoFile()
+    {
+        var source = new FileLicenseSource($"/this/file/should/not/exist/{Guid.NewGuid():N}.xml");
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(source.TryLoadText(out var result), Is.False);
+            Assert.That(result, Is.Null);
+        }
+    }
+
+    [TestCase(null, false)]
+    [TestCase("", false)]
+    [TestCase("value", true)]
+    public void TestEnvironmentVariableLicenseSourceReturnsValueEnvVar(string? value, bool expected)
+    {
+        var varName = Guid.NewGuid().ToString("N");
+        Environment.SetEnvironmentVariable(varName, value);
+        var source = new EnvironmentVariableLicenseSource(varName);
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(source.TryLoadText(out var result), Is.EqualTo(expected));
+            if (expected)
+            {
+                Assert.That(result, Is.EqualTo(value));
+            }
+        }
+    }
+
+    [Test]
+    public void AddParticularPlatformAddsLicenseDefault()
     {
         var builder = new DistributedApplicationBuilder([]);
-        var licenseText = Guid.NewGuid().ToString();
-        Environment.SetEnvironmentVariable("PARTICULARSOFTWARE_LICENSE", licenseText);
 
         builder.AddContainer("endpoint", "endpoint-container")
             .WithParticularPlatform(builder
@@ -68,13 +104,10 @@ public class LicensingTests
         var app = builder.Build();
         var model = app.Services.GetRequiredService<DistributedApplicationModel>();
 
-        //assert that the endpoint resource has the license env var set
-        var license = model.Resources.Single(x => x.Name == "particular-license");
-        Assert.That(license, Is.InstanceOf<ParameterResource>());
-        var licenseParameter = (ParameterResource)license;
-
-        var licenseValue = await licenseParameter.GetValueAsync(CancellationToken.None).ConfigureAwait(false);
-        Assert.That(licenseValue, Is.EqualTo(licenseText));
+        var gotLicense = model.Resources.TryGetByName("particular-license", out var licenseResource);
+        Assert.That(gotLicense, Is.True);
+        Assert.That(licenseResource, Is.InstanceOf<ParameterResource>());
+        Assert.That(((ParameterResource)licenseResource).Default, Is.InstanceOf<ServicePlatformDefaultLicense>());
     }
 
     [Test]
@@ -187,75 +220,6 @@ public class LicensingTests
         Assert.That(envVars["PARTICULARSOFTWARE_LICENSE"], Is.EqualTo(text));
     }
 
-    [Test, CancelAfter(30_000)]
-    public async Task LicenseShouldResolveFromProgramData(CancellationToken cancellationToken = default)
-    {
-        var text = Guid.NewGuid().ToString();
-        Environment.SetEnvironmentVariable("PROGRAMDATA", CreateTempLicenseRoot(text));
-
-        var licenseValue = await ResolveDefaultLicenseAsync(cancellationToken).ConfigureAwait(false);
-
-        Assert.That(licenseValue, Is.EqualTo(text));
-    }
-
-    [Test, CancelAfter(30_000)]
-    public async Task LicenseShouldResolveFromLocalAppDataWhenProgramDataAbsent(CancellationToken cancellationToken = default)
-    {
-        var text = Guid.NewGuid().ToString();
-        Environment.SetEnvironmentVariable("LOCALAPPDATA", CreateTempLicenseRoot(text));
-
-        var licenseValue = await ResolveDefaultLicenseAsync(cancellationToken).ConfigureAwait(false);
-
-        Assert.That(licenseValue, Is.EqualTo(text));
-    }
-
-    [Test, CancelAfter(30_000)]
-    public async Task ProgramDataShouldTakePrecedenceOverLocalAppDataAndEnvVar(CancellationToken cancellationToken = default)
-    {
-        var programDataText = Guid.NewGuid().ToString();
-        var localAppDataText = Guid.NewGuid().ToString();
-        var envVarText = Guid.NewGuid().ToString();
-
-        Environment.SetEnvironmentVariable("PROGRAMDATA", CreateTempLicenseRoot(programDataText));
-        Environment.SetEnvironmentVariable("LOCALAPPDATA", CreateTempLicenseRoot(localAppDataText));
-        Environment.SetEnvironmentVariable("PARTICULARSOFTWARE_LICENSE", envVarText);
-
-        var licenseValue = await ResolveDefaultLicenseAsync(cancellationToken).ConfigureAwait(false);
-
-        Assert.That(licenseValue, Is.EqualTo(programDataText));
-    }
-
-    [Test, CancelAfter(30_000)]
-    public async Task LicenseShouldFallBackToEmptyStringWhenNothingConfigured(CancellationToken cancellationToken = default)
-    {
-        var licenseValue = await ResolveDefaultLicenseAsync(cancellationToken).ConfigureAwait(false);
-
-        Assert.That(licenseValue, Is.Empty);
-    }
-
-    [Test]
-    public async Task WithLicenseFromTextShouldOverrideProgramDataFile()
-    {
-        Environment.SetEnvironmentVariable("PROGRAMDATA", CreateTempLicenseRoot("from-program-data"));
-        var overrideText = Guid.NewGuid().ToString();
-
-        var builder = new DistributedApplicationBuilder([]);
-        builder.AddContainer("endpoint", "endpoint-container")
-            .WithParticularPlatform(builder
-                .AddParticularPlatform("particular")
-                .WithLicenseFromText(overrideText)
-                .WithTransportLearning()
-            );
-
-        var app = builder.Build();
-        var model = app.Services.GetRequiredService<DistributedApplicationModel>();
-        var licenseParameter = (ParameterResource)model.Resources.Single(x => x.Name == "particular-license");
-
-        var licenseValue = await licenseParameter.GetValueAsync(CancellationToken.None).ConfigureAwait(false);
-
-        Assert.That(licenseValue, Is.EqualTo(overrideText));
-    }
-
     [Test]
     public void WithLicenseFromTextShouldThrowOnNullOrEmpty()
     {
@@ -277,26 +241,33 @@ public class LicensingTests
     }
 
     [Test]
-    public void WithLicenseFromFileShouldDeferValidationUntilResolution()
+    public void LicenseParameterDefaultShouldReturnEmptyIfNoSourcesOrdering()
     {
-        var nonExistentPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + ".xml");
-
-        var builder = new DistributedApplicationBuilder([]);
-        builder.AddContainer("endpoint", "endpoint-container")
-            .WithParticularPlatform(builder
-                .AddParticularPlatform("particular")
-                .WithLicenseFromFile(nonExistentPath)
-                .WithTransportLearning()
-            );
-
-        // Builder accepts a missing file. The contract is that validation is deferred to resolution.
-        var app = builder.Build();
-        var model = app.Services.GetRequiredService<DistributedApplicationModel>();
-        var licenseParameter = (ParameterResource)model.Resources.Single(x => x.Name == "particular-license");
-
-        Assert.ThrowsAsync<FileNotFoundException>(async () =>
-            await licenseParameter.GetValueAsync(CancellationToken.None).ConfigureAwait(false));
+        Assert.That(new LicenseParameterDefault().GetDefaultValue(), Is.Empty);
+        Assert.That(new LicenseParameterDefault(new FileLicenseSource(Guid.NewGuid().ToString("N"))).GetDefaultValue(), Is.Empty);
+        Assert.That(new LicenseParameterDefault([
+            new FileLicenseSource(Guid.NewGuid().ToString("N")),
+            new FileLicenseSource(Guid.NewGuid().ToString("N")),
+            new FileLicenseSource(Guid.NewGuid().ToString("N"))
+        ]).GetDefaultValue(), Is.Empty);
     }
+
+    [Test]
+    public void LicenseParameterShouldReturnFirstNonEmptyLicenseFromParamsOrdering()
+    {
+        var text = Guid.NewGuid().ToString();
+        var text2 = Guid.NewGuid().ToString();
+        var file = Path.Combine(CreateTempLicenseRoot(text), "ParticularSoftware/license.xml");
+        var file2 = Path.Combine(CreateTempLicenseRoot(text2), "ParticularSoftware/license.xml");
+
+        var result = new LicenseParameterDefault([
+            new FileLicenseSource(Guid.NewGuid().ToString("N")),
+            new FileLicenseSource(file),
+            new FileLicenseSource(file2)
+        ]).GetDefaultValue();
+        Assert.That(result, Is.EqualTo(text));
+    }
+
 
     string CreateTempLicenseRoot(string licenseText)
     {
@@ -306,20 +277,5 @@ public class LicensingTests
         File.WriteAllText(Path.Combine(particularDir, "license.xml"), licenseText);
         _tempPaths.Add(rootDir);
         return rootDir;
-    }
-
-    async Task<string?> ResolveDefaultLicenseAsync(CancellationToken cancellationToken)
-    {
-        var builder = new DistributedApplicationBuilder([]);
-        builder.AddContainer("endpoint", "endpoint-container")
-            .WithParticularPlatform(builder
-                .AddParticularPlatform("particular")
-                .WithTransportLearning()
-            );
-
-        var app = builder.Build();
-        var model = app.Services.GetRequiredService<DistributedApplicationModel>();
-        var licenseParameter = (ParameterResource)model.Resources.Single(x => x.Name == "particular-license");
-        return await licenseParameter.GetValueAsync(cancellationToken).ConfigureAwait(false);
     }
 }
