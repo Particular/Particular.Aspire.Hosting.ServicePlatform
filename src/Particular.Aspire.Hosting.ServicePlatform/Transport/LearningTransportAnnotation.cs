@@ -1,6 +1,8 @@
 namespace Particular.Aspire.Hosting.ServicePlatform.Transport;
 
 using System;
+using System.IO;
+using System.Linq;
 using global::Aspire.Hosting;
 using global::Aspire.Hosting.ApplicationModel;
 using Particular.Aspire.Hosting.ServicePlatform.Platform;
@@ -11,7 +13,8 @@ using Particular.Aspire.Hosting.ServicePlatform.Platform;
 /// </summary>
 sealed class LearningTransportAnnotation(string storagePath, IResourceWithConnectionString connectionString) : IPlatformTransportAnnotation
 {
-    internal const string ContainerPath = "/tmp/learningtransport";
+    const string ContainerPath = "/tmp/learningtransport";
+    const string DefaultLearningTransportDirectory = ".learningtransport";
 
     /// <summary>
     /// The configuration key that must be set to <c>true</c> to allow the Learning transport in publish mode.
@@ -41,4 +44,36 @@ sealed class LearningTransportAnnotation(string storagePath, IResourceWithConnec
 
         resource.WithReference(resource.ApplicationBuilder.CreateResourceBuilder(connectionString));
     }
+
+    /// <summary>
+    /// Finds the directory of the learning transport for this project.
+    /// </summary>
+    /// <remarks>
+    /// The behavior of this path search should mirror the implementation in the learning transport (https://github.com/Particular/NServiceBus/blob/master/src/NServiceBus.Core/Transports/Learning/LearningTransportInfrastructure.cs)
+    /// </remarks>
+    internal static string FindStoragePath()
+    {
+        var directory = AppDomain.CurrentDomain.BaseDirectory;
+
+        while (true)
+        {
+            // Finding a solution file takes precedence
+            if (Directory.EnumerateFiles(directory).Any(file => Path.GetExtension(file) is ".sln" or ".slnx"))
+            {
+                return Path.Combine(directory, DefaultLearningTransportDirectory);
+            }
+
+            // When no solution file was found try to find a learning transport directory
+            var learningTransportDirectory = Path.Combine(directory, DefaultLearningTransportDirectory);
+            if (Directory.Exists(learningTransportDirectory))
+            {
+                return learningTransportDirectory;
+            }
+
+            var parent = Directory.GetParent(directory) ?? throw new Exception($"Unable to determine the storage directory path for the learning transport due to the absence of a solution file. Either create a '{DefaultLearningTransportDirectory}' directory in one of this project’s parent directories, or specify the path explicitly when adding the transport.");
+
+            directory = parent.FullName;
+        }
+    }
+
 }

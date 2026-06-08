@@ -20,23 +20,29 @@ public static class ParticularPlatformTransportExtensions
         /// This transport is intended for development and testing only and is not supported in publish mode
         /// unless explicitly enabled via the <c>Particular:AllowLearningTransportPublish</c> configuration setting.
         /// </summary>
-        /// <param name="storagePath">The file system path for message storage. Defaults to <c>.learningtransport</c> in the current directory.</param>
+        /// <param name="storagePath">The file system path for message storage, relative paths are resolved relative to <see cref="DistributedApplicationBuilder.AppHostDirectory"/>. Defaults to using <c>.learningtransport</c> in the solution directory.</param>
         /// <returns>The platform resource builder for chaining.</returns>
         /// <exception cref="InvalidOperationException">Thrown if used in publish mode without enabling <c>Particular:AllowLearningTransportPublish</c>.</exception>
         public IResourceBuilder<ParticularPlatformResource> WithTransportLearning(string? storagePath = null)
         {
-            storagePath ??= ".learningtransport";
-            var resolvedPath = Path.IsPathRooted(storagePath)
-                ? storagePath
-                : Path.GetFullPath(storagePath, platform.ApplicationBuilder.AppHostDirectory);
+            if (storagePath == null)
+            {
+                storagePath = LearningTransportAnnotation.FindStoragePath();
+            }
+            else
+            {
+                storagePath = Path.IsPathRooted(storagePath)
+                    ? storagePath
+                    : Path.GetFullPath(storagePath, platform.ApplicationBuilder.AppHostDirectory);
+            }
 
-            Directory.CreateDirectory(resolvedPath);
+            Directory.CreateDirectory(storagePath);
 
             var transportConnection = platform.ApplicationBuilder
-                .AddConnectionString($"learning-transport", ReferenceExpression.Create($"{resolvedPath}"))
+                .AddConnectionString($"learning-transport", ReferenceExpression.Create($"{storagePath}"))
                 .WithParentRelationship(platform);
 
-            platform.WithAnnotation(new LearningTransportAnnotation(resolvedPath, transportConnection.Resource));
+            platform.WithAnnotation(new LearningTransportAnnotation(storagePath, transportConnection.Resource));
 
             if (platform.ApplicationBuilder.ExecutionContext.IsPublishMode)
             {
