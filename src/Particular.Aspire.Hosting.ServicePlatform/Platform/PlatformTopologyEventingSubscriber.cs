@@ -63,14 +63,14 @@ sealed class PlatformTopologyEventingSubscriber(
         if (platform.TryGetLastAnnotation(out PlatformLicenseAnnotation? licenseAnnotation))
         {
             var license = await licenseAnnotation.License.GetValueAsync(cancellationToken).ConfigureAwait(false);
-            if (!string.IsNullOrWhiteSpace(license))
+            if (!string.IsNullOrWhiteSpace(license) && license != ServicePlatformDefaultLicense.TrialLicensePlaceholder)
             {
                 //license found, nothing to do
                 return;
             }
         }
 
-        if (licenseAnnotation != null && string.IsNullOrWhiteSpace(licenseAnnotation.License.Default?.GetDefaultValue()))
+        if (licenseAnnotation != null)
         {
             var searchPaths = (licenseAnnotation.License.Default as LicenseParameterDefault)?.SearchLocations ?? [];
             var pathsString = string.Join(", ", searchPaths.Select(p => p switch

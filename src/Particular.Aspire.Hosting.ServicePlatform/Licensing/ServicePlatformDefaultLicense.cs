@@ -7,5 +7,13 @@ class ServicePlatformDefaultLicense() : LicenseParameterDefault(
     new FileLicenseSource(LicenseFileLocationResolver.GetPathFor(Environment.SpecialFolder.LocalApplicationData)),
     new FileLicenseSource(LicenseFileLocationResolver.GetPathFor(Environment.SpecialFolder.CommonApplicationData)),
     new EnvironmentVariableLicenseSource(PlatformEnvironment.ParticularSoftwareLicense),
-    new TextLicenseSource("Trial")
-);
+    new TextLicenseSource(TrialLicensePlaceholder)
+)
+{
+    /// <summary>
+    /// Placeholder value used to make the license parameter valid and allow the Aspire resources to start up.
+    /// This value will fail to validate in ServiceControl and any endpoints triggering the trial license to be loaded.
+    /// </summary>
+    public const string TrialLicensePlaceholder = "Trial";
+}
+
