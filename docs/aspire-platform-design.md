@@ -107,8 +107,8 @@ When adding a new persistence implementation (e.g., SQL Server):
 ### Additional annotations on child resources
 
 - [`RemoteInstanceAnnotation`](https://github.com/Particular/Particular.Aspire.Hosting.ServicePlatform/blob/main/src/Particular.Aspire.Hosting.ServicePlatform/Platform/RemoteInstanceAnnotation.cs) — lets error instances point to remote audit. Holds a `ReferenceExpression` (`Endpoint`); the error instance projects all of them into `REMOTEINSTANCES` as a JSON array of `{"api_uri": "..."}` entries.
-- [`ThroughputQueueAnnotation`](https://github.com/Particular/Particular.Aspire.Hosting.ServicePlatform/blob/main/src/Particular.Aspire.Hosting.ServicePlatform/Platform/ThroughputQueueAnnotation.cs) — carries the metrics queue name between error/monitoring.
-- [`ThroughputReportingAnnotation`](https://github.com/Particular/Particular.Aspire.Hosting.ServicePlatform/blob/main/src/Particular.Aspire.Hosting.ServicePlatform/ThroughputReporting/ThroughputReportingAnnotation.cs) — marker annotation attached to an error instance when throughput reporting is configured. Records the `IThroughputReportingProvider` that supplied the configuration so validators/publish hooks/tests can introspect the wire-up. The provider itself projects the env vars (see [Opt-in extensions](#opt-in-extensions-on-child-resources)).
+- [`ThroughputQueueAnnotation`](https://github.com/Particular/Particular.Aspire.Hosting.ServicePlatform/blob/main/src/Particular.Aspire.Hosting.ServicePlatform/Platform/ThroughputQueueAnnotation.cs) — carries the usage queue name between error/monitoring.
+- [`ThroughputReportingAnnotation`](https://github.com/Particular/Particular.Aspire.Hosting.ServicePlatform/blob/main/src/Particular.Aspire.Hosting.ServicePlatform/ThroughputReporting/ThroughputReportingAnnotation.cs) — marker annotation attached to an error instance if throughput reporting requires extra configuration. Records the `IThroughputReportingProvider` that supplied the configuration so validators/publish hooks/tests can introspect the wire-up. The provider itself projects the env vars (see [Opt-in extensions](#opt-in-extensions-on-child-resources)).
 - [`RunModeAnnotation`](https://github.com/Particular/Particular.Aspire.Hosting.ServicePlatform/blob/main/src/Particular.Aspire.Hosting.ServicePlatform/Platform/RunModeAnnotation.cs) — carries the `PlatformRunMode` for a ServiceControl instance (see [Run modes](#run-modes)).
 
 ### Opt-in extensions on child resources
@@ -272,7 +272,7 @@ License configuration options (all on `IResourceBuilder<ParticularPlatformResour
   2. `%LOCALAPPDATA%/ParticularSoftware/license.xml`,
   3. `%PROGRAMDATA%/ParticularSoftware/license.xml` (CommonApplicationData),
   4. the `PARTICULARSOFTWARE_LICENSE` environment variable,
-  5. a built-in `"Trial"` license. This final source always resolves, so the default license is never empty — the license-validation warning only applies when a `WithLicenseFrom*` override resolves to nothing.
+  5. a built-in `"Trial"` license. This final source always resolves, so the default license is never empty — the license-validation warning applies when a `WithLicenseFrom*` override resolves to nothing or the license is `Trial`.
 
 ## Env vars applied to each child
 
