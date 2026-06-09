@@ -1,4 +1,4 @@
-namespace Particular.Aspire.Hosting.ServicePlatform.Tests.TestResources;
+namespace Particular.Aspire.Hosting.ServicePlatform.UnitTests.TestResources;
 
 using global::Aspire.Hosting;
 using global::Aspire.Hosting.ApplicationModel;

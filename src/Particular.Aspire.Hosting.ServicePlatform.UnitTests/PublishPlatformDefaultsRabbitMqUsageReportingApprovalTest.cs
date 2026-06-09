@@ -2,8 +2,7 @@ namespace Particular.Aspire.Hosting.ServicePlatform.UnitTests;
 
 using global::Aspire.Hosting;
 using global::Aspire.Hosting.ApplicationModel;
-using Tests;
-using Tests.TestResources;
+using TestResources;
 using ThroughputReporting;
 using Transport;
 

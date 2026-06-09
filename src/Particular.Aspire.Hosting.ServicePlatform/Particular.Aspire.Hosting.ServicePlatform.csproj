@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup Label="Public dependencies">
-    <PackageReference Include="Aspire.Hosting" Version="13.4.2" />
+    <PackageReference Include="Aspire.Hosting" Version="13.4.3" />
   </ItemGroup>
 
   <ItemGroup Label="Private dependencies">

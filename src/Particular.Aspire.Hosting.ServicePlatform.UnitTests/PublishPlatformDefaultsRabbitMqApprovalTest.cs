@@ -2,8 +2,7 @@ namespace Particular.Aspire.Hosting.ServicePlatform.UnitTests;
 
 using global::Aspire.Hosting;
 using NUnit.Framework;
-using Tests;
-using Tests.TestResources;
+using TestResources;
 using Transport;
 
 [TestFixture(RabbitMqRouting.QuorumConventionalRouting)]

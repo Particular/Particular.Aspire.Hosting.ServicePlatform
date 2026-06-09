@@ -10,8 +10,11 @@ using global::Aspire.Hosting;
 using global::Aspire.Hosting.ApplicationModel;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Testing;
 using NUnit.Framework;
 using ServicePlatform.Licensing;
+using TestResources;
 
 public class LicensingTests
 {
@@ -265,7 +268,61 @@ public class LicensingTests
             new FileLicenseSource(file),
             new FileLicenseSource(file2)
         ]).GetDefaultValue();
+
         Assert.That(result, Is.EqualTo(text));
+    }
+
+
+    [Test, CancelAfter(30_000)]
+    public async Task Should_warn_when_license_cannot_be_found(CancellationToken cancellationToken = default)
+    {
+        var collector = new FakeLogCollector();
+
+        using var context = new TestPublishingContext();
+        var builder = context.Builder;
+
+        builder.Services.AddLogging(logging => logging.AddProvider(new FakeLoggerProvider(collector)));
+
+        builder
+            .AddParticularPlatform("particular")
+            .WithLicenseFromFile("this/path/does/not/exist.xml")
+            .AddDefaultComponents();
+
+        var app = builder.Build();
+        await app.RunAsync(cancellationToken).ConfigureAwait(false);
+
+        var warnings = collector.GetSnapshot()
+            .Where(r => r.Level == LogLevel.Warning)
+            .ToList();
+
+        Assert.That(warnings, Has.Exactly(1).Matches<FakeLogRecord>(r =>
+            r.Message.Contains("License 'particular-license' is empty")));
+    }
+
+    [Test, CancelAfter(30_000)]
+    public async Task Should_warn_when_trial_license(CancellationToken cancellationToken = default)
+    {
+        var collector = new FakeLogCollector();
+
+        using var context = new TestPublishingContext();
+        var builder = context.Builder;
+
+        builder.Services.AddLogging(logging => logging.AddProvider(new FakeLoggerProvider(collector)));
+
+        builder
+            .AddParticularPlatform("particular")
+            .WithLicenseFromText(ServicePlatformDefaultLicense.TrialLicensePlaceholder)
+            .AddDefaultComponents();
+
+        var app = builder.Build();
+        await app.RunAsync(cancellationToken).ConfigureAwait(false);
+
+        var warnings = collector.GetSnapshot()
+            .Where(r => r.Level == LogLevel.Warning)
+            .ToList();
+
+        Assert.That(warnings, Has.Exactly(1).Matches<FakeLogRecord>(r =>
+            r.Message.Contains("License 'particular-license' is empty")));
     }
 
 
@@ -278,4 +335,5 @@ public class LicensingTests
         _tempPaths.Add(rootDir);
         return rootDir;
     }
+
 }

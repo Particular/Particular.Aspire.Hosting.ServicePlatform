@@ -1,7 +1,6 @@
 namespace Particular.Aspire.Hosting.ServicePlatform.UnitTests;
 
 using global::Aspire.Hosting;
-using Particular.Aspire.Hosting.ServicePlatform.Tests;
 using Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting;
 
 public class PublishPlatformDefaultsAmazonSqsUsageReportingApprovalTest : AspireApplicationPublishingTestBase
