@@ -1,7 +1,7 @@
-namespace Particular.Aspire.Hosting.ServicePlatform.Tests;
+namespace Particular.Aspire.Hosting.ServicePlatform.UnitTests;
 
 using global::Aspire.Hosting;
-using Particular.Aspire.Hosting.ServicePlatform.Tests.TestResources;
+using TestResources;
 
 public class PublishPlatformDefaultsWithMultipleEndpointsApprovalTest : AspireApplicationPublishingTestBase
 {

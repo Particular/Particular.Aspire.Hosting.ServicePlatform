@@ -1,10 +1,7 @@
-namespace Particular.Aspire.Hosting.ServicePlatform.Tests.TestResources;
+namespace Particular.Aspire.Hosting.ServicePlatform.UnitTests.TestResources;
 
 using global::Aspire.Hosting.ApplicationModel;
 
-/// <summary>
-/// Like
-/// </summary>
 public class DummyConnectionStringResource(string name, string? value = null)
     : Resource(name), IResourceWithConnectionString
 {

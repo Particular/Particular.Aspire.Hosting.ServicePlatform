@@ -1,4 +1,4 @@
-namespace Particular.Aspire.Hosting.ServicePlatform.Tests;
+namespace Particular.Aspire.Hosting.ServicePlatform.UnitTests;
 
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Testing;
 using NUnit.Framework;
-using Particular.Aspire.Hosting.ServicePlatform.Tests.TestResources;
+using TestResources;
 
 public class MismatchedServiceControlVersionsTest
 {
@@ -21,7 +21,8 @@ public class MismatchedServiceControlVersionsTest
     {
         var collector = new FakeLogCollector();
 
-        var builder = CreatePublishBuilder();
+        using var context = new TestPublishingContext();
+        var builder = context.Builder;
 
         builder.Services.AddLogging(logging => logging.AddProvider(new FakeLoggerProvider(collector)));
 
@@ -55,7 +56,8 @@ public class MismatchedServiceControlVersionsTest
     {
         var collector = new FakeLogCollector();
 
-        var builder = CreatePublishBuilder();
+        using var context = new TestPublishingContext();
+        var builder = context.Builder;
 
         builder.Services.AddLogging(logging => logging.AddProvider(new FakeLoggerProvider(collector)));
 
@@ -76,23 +78,4 @@ public class MismatchedServiceControlVersionsTest
         Assert.That(warnings, Is.Empty);
     }
 
-    static DistributedApplicationBuilder CreatePublishBuilder()
-    {
-        var outDir = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName().Replace(".", ""));
-
-        var builder = new DistributedApplicationBuilder(new DistributedApplicationOptions
-        {
-            Args = ["--operation", "publish", "--step", "publish", "--output-path", outDir],
-            DisableDashboard = true
-        });
-
-        builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?>
-        {
-            ["Particular:AllowLearningTransportPublish"] = "true",
-            ["ASPIRE_DCP_PATH"] = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".aspire/bin/dcp"),
-            ["ASPIRE_DASHBOARD_PATH"] = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".aspire/managed/wwwroot")
-        });
-
-        return builder;
-    }
 }

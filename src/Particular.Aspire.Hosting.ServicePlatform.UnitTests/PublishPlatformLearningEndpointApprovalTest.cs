@@ -1,7 +1,6 @@
 namespace Particular.Aspire.Hosting.ServicePlatform.UnitTests;
 
 using global::Aspire.Hosting;
-using Tests;
 
 public class PublishPlatformLearningEndpointApprovalTest : AspireApplicationPublishingTestBase
 {
