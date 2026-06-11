@@ -9,12 +9,15 @@ public class PublishPlatformDefaultsSqlServerTransportApprovalTest : AspireAppli
     {
         builder.AddDockerComposeEnvironment("compose");
 
-        builder
+        var platform = builder
             .AddParticularPlatform("particular")
             .WithTransportSqlServer(
                 builder.AddDummyConnectionString("transport-connection"),
                 queueSchema: "custom-queue-schema",
                 subscriptionsTable: "custom-subscriptions-table")
             .AddDefaultComponents();
+
+        builder.AddContainer("endpoint", "endpoint_image")
+            .WithParticularPlatform(platform);
     }
 }
