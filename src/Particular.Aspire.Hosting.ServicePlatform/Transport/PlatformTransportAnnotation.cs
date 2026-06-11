@@ -15,6 +15,8 @@ abstract class PlatformTransportAnnotation : IPlatformTransportAnnotation
     public abstract string TransportType { get; }
     public abstract IResourceWithConnectionString ConnectionSource { get; }
 
+    protected virtual ReferenceExpression ServiceControlConnectionString => ConnectionSource.ConnectionStringExpression;
+
     public virtual void ApplyTo<T>(IResourceBuilder<T> resource) where T : IResourceWithEnvironment
     {
         if (resource is IResourceBuilder<IResourceWithWaitSupport> waiter)
@@ -27,7 +29,7 @@ abstract class PlatformTransportAnnotation : IPlatformTransportAnnotation
             resource.WithEnvironment(context =>
             {
                 context.EnvironmentVariables[PlatformEnvironment.ServiceControl.TransportType] = TransportType;
-                context.EnvironmentVariables[PlatformEnvironment.ServiceControl.ConnectionString] = ConnectionSource;
+                context.EnvironmentVariables[PlatformEnvironment.ServiceControl.ConnectionString] = ServiceControlConnectionString;
             });
             return;
         }
