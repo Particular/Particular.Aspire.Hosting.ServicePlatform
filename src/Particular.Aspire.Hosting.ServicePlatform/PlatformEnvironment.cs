@@ -46,6 +46,12 @@ static class PlatformEnvironment
                 public const string Region = "LICENSINGCOMPONENT_AMAZONSQS_REGION";
                 public const string Prefix = "LICENSINGCOMPONENT_AMAZONSQS_PREFIX";
             }
+
+            public static class SqlServer
+            {
+                public const string ConnectionString = "LICENSINGCOMPONENT_SQLSERVER_CONNECTIONSTRING";
+                public const string AdditionalCatalogs = "LICENSINGCOMPONENT_SQLSERVER_ADDITIONALCATALOGS";
+            }
         }
     }
 

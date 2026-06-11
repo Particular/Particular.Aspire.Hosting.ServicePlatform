@@ -168,6 +168,11 @@ namespace Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting
         public ThroughputReportingRabbitMq(Aspire.Hosting.ApplicationModel.IExpressionValue? apiUrl, Aspire.Hosting.ApplicationModel.IExpressionValue? userName, Aspire.Hosting.ApplicationModel.IExpressionValue? password) { }
         public void ApplyTo(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> errorInstance) { }
     }
+    public sealed class ThroughputReportingSqlServer : Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting.IThroughputReportingProvider
+    {
+        public ThroughputReportingSqlServer(Aspire.Hosting.ApplicationModel.IExpressionValue? connectionString = null, string? additionalCatalogs = null) { }
+        public void ApplyTo(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> errorInstance) { }
+    }
 }
 namespace Particular.Aspire.Hosting.ServicePlatform.Transport
 {
