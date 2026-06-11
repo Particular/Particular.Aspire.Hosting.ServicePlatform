@@ -4,7 +4,7 @@ using global::Aspire.Hosting.ApplicationModel;
 
 class SqlServerTransportAnnotation(IResourceWithConnectionString connectionSource, string? queueSchema, string? subscriptionsTable) : PlatformTransportAnnotation
 {
-    public override string TransportType => "SqlServer";
+    public override string TransportType => "SQLServer";
     public override IResourceWithConnectionString ConnectionSource { get; } = connectionSource;
 
     public string? QueueSchema { get; } = queueSchema;
