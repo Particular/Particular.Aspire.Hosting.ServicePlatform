@@ -32,7 +32,7 @@ services:
       RAVENDB_CONNECTIONSTRING: "http://particular-persistence:8080"
       REMOTEINSTANCES: "[{\"api_uri\": \"http://particular-audit:44444\"}]"
       PARTICULARSOFTWARE_LICENSE: "${PARTICULAR_LICENSE}"
-      TRANSPORTTYPE: "SqlServer"
+      TRANSPORTTYPE: "SQLServer"
       CONNECTIONSTRING: "Name=transport-connection;Queue Schema=custom-queue-schema;Subscriptions Table=custom-subscriptions-table"
       SERVICEBUS_ERRORQUEUE: "error"
       LICENSINGCOMPONENT_SQLSERVER_CONNECTIONSTRING: "Name=transport-connection"
@@ -50,7 +50,7 @@ services:
       - "--setup-and-run"
     environment:
       PARTICULARSOFTWARE_LICENSE: "${PARTICULAR_LICENSE}"
-      TRANSPORTTYPE: "SqlServer"
+      TRANSPORTTYPE: "SQLServer"
       CONNECTIONSTRING: "Name=transport-connection;Queue Schema=custom-queue-schema;Subscriptions Table=custom-subscriptions-table"
     expose:
       - "33633"
@@ -63,7 +63,7 @@ services:
     environment:
       RAVENDB_CONNECTIONSTRING: "http://particular-persistence:8080"
       PARTICULARSOFTWARE_LICENSE: "${PARTICULAR_LICENSE}"
-      TRANSPORTTYPE: "SqlServer"
+      TRANSPORTTYPE: "SQLServer"
       CONNECTIONSTRING: "Name=transport-connection;Queue Schema=custom-queue-schema;Subscriptions Table=custom-subscriptions-table"
       SERVICEBUS_AUDITQUEUE: "audit"
     expose:
