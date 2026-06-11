@@ -25,9 +25,12 @@ public sealed class ThroughputReportingSqlServer(
                 $"{nameof(ThroughputReportingSqlServer)} requires the parent platform to be configured with WithTransportSqlServer first.");
         }
 
-        errorInstance.WithEnvironment(
-            PlatformEnvironment.ServiceControl.LicensingComponent.SqlServer.ConnectionString,
-            connectionString ?? transport.ConnectionSource.ConnectionStringExpression);
+        if (connectionString is not null)
+        {
+            errorInstance.WithEnvironment(
+                PlatformEnvironment.ServiceControl.LicensingComponent.SqlServer.ConnectionString,
+                connectionString ?? transport.ConnectionSource.ConnectionStringExpression);
+        }
 
         if (additionalCatalogs is not null)
         {
