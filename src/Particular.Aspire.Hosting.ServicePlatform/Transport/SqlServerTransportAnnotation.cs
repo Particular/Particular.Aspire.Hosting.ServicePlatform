@@ -17,15 +17,8 @@ class SqlServerTransportAnnotation(IResourceWithConnectionString connectionSourc
         {
             var builder = new ReferenceExpressionBuilder();
             builder.Append($"{ConnectionSource.ConnectionStringExpression}");
-            if (QueueSchema != null)
-            {
-                builder.Append($";Queue Schema={QueueSchema}");
-            }
-
-            if (SubscriptionsTable != null)
-            {
-                builder.Append($";Subscriptions Table={SubscriptionsTable}");
-            }
+            builder.AppendKeyword("Queue Schema", QueueSchema);
+            builder.AppendKeyword("Subscriptions Table", SubscriptionsTable);
             return builder.Build();
         }
     }

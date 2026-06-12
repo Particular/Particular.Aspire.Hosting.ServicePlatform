@@ -11,35 +11,25 @@ class AmazonSqsTransportAnnotation(AmazonSqsTransportSettings settings) : IPlatf
     ReferenceExpression CreateConnectionString()
     {
         var builder = new ReferenceExpressionBuilder();
-        builder.Append($"Region={Settings.Region};AccessKeyId={Settings.AccessKeyId};SecretAccessKey={Settings.SecretAccessKey};");
-        if (Settings.QueueNamePrefix != null)
-        {
-            builder.AppendLiteral($"QueueNamePrefix={Settings.QueueNamePrefix};");
-        }
-
-        if (Settings.TopicNamePrefix != null)
-        {
-            builder.AppendLiteral($"TopicNamePrefix={Settings.TopicNamePrefix};");
-        }
+        builder.Append($"Region={Settings.Region};AccessKeyId={Settings.AccessKeyId};SecretAccessKey={Settings.SecretAccessKey}");
+        builder.AppendKeyword("QueueNamePrefix", Settings.QueueNamePrefix);
+        builder.AppendKeyword("TopicNamePrefix", Settings.TopicNamePrefix);
 
         if (Settings.S3BucketForLargeMessages != null)
         {
-            builder.Append($"S3BucketForLargeMessages={Settings.S3BucketForLargeMessages};");
+            builder.Append($";S3BucketForLargeMessages={Settings.S3BucketForLargeMessages}");
         }
 
-        if (Settings.S3KeyPrefix != null)
-        {
-            builder.AppendLiteral($"S3KeyPrefix={Settings.S3KeyPrefix};");
-        }
+        builder.AppendKeyword("S3KeyPrefix", Settings.S3KeyPrefix);
 
         if (Settings.DoNotWrapOutgoingMessages != null)
         {
-            builder.AppendLiteral($"DoNotWrapOutgoingMessages={Settings.DoNotWrapOutgoingMessages};");
+            builder.AppendLiteral($";DoNotWrapOutgoingMessages={Settings.DoNotWrapOutgoingMessages}");
         }
 
         if (Settings.ReservedBytesInMessageSize != null)
         {
-            builder.AppendLiteral($"ReservedBytesInMessageSize={Settings.ReservedBytesInMessageSize};");
+            builder.AppendLiteral($";ReservedBytesInMessageSize={Settings.ReservedBytesInMessageSize}");
         }
 
         return builder.Build();

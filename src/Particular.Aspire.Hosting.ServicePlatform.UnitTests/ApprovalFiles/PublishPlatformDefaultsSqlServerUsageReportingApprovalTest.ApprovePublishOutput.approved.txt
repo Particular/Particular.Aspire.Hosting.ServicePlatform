@@ -35,6 +35,7 @@ services:
       TRANSPORTTYPE: "SQLServer"
       CONNECTIONSTRING: "Name=transport-connection;Queue Schema=custom-queue-schema;Subscriptions Table=custom-subscriptions-table"
       SERVICEBUS_ERRORQUEUE: "error"
+      LICENSINGCOMPONENT_SQLSERVER_CONNECTIONSTRING: "Name=transport-connection"
       LICENSINGCOMPONENT_SQLSERVER_ADDITIONALCATALOGS: "catalog-a,catalog-b"
     expose:
       - "33333"
