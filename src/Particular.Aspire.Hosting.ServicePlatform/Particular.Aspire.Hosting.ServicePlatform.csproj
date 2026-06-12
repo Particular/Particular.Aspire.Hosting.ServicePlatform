@@ -12,6 +12,7 @@
 
   <ItemGroup Label="Public dependencies">
     <PackageReference Include="Aspire.Hosting" Version="13.4.3" />
+    <PackageReference Include="MessagePack" Version="2.5.302" />
   </ItemGroup>
 
   <ItemGroup Label="Private dependencies">
