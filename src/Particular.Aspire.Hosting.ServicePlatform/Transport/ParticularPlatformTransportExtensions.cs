@@ -117,5 +117,22 @@ public static class ParticularPlatformTransportExtensions
 
             return platform.WithAnnotation(new AmazonSqsTransportAnnotation(options));
         }
+
+        /// <summary>
+        /// Configures the platform to use SQL Server as the message transport.
+        /// </summary>
+        /// <param name="sqlServer">The SQL Server resource providing the connection string.</param>
+        /// <param name="queueSchema">An optional queue schema to append to the transport connection string.</param>
+        /// <param name="subscriptionsTable">An optional subscriptions table to append to the transport connection string.</param>
+        /// <returns>The platform resource builder for chaining.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="sqlServer"/> is null.</exception>
+        public IResourceBuilder<ParticularPlatformResource> WithTransportSqlServer(
+            IResourceBuilder<IResourceWithConnectionString> sqlServer,
+            string? queueSchema = null,
+            string? subscriptionsTable = null)
+        {
+            ArgumentNullException.ThrowIfNull(sqlServer);
+            return platform.WithAnnotation(new SqlServerTransportAnnotation(sqlServer.Resource, queueSchema, subscriptionsTable));
+        }
     }
 }

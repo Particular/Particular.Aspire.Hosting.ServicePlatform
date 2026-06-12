@@ -72,6 +72,7 @@ namespace Aspire.Hosting
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportAzureServiceBus(Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResourceWithConnectionString> azureServiceBus) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportRabbitMQ(Particular.Aspire.Hosting.ServicePlatform.Transport.RabbitMqRouting routingType, Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResourceWithConnectionString> rabbitMQ) { }
             public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportAmazonSqs(string region, Aspire.Hosting.ApplicationModel.IExpressionValue accessKeyId, Aspire.Hosting.ApplicationModel.IExpressionValue secretAccessKey, System.Action<Particular.Aspire.Hosting.ServicePlatform.Transport.AmazonSqsTransportSettings>? configure = null) { }
+            public Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ParticularPlatformResource> WithTransportSqlServer(Aspire.Hosting.ApplicationModel.IResourceBuilder<Aspire.Hosting.ApplicationModel.IResourceWithConnectionString> sqlServer, string? queueSchema = null, string? subscriptionsTable = null) { }
         }
     }
     public static class ParticularServicePlatformPersistenceExtensions
@@ -165,6 +166,11 @@ namespace Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting
     public sealed class ThroughputReportingRabbitMq : Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting.IThroughputReportingProvider
     {
         public ThroughputReportingRabbitMq(Aspire.Hosting.ApplicationModel.IExpressionValue? apiUrl, Aspire.Hosting.ApplicationModel.IExpressionValue? userName, Aspire.Hosting.ApplicationModel.IExpressionValue? password) { }
+        public void ApplyTo(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> errorInstance) { }
+    }
+    public sealed class ThroughputReportingSqlServer : Particular.Aspire.Hosting.ServicePlatform.ThroughputReporting.IThroughputReportingProvider
+    {
+        public ThroughputReportingSqlServer(Aspire.Hosting.ApplicationModel.IExpressionValue? connectionString = null, string? additionalCatalogs = null) { }
         public void ApplyTo(Aspire.Hosting.ApplicationModel.IResourceBuilder<Particular.Aspire.Hosting.ServicePlatform.Platform.ServiceControlErrorInstanceResource> errorInstance) { }
     }
 }

@@ -159,7 +159,7 @@ sequenceDiagram
         DAB->>Res: Create name-license parameter, default = ServicePlatformDefaultLicense
         DAB->>Res: WithInitialState Starting, ExcludeFromManifest, PlatformLicenseAnnotation
         DAB->>Sub: TryAddSingleton PlatformReadinessState + TryAddEventingSubscriber
-        AH->>Res: WithTransportLearning() / WithTransportAzureServiceBus(...) / WithTransportRabbitMQ(...) / WithTransportAmazonSqs(...)
+        AH->>Res: WithTransportLearning() / WithTransportAzureServiceBus(...) / WithTransportRabbitMQ(...) / WithTransportAmazonSqs(...) / WithTransportSqlServer(...)
         Note right of Res: Attach IPlatformTransportAnnotation (Learning also creates and parents its own connection-string resource).
         AH->>Res: AddPersistenceRavenDb("raven")
         Note right of Res: Create RavenDB connection-string resource (parent relationship + wait). Attach IPlatformPersistenceAnnotation to platform.
@@ -249,7 +249,7 @@ builder.AddProject<Projects.MyWorker>("worker")
     .WithParticularPlatform(platform);
 ```
 
-The matching providers for the other transports are `ThroughputReportingRabbitMq(apiUrl?, userName?, password?)` and `ThroughputReportingAmazonSqs(accessKey?, secretKey?, profile?, region?, prefix?)`.
+The matching providers for the other transports are `ThroughputReportingRabbitMq(apiUrl?, userName?, password?)`, `ThroughputReportingAmazonSqs(accessKey?, secretKey?, profile?, region?, prefix?)`, and `ThroughputReportingSqlServer(connectionString?, additionalCatalogs?)`.
 
 ### Late-bound cross-wiring
 
@@ -298,6 +298,7 @@ The Error instance can additionally receive opt-in env vars from caller-chained 
 - `WithThroughputReporting(new ThroughputReportingAzureServiceBus(tenantId, subscriptionId, clientId, clientSecret, serviceBusName?, managementUrl?))` → `LICENSINGCOMPONENT_ASB_TENANTID` + `..._SUBSCRIPTIONID` + `..._CLIENTID` + `..._CLIENTSECRET` (and `..._SERVICEBUSNAME` / `..._MANAGEMENTURL` when those optional arguments are supplied)
 - `WithThroughputReporting(new ThroughputReportingRabbitMq(apiUrl?, userName?, password?))` → `LICENSINGCOMPONENT_RABBITMQ_APIURL` + `..._USERNAME` + `..._PASSWORD` (each only when supplied)
 - `WithThroughputReporting(new ThroughputReportingAmazonSqs(accessKey?, secretKey?, profile?, region?, prefix?))` → `LICENSINGCOMPONENT_AMAZONSQS_ACCESSKEY` + `..._SECRETKEY` + `..._PROFILE` + `..._REGION` + `..._PREFIX` (each only when supplied)
+- `WithThroughputReporting(new ThroughputReportingSqlServer(connectionString?, additionalCatalogs?))` → `LICENSINGCOMPONENT_SQLSERVER_CONNECTIONSTRING` + `..._ADDITIONALCATALOGS` (each only when supplied)
 
 The Monitoring instance can additionally receive `MONITORING_SERVICECONTROLTHROUGHPUTDATAQUEUE` via `WithThroughputQueueFrom(error)` (copies the queue name off the error instance's `ThroughputQueueAnnotation`) or `WithThroughputQueue(name)` (sets it directly).
 
