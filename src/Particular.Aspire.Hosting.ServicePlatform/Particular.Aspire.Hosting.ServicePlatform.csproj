@@ -11,9 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup Label="Public dependencies">
-    <PackageReference Include="Aspire.Hosting" Version="13.4.4" />
-    <!--Remove this when it is updated in Aspire.Hosting - currently it has a version with vulnerabilities: https://github.com/microsoft/aspire/issues/18153-->
-    <PackageReference Include="MessagePack" Version="2.5.302" />
+    <PackageReference Include="Aspire.Hosting" Version="13.4.5" />
   </ItemGroup>
 
   <ItemGroup Label="Private dependencies">
