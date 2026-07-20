@@ -28,7 +28,7 @@ jobs:
         if: runner.os == 'Windows'
         run: git config --global core.longpaths true
       - name: Checkout
-        uses: actions/checkout@v7.0.0
+        uses: actions/checkout@v7.0.1
         with:
           fetch-depth: 0
       - name: Setup .NET SDK
