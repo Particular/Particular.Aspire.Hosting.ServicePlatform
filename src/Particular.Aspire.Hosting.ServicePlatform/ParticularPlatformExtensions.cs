@@ -193,7 +193,7 @@ public static class ParticularPlatformExtensions
                 .WithHttpEndpoint(targetPort: 33633, name: ServiceControlMonitoringInstanceResource.HttpEndpointName)
                 .WithUrlForEndpoint(ServiceControlMonitoringInstanceResource.HttpEndpointName, url => url.DisplayText = "ServiceControl Monitoring")
                 .WithRunModeArgs()
-                .WithHttpHealthCheck("connection", endpointName: ServiceControlMonitoringInstanceResource.HttpEndpointName);
+                .WithHttpHealthCheck("/", endpointName: ServiceControlMonitoringInstanceResource.HttpEndpointName);
 
             return monitoringInstance
                 .WithLicense(platform)
