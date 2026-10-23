@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="Custom.Build.props" />
+  </Folder>
   <Project Path="Particular.Aspire.Hosting.ServicePlatform.UnitTests/Particular.Aspire.Hosting.ServicePlatform.UnitTests.csproj" />
   <Project Path="Particular.Aspire.Hosting.ServicePlatform/Particular.Aspire.Hosting.ServicePlatform.csproj" />
 </Solution>
