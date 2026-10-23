@@ -7,7 +7,6 @@
     <Description>An Aspire hosting integration for the Particular Service Platform (ServiceControl, ServicePulse).</Description>
     <PackageTags>aspire hosting integration particular nservicebus servicecontrol servicepulse</PackageTags>
     <Nullable>enable</Nullable>
-    <LangVersion>14.0</LangVersion>
   </PropertyGroup>
 
   <ItemGroup Label="Public dependencies">
