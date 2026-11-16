@@ -9,7 +9,7 @@ File: docker-compose.yaml
 ==
 services:
   compose-dashboard:
-    image: "mcr.microsoft.com/dotnet/nightly/aspire-dashboard:latest"
+    image: "mcr.microsoft.com/dotnet/nightly/aspire-dashboard:13.6"
     ports:
       - "18888"
     expose:
@@ -86,6 +86,7 @@ services:
     environment:
       PARTICULARSOFTWARE_LICENSE: "${PARTICULAR_LICENSE}"
       ConnectionStrings__transport-connection: "Name=transport-connection"
+      ConnectionStrings__transport_connection: "Name=transport-connection"
     networks:
       - "aspire"
 networks:
