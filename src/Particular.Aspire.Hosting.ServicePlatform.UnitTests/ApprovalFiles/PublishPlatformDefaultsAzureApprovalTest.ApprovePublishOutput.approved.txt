@@ -91,30 +91,30 @@ resource aspireDashboard 'Microsoft.App/managedEnvironments/dotNetComponents@202
   parent: acr
 }
 
-resource acr_storageVolume 'Microsoft.Storage/storageAccounts@2024-01-01' = {
+resource acr_storageVolume 'Microsoft.Storage/storageAccounts@2026-06-01' = {
   name: take('acrstoragevolume${uniqueString(resourceGroup().id)}', 24)
-  kind: 'StorageV2'
+  tags: tags
   location: location
-  sku: {
-    name: 'Standard_LRS'
-  }
   properties: {
     largeFileSharesState: 'Enabled'
     minimumTlsVersion: 'TLS1_2'
   }
-  tags: tags
+  sku: {
+    name: 'Standard_LRS'
+  }
+  kind: 'StorageV2'
 }
 
-resource storageVolumeFileService 'Microsoft.Storage/storageAccounts/fileServices@2024-01-01' = {
+resource storageVolumeFileService 'Microsoft.Storage/storageAccounts/fileServices@2026-06-01' = {
   name: 'default'
   parent: acr_storageVolume
 }
 
-resource shares_bindmounts_particular_error_0 'Microsoft.Storage/storageAccounts/fileServices/shares@2024-01-01' = {
+resource shares_bindmounts_particular_error_0 'Microsoft.Storage/storageAccounts/fileServices/shares@2026-06-01' = {
   name: take('sharesbindmountsparticularerror0-${uniqueString(resourceGroup().id)}', 63)
   properties: {
-    enabledProtocols: 'SMB'
     shareQuota: 1024
+    enabledProtocols: 'SMB'
   }
   parent: storageVolumeFileService
 }
@@ -132,11 +132,11 @@ resource managedStorage_bindmounts_particular_error_0 'Microsoft.App/managedEnvi
   parent: acr
 }
 
-resource shares_bindmounts_particular_monitoring_0 'Microsoft.Storage/storageAccounts/fileServices/shares@2024-01-01' = {
+resource shares_bindmounts_particular_monitoring_0 'Microsoft.Storage/storageAccounts/fileServices/shares@2026-06-01' = {
   name: take('sharesbindmountsparticularmonitoring0-${uniqueString(resourceGroup().id)}', 63)
   properties: {
-    enabledProtocols: 'SMB'
     shareQuota: 1024
+    enabledProtocols: 'SMB'
   }
   parent: storageVolumeFileService
 }
@@ -154,11 +154,11 @@ resource managedStorage_bindmounts_particular_monitoring_0 'Microsoft.App/manage
   parent: acr
 }
 
-resource shares_bindmounts_particular_audit_0 'Microsoft.Storage/storageAccounts/fileServices/shares@2024-01-01' = {
+resource shares_bindmounts_particular_audit_0 'Microsoft.Storage/storageAccounts/fileServices/shares@2026-06-01' = {
   name: take('sharesbindmountsparticularaudit0-${uniqueString(resourceGroup().id)}', 63)
   properties: {
-    enabledProtocols: 'SMB'
     shareQuota: 1024
+    enabledProtocols: 'SMB'
   }
   parent: storageVolumeFileService
 }
@@ -197,6 +197,8 @@ output AZURE_CONTAINER_APPS_ENVIRONMENT_NAME string = acr.name
 output AZURE_CONTAINER_APPS_ENVIRONMENT_ID string = acr.id
 
 output AZURE_CONTAINER_APPS_ENVIRONMENT_DEFAULT_DOMAIN string = acr.properties.defaultDomain
+
+output AZURE_CONTAINER_APPS_ENVIRONMENT_LOCATION string = toLower(replace(acr.location, ' ', ''))
 ==
 File: main.bicep
 ==
